@@ -3,6 +3,7 @@
 #define MODEL_HPP
 
 #include "def.hpp"
+#include "../pop_dy/population.hpp"
 
 #include "../pop_dy/von_bertalanffy.hpp"
 #include "../common/data.hpp"
@@ -12,12 +13,14 @@ class Model{
     public:
 
     std::vector<Type> predicted;
+    std::shared_ptr<Population<Type> >  pop;
     std::shared_ptr< VonBertalanffy<Type> > vb;
     std::shared_ptr< ObsData<Type> > obsdata;
 
     std::vector<Type*> parameters;
 
     Model(){
+        this->pop = std::make_shared<Population<Type> >();
         this->vb = std::make_shared<VonBertalanffy<Type> >();
         this->obsdata = std::make_shared<ObsData<Type> >();
     }
@@ -40,8 +43,11 @@ class Model{
    */
   Type evaluate(){
     Type norm2 = 0.0;
+    pop->vb = this->vb;
+    pop->ages = obsdata->ages;
+    pop -> evaluate();
     for(int i =0; i < obsdata -> ages.size(); i++){
-        Type pred = vb -> evaluate(obsdata -> ages[i]);
+        Type pred = pop->length[i];
         this->predicted[i] = pred;
         norm2+=(pred-obsdata -> data[i])*(pred-obsdata -> data[i]);
     }
