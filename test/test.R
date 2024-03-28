@@ -51,7 +51,7 @@ DataNLL$x <- length.data
 DataNLL$mu <- rep(0, length(length.data))
 DataNLL$log_sd <- 0
 DataNLL$nll_type = "data"
-# DataNLL$estimate_log_sd <- TRUE
+DataNLL$estimate_log_sd <- TRUE
 # DataNLL$SetMu(Pop$get_id(), "length")
 
 #prepare for interfacing with TMB

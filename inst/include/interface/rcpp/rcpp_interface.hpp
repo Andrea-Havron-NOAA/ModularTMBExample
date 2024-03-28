@@ -25,15 +25,15 @@ RCPP_EXPOSED_CLASS(ObsDataInterface)
 /**
  * Returns the initial values for the parameter set
  */
-Rcpp::NumericVector get_parameter_vector(){
+Rcpp::NumericVector get_parameter_vector() {
     Rcpp::NumericVector p;
-    
-    for(int i =0; i < Variable::parameters.size(); i++){
-        if(Variable::parameters[i]->estimable){
-            Variable::estimated_parameters.push_back(Variable::parameters[i]);
-            p.push_back(Variable::parameters[i]->value);
-        }
+    std::shared_ptr<Model<double> > model = Model<double>::getInstance();
+
+
+    for (int i = 0; i < model->parameters.size(); i++) {
+        p.push_back(*model->parameters[i]);
     }
+
     return p;
 }
 /**
