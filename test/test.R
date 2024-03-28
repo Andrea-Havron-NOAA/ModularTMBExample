@@ -14,11 +14,13 @@ a_min<- 0.1
 k<- .5
 ages<-c(0.1, 1,2,3,4,5,6,7,8)
 #data<-c(replicate(length(ages), 0.0), 0.0)
-data<-replicate(length(ages), 0.0)
+Length<-replicate(length(ages), 0.0)
 
 for(i in 1:length(ages)){
-  data[i] = (l_inf * (1.0 - exp(-k * (ages[i] - a_min))))* runif(1,.90,1.5)
+  Length[i] = (l_inf * (1.0 - exp(-k * (ages[i] - a_min))))
 }
+set.seed(234)
+length.data <- Length + rnorm(length(ages), 0, .1)
 
 #clear the parameter list, if there already is one
 g$clear();
@@ -43,25 +45,26 @@ Pop <- new(g$Population)
 #set ages 
 Pop$ages<-ages
 
-#set data
-Dat <- new(g$ObsData) 
-Dat$Data <- data
-
-#set ages 
-Dat$ages<-ages
+DataNLL <- new(g$NormalNLL)
+DataNLL$x <- length.data
+DataNLL$mu <- Length
+DataNLL$log_sd <- 0
+DataNLL$nll_type = "data"
+# DataNLL$estimate_log_sd <- TRUE
+# DataNLL$SetMu(Pop$get_id(), "length")
 
 #prepare for interfacing with TMB
 g$CreateModel()
 
 #create an empty data list (data set above)
-data <- list()
+Data <- list()
 
 #create a parameter list
-parameters <- list(
+Parameters <- list(
   p = g$get_parameter_vector()
 )
 
-obj <- MakeADFun(data, parameters, DLL="ModularTMBExample")
+obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
 newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))

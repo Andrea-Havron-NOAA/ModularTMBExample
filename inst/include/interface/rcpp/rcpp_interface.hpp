@@ -4,7 +4,6 @@
 
 
 #include "rcpp_objects/rcpp_growth.hpp"
-#include "rcpp_objects/rcpp_data.hpp"
 #include "rcpp_objects/rcpp_population.hpp"
 #include "rcpp_objects/rcpp_nll.hpp"
 
@@ -53,11 +52,6 @@ RCPP_MODULE(growth) {
     .constructor()
     .field("value", &Variable::value)
     .field("estimable",&Variable::estimable);
-    Rcpp::class_<ObsDataInterface>("ObsData")
-    .constructor()
-    .method("finalize", &ObsDataInterface::finalize)
-    .field("Data", &ObsDataInterface::data)
-    .field("ages", &ObsDataInterface::ages);
     Rcpp::class_<PopulationInterface>("Population")
     .constructor()
     .field("ages", &PopulationInterface::ages);
@@ -68,7 +62,8 @@ RCPP_MODULE(growth) {
     .field("log_sd", &NormalNLLInterface::log_sd)
     .field("estimate_x", &NormalNLLInterface::estimate_x)
     .field("estimate_mu", &NormalNLLInterface::estimate_mu)
-    .field("estimate_log_sd", &NormalNLLInterface::estimate_log_sd);
+    .field("estimate_log_sd", &NormalNLLInterface::estimate_log_sd)
+    .field("nll_type", &NormalNLLInterface::nll_type);
     Rcpp::class_<vonBertalanffyInterface>("vonBertalanffy")
     .constructor()
     .method("finalize", &vonBertalanffyInterface::finalize)

@@ -7,7 +7,6 @@
 
 #include "../pop_dy/von_bertalanffy.hpp"
 #include "../nll/normal_nll.hpp"
-#include "../common/data.hpp"
 
 template<typename Type>
 class Model{
@@ -16,7 +15,6 @@ class Model{
     std::vector<Type> predicted;
     std::shared_ptr<Population<Type> >  pop;
     std::shared_ptr< VonBertalanffy<Type> > vb;
-    std::shared_ptr< ObsData<Type> > obsdata;
     std::shared_ptr< NormalNLL<Type> > normal;
 
     std::vector<Type*> parameters;
@@ -24,7 +22,6 @@ class Model{
     Model(){
         this->pop = std::make_shared<Population<Type> >();
         this->vb = std::make_shared<VonBertalanffy<Type> >();
-        this->obsdata = std::make_shared<ObsData<Type> >();
         this->normal = std::make_shared<NormalNLL<Type> >();
     }
 
@@ -46,12 +43,13 @@ class Model{
    */
   Type evaluate(){
     Type norm2 = 0.0;
+    predicted.resize(this->pop -> ages.size());
     pop->vb = this->vb;
     pop -> evaluate();
     for(int i =0; i < pop -> ages.size(); i++){
-        this->predicted[i] = pop->length[i];
-        norm2+=(this->predicted[i]-obsdata -> data[i])*
-          (this->predicted[i]-obsdata -> data[i]);
+      this->predicted[i] = pop->length[i];
+      norm2+=(this->predicted[i]-normal -> x[i])*
+          (this->predicted[i]-normal -> x[i]);
     }
     return norm2;
   }
