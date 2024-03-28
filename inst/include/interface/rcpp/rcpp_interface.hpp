@@ -6,6 +6,7 @@
 #include "rcpp_objects/rcpp_growth.hpp"
 #include "rcpp_objects/rcpp_data.hpp"
 #include "rcpp_objects/rcpp_population.hpp"
+#include "rcpp_objects/rcpp_nll.hpp"
 
 bool CreateModel(){
   for (size_t i = 0; i < RcppInterfaceBase::interface_objects.size();
@@ -60,6 +61,14 @@ RCPP_MODULE(growth) {
     Rcpp::class_<PopulationInterface>("Population")
     .constructor()
     .field("ages", &PopulationInterface::ages);
+    Rcpp::class_<NormalNLLInterface>("NormalNLL")
+    .constructor()
+    .field("x", &NormalNLLInterface::x)
+    .field("mu", &NormalNLLInterface::mu)
+    .field("log_sd", &NormalNLLInterface::log_sd)
+    .field("estimate_x", &NormalNLLInterface::estimate_x)
+    .field("estimate_mu", &NormalNLLInterface::estimate_mu)
+    .field("estimate_log_sd", &NormalNLLInterface::estimate_log_sd);
     Rcpp::class_<vonBertalanffyInterface>("vonBertalanffy")
     .constructor()
     .method("finalize", &vonBertalanffyInterface::finalize)
