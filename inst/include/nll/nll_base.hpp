@@ -4,10 +4,9 @@
 #include "../common/def.hpp"
 
 template <typename Type>
-struct NLLBase {
+struct NLLBase : public ModelObject<Type> {
 
 static uint32_t id_g; /**< The ID of the instance of the NLLBase class */
-uint32_t id; /**< The local ID of the instance of the NLLBase class */
 
   /** @brief Constructor.
    */
