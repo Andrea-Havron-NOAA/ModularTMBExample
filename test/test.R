@@ -3,7 +3,8 @@
 
 library(TMB)
 library(Rcpp)
-library(ModularTMBExample)
+#library(ModularTMBExample)
+devtools::load_all()
 
 #get the Rcpp module
 g<-Rcpp::Module(module = "growth",PACKAGE = "ModularTMBExample")
@@ -47,7 +48,7 @@ Pop$ages<-ages
 
 DataNLL <- new(g$NormalNLL)
 DataNLL$x <- length.data
-DataNLL$mu <- Length
+DataNLL$mu <- rep(0, length(length.data))
 DataNLL$log_sd <- 0
 DataNLL$nll_type = "data"
 # DataNLL$estimate_log_sd <- TRUE

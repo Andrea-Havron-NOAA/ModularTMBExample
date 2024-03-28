@@ -62,6 +62,7 @@ struct NormalNLL : public NLLBase<Type> {
             }
             */
         }
+        return(nll);
     }
 
 };

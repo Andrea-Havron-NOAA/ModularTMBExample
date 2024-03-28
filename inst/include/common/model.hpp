@@ -42,16 +42,16 @@ class Model{
    * of observed and predicted length.
    */
   Type evaluate(){
-    Type norm2 = 0.0;
+    Type jnll = 0.0;
     predicted.resize(this->pop -> ages.size());
     pop->vb = this->vb;
     pop -> evaluate();
     for(int i =0; i < pop -> ages.size(); i++){
       this->predicted[i] = pop->length[i];
-      norm2+=(this->predicted[i]-normal -> x[i])*
-          (this->predicted[i]-normal -> x[i]);
+      normal->mu[i] = this->predicted[i];
     }
-    return norm2;
+    jnll = normal->evaluate();
+    return jnll;
   }
   
   /**

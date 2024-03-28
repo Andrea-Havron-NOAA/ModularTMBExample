@@ -24,7 +24,6 @@ struct Population {
 
   void evaluate() {
     CalculateGrowth();
-    Rcout << "length address inside population is: " << &length << std::endl;
   }
 
 };
