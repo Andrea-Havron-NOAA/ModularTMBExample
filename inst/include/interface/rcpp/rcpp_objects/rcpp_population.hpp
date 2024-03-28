@@ -2,7 +2,9 @@
 #define RCPP_POPULATION
 
 
+#include "../../../common/model.hpp"
 #include "rcpp_interface_base.hpp"
+#include "../../../pop_dy/population.hpp"
 
 /**
  * @brief Rcpp interface for Data as an S4 object. To instantiate
@@ -50,7 +52,7 @@ public:
         std::shared_ptr< Population<Type> > pop = 
             std::make_shared<Population<Type> >();
         
-        pop->id = this->id;
+    //    pop->id = this->id;
         
         pop->ages.resize(this->ages.size());
         

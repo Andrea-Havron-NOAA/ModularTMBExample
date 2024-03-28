@@ -44,12 +44,11 @@ class Model{
   Type evaluate(){
     Type norm2 = 0.0;
     pop->vb = this->vb;
-    pop->ages = obsdata->ages;
     pop -> evaluate();
-    for(int i =0; i < obsdata -> ages.size(); i++){
-        Type pred = pop->length[i];
-        this->predicted[i] = pred;
-        norm2+=(pred-obsdata -> data[i])*(pred-obsdata -> data[i]);
+    for(int i =0; i < pop -> ages.size(); i++){
+        this->predicted[i] = pop->length[i];
+        norm2+=(this->predicted[i]-obsdata -> data[i])*
+          (this->predicted[i]-obsdata -> data[i]);
     }
     return norm2;
   }

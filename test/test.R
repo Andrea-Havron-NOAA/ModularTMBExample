@@ -39,6 +39,11 @@ vonB$l_inf$value<-7
 vonB$l_inf$estimable<-TRUE
 
 #set data
+Pop <- new(g$Population) 
+#set ages 
+Pop$ages<-ages
+
+#set data
 Dat <- new(g$ObsData) 
 Dat$Data <- data
 

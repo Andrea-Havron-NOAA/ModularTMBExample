@@ -5,6 +5,7 @@
 
 #include "rcpp_objects/rcpp_growth.hpp"
 #include "rcpp_objects/rcpp_data.hpp"
+#include "rcpp_objects/rcpp_population.hpp"
 
 bool CreateModel(){
   for (size_t i = 0; i < RcppInterfaceBase::interface_objects.size();
@@ -56,6 +57,9 @@ RCPP_MODULE(growth) {
     .method("finalize", &ObsDataInterface::finalize)
     .field("Data", &ObsDataInterface::data)
     .field("ages", &ObsDataInterface::ages);
+    Rcpp::class_<PopulationInterface>("Population")
+    .constructor()
+    .field("ages", &PopulationInterface::ages);
     Rcpp::class_<vonBertalanffyInterface>("vonBertalanffy")
     .constructor()
     .method("finalize", &vonBertalanffyInterface::finalize)
