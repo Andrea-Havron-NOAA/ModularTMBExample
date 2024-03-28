@@ -7,7 +7,7 @@ template <typename Type>
 struct NLLBase {
 
 static uint32_t id_g; /**< The ID of the instance of the NLLBase class */
-static uint32_t id; /**< The local ID of the instance of the NLLBase class */
+uint32_t id; /**< The local ID of the instance of the NLLBase class */
 
   /** @brief Constructor.
    */

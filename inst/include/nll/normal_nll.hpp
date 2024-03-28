@@ -3,6 +3,7 @@
 
 #include "nll_base.hpp"
 #include "../common/fims_vector.hpp"
+#include "../common/def.hpp"
 
 /**
  * Normal Negative Log-Likelihood
@@ -13,11 +14,11 @@ struct NormalNLL : public NLLBase<Type> {
     //      dnorm(fims::Vector<Type> x, Type eta, Type sd)
     //      dnorm(fims::Vector<Type> x, fims::Vector<Type> eta, Type sd)
     //      dnorm(fims::Vector<Type> x, fims::Vector<Type> eta, fims::Vector<Type> sd)
-    fims::Vector<Type> x;
-    fims::Vector<Type> mu;
-    fims::Vector<Type> log_sd;
-    fims::Vector<Type> eta;
-    fims::Vector<Type> sd;
+    typename model_traits<Type>::data_vector x;
+    typename model_traits<Type>::data_vector mu;
+    typename model_traits<Type>::data_vector log_sd;
+    typename model_traits<Type>::data_vector eta;
+    typename model_traits<Type>::data_vector sd;
     Type nll = 0.0;
     bool osa_flag;
     bool simulate_prior_flag;
@@ -33,15 +34,22 @@ struct NormalNLL : public NLLBase<Type> {
     virtual const Type evaluate(){
         eta.resize(this->x.size());
         sd.resize(this->x.size());
-        if(mu.size() == 1){
-            std::fill(eta.begin(), eta.end(), mu[0]);
-        } else {
-            eta = mu;
-        }
-        if(log_sd.size() == 1){
-            std::fill(log_sd.begin(), log_sd.end(), exp(log_sd[0]));
-        } else {
-            sd = exp(log_sd);
+        for(int i=0; i<x.size(); i++){
+            if(mu.size() == 1){
+                eta[i] = mu[0];
+            } else {
+                eta[i] = mu[i];
+            }
+            //std::fill(eta.begin(), eta.end(), mu[0]);
+            //eta.fill(mu[0]);
+       
+            if(log_sd.size() == 1){
+            //std::fill(sd.begin(), sd.end(), exp(log_sd[0]));
+                sd[i] = exp(log_sd[0]);
+            } else {
+                sd[i] = exp(log_sd[i]);
+            }
+            //sd.fill(exp(log_sd[0]));
         }
         for(int i=0; i<x.size(); i++){
       //      nll -= keep[i] * dnorm(x[i], eta[i], sd[i], true);
