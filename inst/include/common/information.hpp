@@ -35,6 +35,8 @@ class Information {
         uint32_t, std::shared_ptr<VonBertalanffy<Type> > >::iterator
         vb_iterator;
 
+    std::unordered_map<std::string, fims::Vector<Type>> variable_map;
+
     
     Information() {}
 
@@ -62,34 +64,23 @@ class Information {
     }
 */
   fims::Vector<Type> assign_variable(size_t id, std::string module_name, std::string name){
-  /*  std::map<uint32_t, RcppInterfaceBase::interface_objects > 
-        interface_modules;
-    typedef typename std::map<
-        uint32_t, RcppInterfaceBase::interface_objects >::iterator
-        interface_iterator;
-
-   interface_iterator it = interface_modules.find(module_id);
-    std::shared_ptr<RcppInterfaceBase<Type> > ptr = (*it).second;
-*/
+    
+ 
     std::shared_ptr<VonBertalanffy<Type> > vb_ptr;
     std::shared_ptr<Population<Type> > pop_ptr;
     if(module_name == "growth"){
         vb_iterator it = vb_models.find(id);
         vb_ptr = (*it).second;
+        variable_map["k"] = vb_ptr->l_inf;
+        variable_map["l_inf"] = vb_ptr->l_inf;
     }
     if(module_name == "population"){
         pop_iterator it = pop_models.find(id);
         pop_ptr = (*it).second;
+        variable_map["length"] = pop_ptr->length;
     }
-/*
-    std::unordered_map<std::string, fims::Vector<Type>> variable_map = {
-        {"length", pop_ptr->length},
-        {"k", vb_ptr->k},
-        {"l_inf", vb_ptr->l_inf}
-      };
-*/
-      //return variable_map[name];
-        return pop_ptr->length;
+    return variable_map[name];
+    
 
   }
 
@@ -102,8 +93,6 @@ class Information {
       }
     }
     }
-//currently id, module_name, and name are members of information
-//these should instead be members of individual likelihoods and n points to them
     void setup_data(){
       for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;

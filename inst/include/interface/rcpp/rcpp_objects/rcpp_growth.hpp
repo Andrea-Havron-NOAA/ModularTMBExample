@@ -55,6 +55,8 @@ public:
 
     template<typename Type>
     bool prepare_local() {
+        std::shared_ptr<Information<Type> > info =
+            Information<Type>::getInstance();
 
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
         std::shared_ptr< VonBertalanffy<Type> > vb = 
@@ -62,42 +64,48 @@ public:
 
 
         //initialize k
-        vb->k = this->k.value;
+        vb->k.resize(1);
+        vb->k[0] = this->k.value;
 
         //initialize l_inf
-        vb->l_inf = this->l_inf.value;
+        vb->l_inf.resize(1);
+        vb->l_inf[0] = this->l_inf.value;
 
         //initialize a_min
-        vb->a_min = this->a_min.value;
+        vb->a_min.resize(1);
+        vb->a_min[0] = this->a_min.value;
 
         //initialize alpha
-        vb->alpha = this->alpha.value;
+        vb->alpha.resize(1);
+        vb->alpha[0] = this->alpha.value;
 
         //initialize beta
-        vb->beta = this->beta.value;
+        vb->beta.resize(1);
+        vb->beta[0] = this->beta.value;
 
 
         if (this->k.estimable) {
-            model->parameters.push_back(&(vb)->k);
+            model->parameters.push_back(&(vb)->k[0]);
         }
 
         if (this->l_inf.estimable) {
-            model->parameters.push_back(&(vb)->l_inf);
+            model->parameters.push_back(&(vb)->l_inf[0]);
         }
 
         if (this->a_min.estimable) {
-            model->parameters.push_back(&(vb)->a_min);
+            model->parameters.push_back(&(vb)->a_min[0]);
         }
 
         if (this->alpha.estimable) {
-            model->parameters.push_back(&(vb)->alpha);
+            model->parameters.push_back(&(vb)->alpha[0]);
         }
 
         if (this->beta.estimable) {
-            model->parameters.push_back(&(vb)->beta);
+            model->parameters.push_back(&(vb)->beta[0]);
         }
 
         model->vb = vb;
+        info->vb_models[vb->id] = vb;
         return true;
         
     }
@@ -134,9 +142,9 @@ public:
 
         double f = model->evaluate();
 
-        this->k.value = model->vb->k;
-        this->a_min.value = model->vb->a_min;
-        this->l_inf.value = model->vb->l_inf;
+        this->k.value = model->vb->k[0];
+        this->a_min.value = model->vb->a_min[0];
+        this->l_inf.value = model->vb->l_inf[0];
 
 
     }
