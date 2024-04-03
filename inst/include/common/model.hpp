@@ -3,8 +3,8 @@
 #define MODEL_HPP
 
 #include "def.hpp"
+#include "information.hpp"
 #include "../pop_dy/population.hpp"
-
 #include "../pop_dy/von_bertalanffy.hpp"
 #include "../nll/normal_nll.hpp"
 
@@ -17,7 +17,18 @@ class Model{
     std::shared_ptr< VonBertalanffy<Type> > vb;
     std::shared_ptr< NormalNLL<Type> > normal;
 
+
+     std::map<uint32_t, std::shared_ptr<NLLBase<Type> > >
+      nll_models;
+    typedef typename std::map<
+      uint32_t, std::shared_ptr<NLLBase<Type> > >::iterator
+      nll_iterator;
+      
+
     std::vector<Type*> parameters;
+    static std::shared_ptr<Model<Type> > model;
+    std::shared_ptr<Information<Type> > info;
+    
 
     Model(){
         this->pop = std::make_shared<Population<Type> >();
@@ -27,15 +38,21 @@ class Model{
 
 
     //singleton instance based on Type
-  static std::shared_ptr<Model<Type> > instance;
+ //static std::shared_ptr<Model<Type> > instance;
   
   /**
    * Returns the sigleton instance of VonBertalanffyModel
    * of type Type.
    */
-  static std::shared_ptr<Model<Type> > getInstance(){
-    return Model<Type>::instance; //TODO: make sure not null and create if null
+  static std::shared_ptr<Model<Type> > getInstance() {
+    if (Model<Type>::model == nullptr) {
+      Model<Type>::model = std::make_shared<Model<Type> >();
+      Model<Type>::model->info = Information<Type>::getInstance();
+    }
+    return Model<Type>::model;
   }
+
+  
 
      /**
    * Objective function to compute least squares
@@ -43,15 +60,30 @@ class Model{
    */
   Type evaluate(){
     Type jnll = 0.0;
-    predicted.resize(this->pop -> ages.size());
-    pop->vb = this->vb;
-    pop -> evaluate();
-    for(int i =0; i < pop -> ages.size(); i++){
-      this->predicted[i] = pop->length[i];
-      normal->mu[i] = this->predicted[i];
+    
+    //maybe here, setup functions can take a simulate flag and simulation can be controlled from model
+    //setup pointers for priors
+    this->info->setup_priors();
+    //setup pointers for random effects
+    //info->setup_random_effects();
+    //evaluate nlls for priors and random effects
+     for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
+      std::shared_ptr<NLLBase<Type> > n = (*it).second;
+      if(n->nll_type != "data"){
+        jnll += n->evaluate();
+      }
     }
-    jnll = normal->evaluate();
+    pop->vb = this->vb;
+    pop->evaluate();
+    this->info->setup_data();
+    for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
+      std::shared_ptr<NLLBase<Type> > n = (*it).second;
+      if(n->nll_type == "data"){
+        jnll += n->evaluate();
+      }
+    }
     return jnll;
+
   }
   
   /**
@@ -63,7 +95,7 @@ class Model{
   
   };
 
-template<typename Type>
-std::shared_ptr<Model<Type> > Model<Type>::instance = std::make_shared<Model<Type> >();
+template <typename Type>
+std::shared_ptr<Model<Type> > Model<Type>::model = nullptr;  // singleton instance
 
 #endif

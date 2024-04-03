@@ -47,12 +47,15 @@ Pop <- new(g$Population)
 Pop$ages<-ages
 
 DataNLL <- new(g$NormalNLL)
-DataNLL$x <- length.data
-DataNLL$mu <- rep(0, length(length.data))
+DataNLL$observed_value <- length.data
+DataNLL$expected_value <- rep(0, length(length.data))
 DataNLL$log_sd <- 0
 DataNLL$nll_type = "data"
 DataNLL$estimate_log_sd <- TRUE
-# DataNLL$SetMu(Pop$get_id(), "length")
+DataNLL$module_name = "population"
+DataNLL$module_id = Pop$get_id()
+DataNLL$member_name = "length"
+#DataNLL$SetMu(Pop$get_id(), "population", "length")
 
 #prepare for interfacing with TMB
 g$CreateModel()

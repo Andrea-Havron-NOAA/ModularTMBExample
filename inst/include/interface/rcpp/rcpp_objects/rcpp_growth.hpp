@@ -18,10 +18,11 @@
 class GrowthInterfaceBase : public RcppInterfaceBase {
 public:
   static uint32_t id_g; /**< static id of the GrowthInterfaceBase object */
-uint32_t id;          /**< local id of the GrowthInterfaceBase object */
-static std::map<uint32_t, GrowthInterfaceBase*> growth_objects; /**<
- map relating the ID of the GrowthInterfaceBase to the GrowthInterfaceBase
- objects */
+  uint32_t id;          /**< local id of the GrowthInterfaceBase object */
+  static std::map<uint32_t, GrowthInterfaceBase*> growth_objects; /**<
+    map relating the ID of the GrowthInterfaceBase to the GrowthInterfaceBase
+    objects */
+  uint32_t module_id;
 
 GrowthInterfaceBase() {
   this->id = GrowthInterfaceBase::id_g++;
@@ -30,6 +31,8 @@ GrowthInterfaceBase() {
 }
 
 virtual ~GrowthInterfaceBase() {}
+
+virtual uint32_t get_id() = 0;
 };
 
 uint32_t GrowthInterfaceBase::id_g = 1;
@@ -45,9 +48,10 @@ public:
     Variable alpha;
     Variable beta;
     
-    vonBertalanffyInterface() : GrowthInterfaceBase(){}
+    vonBertalanffyInterface( ) : GrowthInterfaceBase(){}
     
     virtual ~vonBertalanffyInterface() {}
+    virtual uint32_t get_id() { return this->id; }
 
     template<typename Type>
     bool prepare_local() {

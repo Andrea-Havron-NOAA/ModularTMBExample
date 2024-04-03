@@ -15,6 +15,7 @@ class PopulationInterfaceBase : public RcppInterfaceBase {
 public:
 static uint32_t id_g; /**< static id of the DataInterface object */
 uint32_t id;          /**< local id of the DataInterface object */
+uint32_t module_id;
 
 /** @brief constructor
  */
@@ -47,6 +48,8 @@ public:
 
     template<typename Type>
     bool prepare_local() {
+        std::shared_ptr<Information<Type> > info =
+            Information<Type>::getInstance();
 
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
         std::shared_ptr< Population<Type> > pop = 
@@ -61,6 +64,7 @@ public:
         }
 
         model->pop = pop;
+        info->pop_models[pop->id] = pop;
      
         return true;
     }

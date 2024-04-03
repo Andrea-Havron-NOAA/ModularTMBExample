@@ -5,6 +5,7 @@
 #include "../../../common/model.hpp"
 #include "rcpp_interface_base.hpp"
 #include "../../../nll/normal_nll.hpp"
+#include "../rcpp_interface.hpp"
 
 /****************************************************************
  * Univariate NLL Rcpp interface                                   *
@@ -22,6 +23,7 @@ public:
     static std::map<uint32_t, UnivariateNLLInterface*> univariate_nll_objects; /**<
  map relating the ID of the UnivariateNLLInterface to the objects
  objects */
+  uint32_t module_id;
 
 UnivariateNLLInterface() {
   this->id = UnivariateNLLInterface::id_g++;
@@ -30,6 +32,8 @@ UnivariateNLLInterface() {
 }
 
 virtual ~UnivariateNLLInterface() {}
+
+virtual uint32_t get_id() = 0;
 };
 
 uint32_t UnivariateNLLInterface::id_g = 1;
@@ -39,13 +43,16 @@ std::map<uint32_t, UnivariateNLLInterface*> UnivariateNLLInterface::univariate_n
 class NormalNLLInterface : public UnivariateNLLInterface{
 
 public:
-    Rcpp::NumericVector x;
-    Rcpp::NumericVector mu;
+    Rcpp::NumericVector observed_value;
+    Rcpp::NumericVector expected_value;
     Rcpp::NumericVector log_sd;
     std::string nll_type;
+    uint32_t module_id; 
+    std::string module_name;
+    std::string member_name;
 
-    bool estimate_x = false;
-    bool estimate_mu = false;
+    bool estimate_observed_value = false;
+    bool estimate_expected_value = false;
     bool estimate_log_sd = false;
     bool simulate_prior_flag = false;
     bool simulate_data_flag = false;
@@ -53,23 +60,35 @@ public:
     NormalNLLInterface() : UnivariateNLLInterface(){}
     
     virtual ~NormalNLLInterface() {}
+    virtual uint32_t get_id() { return this->id; }
 /*
-    void SetX(size_t id, std::string name){
-        //how do I set the id?
-        norm -> x = assign_variable(id, name);
+    void SetX(size_t module_id, std::string module_name, std::string name){
+        std::shared_ptr<NormalNLL<double> > normal =
+        std::make_shared<NormalNLL<double> >();
+        for(int i=0; i<this->observed_value; i++){
+            normal->observed_value[i] = this->observed_value[i];
+        }
+        //this -> x = assign_variable(id, module_name, name);
     }
-    void SetMu(size_t id, std::string name){
+    void SetMu(size_t id, std::string module_name, std::string name){
         //how do I set the id?
-        norm -> mu = assign_variable(id, name);
+        //?normal -> mu.resize();
+        //this -> mu = assign_variable(id, module_name, name);
+        Rcout << "size of assign_variable is: " << assign_variable(id, module_name, name).size() << std::endl;
     }
 */
     template<typename Type>
     bool prepare_local() {
+    std::shared_ptr<Information<Type> > info =
+        Information<Type>::getInstance();
      std::shared_ptr<NormalNLL<Type> > normal =
         std::make_shared<NormalNLL<Type> >();
 
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
-   
+        normal->nll_type = this->nll_type;
+        normal->module_id = this->module_id;
+        normal->module_name = this->module_name;
+        normal->member_name = this->member_name;
         normal->simulate_prior_flag = this->simulate_prior_flag;
         normal->simulate_data_flag = this->simulate_data_flag;
         if(this->nll_type == "data"){
@@ -79,18 +98,18 @@ public:
         }
 
          //initialize x and mu : how do I differentiate this from the SetX and SetMu functions above? flags?
-        normal->x.resize(this->x.size());
-        for(size_t i=0; i<this->x.size(); i++){
-            normal->x[i] = this->x[i];
-            if(this ->estimate_x){
-                model->parameters.push_back(&(normal)->x[i]);
+        normal->observed_value.resize(this->observed_value.size());
+        for(size_t i=0; i<this->observed_value.size(); i++){
+            normal->observed_value[i] = this->observed_value[i];
+            if(this ->estimate_observed_value){
+                model->parameters.push_back(&(normal)->observed_value[i]);
             }
         }
-        normal->mu.resize(this->mu.size());
-        for(size_t i=0; i<this->mu.size(); i++){
-            normal->mu[i] = this->mu[i];
-            if(this ->estimate_mu){
-                model->parameters.push_back(&(normal)->mu[i]);
+        normal->expected_value.resize(this->expected_value.size());
+        for(size_t i=0; i<this->expected_value.size(); i++){
+            normal->expected_value[i] = this->expected_value[i];
+            if(this ->estimate_expected_value){
+                model->parameters.push_back(&(normal)->expected_value[i]);
             }
         }
         normal->log_sd.resize(this->log_sd.size());
@@ -102,6 +121,8 @@ public:
         }
         
         model->normal = normal;
+        model->nll_models[normal->id] = normal;
+        info->nll_models[normal->id] = normal;
         //model->normal_models[this->id] = normal;
         return true;
     }

@@ -33,14 +33,24 @@ public:
  */
 class RcppInterfaceBase {
  public:
+  static uint32_t module_id_g; /**< static id of the GrowthInterfaceBase object */
+uint32_t module_id;          /**< local id of the GrowthInterfaceBase object */
   /**< FIMS interface object vectors */
   static std::vector<RcppInterfaceBase *> interface_objects;
+
+  RcppInterfaceBase(){
+    this->module_id = RcppInterfaceBase::module_id_g++;
+  }
 
   /** @brief virtual method to inherit to add objects to the TMB model */
   virtual bool prepare() {
     return false;
   }
+
+
 };
+
+uint32_t RcppInterfaceBase::module_id_g = 1;
 std::vector<RcppInterfaceBase *>
     RcppInterfaceBase::interface_objects;
 std::vector<Variable*> Variable::parameters;

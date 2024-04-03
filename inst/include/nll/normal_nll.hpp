@@ -14,10 +14,8 @@ struct NormalNLL : public NLLBase<Type> {
     //      dnorm(fims::Vector<Type> x, Type eta, Type sd)
     //      dnorm(fims::Vector<Type> x, fims::Vector<Type> eta, Type sd)
     //      dnorm(fims::Vector<Type> x, fims::Vector<Type> eta, fims::Vector<Type> sd)
-    typename model_traits<Type>::data_vector x;
-    typename model_traits<Type>::data_vector mu;
     typename model_traits<Type>::data_vector log_sd;
-    typename model_traits<Type>::data_vector eta;
+    typename model_traits<Type>::data_vector mu;
     typename model_traits<Type>::data_vector sd;
     Type nll = 0.0;
     bool osa_flag;
@@ -27,33 +25,31 @@ struct NormalNLL : public NLLBase<Type> {
     ::objective_function<Type>
       *of;  
 
-    NormalNLL() : NLLBase<Type>() {}
+    NormalNLL() : NLLBase<Type>() {
+
+    }
 
     virtual ~NormalNLL() {}
 
     virtual const Type evaluate(){
-        eta.resize(this->x.size());
-        sd.resize(this->x.size());
-        for(int i=0; i<x.size(); i++){
-            if(mu.size() == 1){
-                eta[i] = mu[0];
+        this->mu.resize(this->observed_value.size());
+        this->sd.resize(this->observed_value.size());
+        for(int i=0; i<this->expected_value.size(); i++){
+            if(this->expected_value.size() == 1){
+                this->mu[i] = this->expected_value[0];
             } else {
-                eta[i] = mu[i];
+                this->mu[i] = this->expected_value[i];
             }
-            //std::fill(eta.begin(), eta.end(), mu[0]);
-            //eta.fill(mu[0]);
        
             if(log_sd.size() == 1){
-            //std::fill(sd.begin(), sd.end(), exp(log_sd[0]));
                 sd[i] = exp(log_sd[0]);
             } else {
                 sd[i] = exp(log_sd[i]);
             }
-            //sd.fill(exp(log_sd[0]));
         }
-        for(int i=0; i<x.size(); i++){
+        for(int i=0; i<this->observed_value.size(); i++){
       //      nll -= keep[i] * dnorm(x[i], eta[i], sd[i], true);
-            nll -= dnorm(x[i], eta[i], sd[i], true);
+            nll -= dnorm(this->observed_value[i], mu[i], sd[i], true);
             /*
             if(osa_flag){//data observation type implements osa residuals
                 //code for osa cdf method
