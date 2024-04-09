@@ -47,7 +47,7 @@ public:
     virtual uint32_t get_id() { return this->id; }
 
     virtual std::string get_module_name() {
-        return "PopulationInterface";
+        return "Population";
     }
 
     template<typename Type>
@@ -66,6 +66,12 @@ public:
         for(int i =0; i < this->ages.size(); i++){
             pop->ages[i] = this->ages[i];
         }
+
+        std::stringstream ss;
+        ss << this->get_module_name() << "_" << this->get_id();
+        std::string key = ss.str();
+        ss.str("");
+        model->info->variable_map[ss.str()] = &(pop)->length;
 
         model->pop = pop;
         info->pop_models[pop->id] = pop;

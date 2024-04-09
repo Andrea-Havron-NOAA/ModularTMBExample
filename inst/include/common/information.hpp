@@ -63,7 +63,8 @@ class Information {
       this->parameters.push_back(&p);
     }
 */
-  fims::Vector<Type> assign_variable(size_t id, std::string module_name, std::string name){
+  fims::Vector<Type> assign_variable(std::string key){
+  //fims::Vector<Type> assign_variable(size_t id, std::string module_name, std::string name){
 //    
 // 
 //    std::shared_ptr<VonBertalanffy<Type> > vb_ptr;
@@ -79,28 +80,30 @@ class Information {
 //        pop_ptr = (*it).second;
 //        variable_map["length"] = pop_ptr->length;
 //    }
-//    return variable_map[name];
+     return variable_map[key];
 //    
 //
   }
 //
     void setup_priors(){
-//      for(nll_iterator it = nll_models.begin(); it!= nll_models.end(); ++it){
-//      std::shared_ptr<NLLBase<Type> > n = (*it).second;
-//      if(n->nll_type == "prior"){
-//         n->observed_value = assign_variable(n->module_id, n->module_name, 
-//                                   n->member_name);
-//      }
-//    }
+      for(nll_iterator it = nll_models.begin(); it!= nll_models.end(); ++it){
+      std::shared_ptr<NLLBase<Type> > n = (*it).second;
+      if(n->nll_type == "prior"){
+         //n->observed_value = assign_variable(n->module_id, n->module_name, 
+         //                          n->member_name);
+         n->observed_value = assign_variable(n->key);
+      }
+    }
     }
     void setup_data(){
-//      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
-//      std::shared_ptr<NLLBase<Type> > n = (*it).second;
-//      if(n->nll_type == "data"){
+      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
+      std::shared_ptr<NLLBase<Type> > n = (*it).second;
+      if(n->nll_type == "data"){
 //        n->expected_value = assign_variable(n->module_id, n->module_name, 
 //                                  n->member_name); 
-//      }
-//    }
+         n->expected_value = assign_variable(n->key);
+      }
+    }
     }
 };
 

@@ -18,8 +18,11 @@ struct Population : public ModelObject<Type> {
     this->id = Population::id_g++;
   }
 
-  inline void CalculateLength(){
+  void Prepare(){
     length.resize(ages.size());
+  }
+
+  inline void CalculateLength(){ 
     for(int i =0; i < ages.size(); i++){
         length[i] = vb -> evaluate(ages[i]);
     }

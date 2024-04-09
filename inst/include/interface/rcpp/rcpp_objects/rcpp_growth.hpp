@@ -78,67 +78,67 @@ public:
 
         std::stringstream ss;
 
-        ss << "growth_" << this->get_module_name() << "_" << this->get_id() << "_" << this->r_name;
+        ss << this->get_module_name() << "_" << this->get_id();// << "_" << this->r_name;
 
         std::string key = ss.str();
         ss.str("");
         //initialize k
         vb->k.resize(1);
         vb->k[0] = this->k.value;
-
+        //need to set up maps even when parameters are not estimable (e.g. for penalties or random effects)
+        ss << key << "_k";
+        model->info->variable_map[ss.str()] = &(vb)->k[0];
+        ss.str("");
 
         if (this->k.estimable) {
-            ss << key << "_k";
             model->parameters.push_back(&(vb)->k[0]);
-            model->info->variable_map[ss.str()] = &(vb)->k[0];
-            ss.str("");
         }
 
         //initialize l_inf
         vb->l_inf.resize(1);
         vb->l_inf[0] = this->l_inf.value;
+        ss << key << "_l_inf";
+        model->info->variable_map[ss.str()] = &(vb)->l_inf[0];
+        Rcpp::Rcout << ss.str() << std::endl;
+        ss.str("");
 
         if (this->l_inf.estimable) {
-            ss << key << "_l_inf";
             model->parameters.push_back(&(vb)->l_inf[0]);
-            model->info->variable_map[ss.str()] = &(vb)->l_inf[0];
-            Rcpp::Rcout << ss.str() << std::endl;
-            ss.str("");
         }
 
         //initialize a_min
         vb->a_min.resize(1);
         vb->a_min[0] = this->a_min.value;
+        ss << key << "_a_min";
+        model->info->variable_map[ss.str()] = &(vb)->a_min[0];
+        Rcpp::Rcout << ss.str() << std::endl;
+        ss.str("");
 
         if (this->a_min.estimable) {
-            ss << key << "_a_min";
             model->parameters.push_back(&(vb)->a_min[0]);
-            model->info->variable_map[ss.str()] = &(vb)->a_min[0];
-            Rcpp::Rcout << ss.str() << std::endl;
-            ss.str("");
         }
 
         //initialize alpha
         vb->alpha.resize(1);
         vb->alpha[0] = this->alpha.value;
+        ss << key << "_alpha";
+        model->info->variable_map[ss.str()] = &(vb)->alpha[0];
+        Rcpp::Rcout << ss.str() << std::endl;
+        ss.str("");
 
         if (this->alpha.estimable) {
-            ss << key << "_alpha";
             model->parameters.push_back(&(vb)->alpha[0]);
-            model->info->variable_map[ss.str()] = &(vb)->alpha[0];
-            Rcpp::Rcout << ss.str() << std::endl;
-            ss.str("");
         }
         //initialize beta
         vb->beta.resize(1);
         vb->beta[0] = this->beta.value;
+        ss << key << "_beta";
+        model->info->variable_map[ss.str()] = &(vb)->beta[0];
+        Rcpp::Rcout << ss.str() << std::endl;
+        ss.str("");
 
         if (this->beta.estimable) {
-            ss << key << "_beta";
             model->parameters.push_back(&(vb)->beta[0]);
-            model->info->variable_map[ss.str()] = &(vb)->beta[0];
-            Rcpp::Rcout << ss.str() << std::endl;
-            ss.str("");
         }
 
 

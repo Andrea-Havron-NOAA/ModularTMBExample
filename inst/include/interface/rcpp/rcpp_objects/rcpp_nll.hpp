@@ -47,9 +47,10 @@ public:
     Rcpp::NumericVector expected_value;
     Rcpp::NumericVector log_sd;
     std::string nll_type;
-    uint32_t module_id; 
-    std::string module_name;
-    std::string member_name;
+    //uint32_t module_id; 
+    //std::string module_name;
+    //std::string member_name;
+    std::string key;
 
     bool estimate_observed_value = false;
     bool estimate_expected_value = false;
@@ -64,6 +65,17 @@ public:
     
     virtual std::string get_module_name(){
         return "NormalNLLInterface";
+    }
+    
+    void SetNLLLinks(std::string nll_type, size_t module_id, 
+        std::string module_name, std::string name){
+        this->nll_type = nll_type;
+
+        std::stringstream ss;
+        ss << module_name << "_" << module_id << "_" << name;
+
+        this->key = ss.str();
+        ss.str("");
     }
 /*
     void SetX(size_t module_id, std::string module_name, std::string name){
@@ -90,9 +102,10 @@ public:
 
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
         normal->nll_type = this->nll_type;
-        normal->module_id = this->module_id;
-        normal->module_name = this->module_name;
-        normal->member_name = this->member_name;
+        //normal->module_id = this->module_id;
+        //normal->module_name = this->module_name;
+        //normal->member_name = this->member_name;
+        normal->key = this-> key;
         normal->simulate_prior_flag = this->simulate_prior_flag;
         normal->simulate_data_flag = this->simulate_data_flag;
         if(this->nll_type == "data"){
