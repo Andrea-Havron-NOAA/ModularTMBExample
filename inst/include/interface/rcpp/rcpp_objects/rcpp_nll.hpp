@@ -61,6 +61,10 @@ public:
     
     virtual ~NormalNLLInterface() {}
     virtual uint32_t get_id() { return this->id; }
+    
+    virtual std::string get_module_name(){
+        return "NormalNLLInterface";
+    }
 /*
     void SetX(size_t module_id, std::string module_name, std::string name){
         std::shared_ptr<NormalNLL<double> > normal =

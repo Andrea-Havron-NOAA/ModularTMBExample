@@ -46,6 +46,10 @@ public:
     
     virtual uint32_t get_id() { return this->id; }
 
+    virtual std::string get_module_name() {
+        return "PopulationInterface";
+    }
+
     template<typename Type>
     bool prepare_local() {
         std::shared_ptr<Information<Type> > info =
