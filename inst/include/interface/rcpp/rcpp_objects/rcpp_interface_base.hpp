@@ -125,9 +125,12 @@ public:
                     }
                     std::cout << CHAR(STRING_ELT(result, j)) << std::endl;
                 }
+
             }
+            UNPROTECT(2);
         }
-        UNPROTECT(2);
+
+
 
 
     }

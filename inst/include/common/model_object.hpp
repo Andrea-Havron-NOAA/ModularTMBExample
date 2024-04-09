@@ -15,7 +15,9 @@ template <typename Type>
 struct ModelObject {
   uint32_t id; /**< unique identifier assigned for all fims objects */
   std::vector<Type*> parameters; /**< list of estimable parameters */
- 
+  std::unordered_map<std::string, Type*> variable_map;
+  
+  
   virtual ~ModelObject() {}
   /**
    * @brief Getter that returns the unique id for parameters in the model
