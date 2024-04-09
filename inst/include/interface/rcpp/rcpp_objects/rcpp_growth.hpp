@@ -28,6 +28,7 @@ public:
 
     GrowthInterfaceBase() {
         this->id = GrowthInterfaceBase::id_g++;
+        this->module_id = this->id;
         GrowthInterfaceBase::growth_objects[this->id] = this;
         RcppInterfaceBase::interface_objects.push_back(this);
     }
@@ -48,6 +49,7 @@ public:
     Variable a_min;
     Variable alpha;
     Variable beta;
+    uint32_t id;
 
     vonBertalanffyInterface() : GrowthInterfaceBase() {
     }
@@ -60,7 +62,7 @@ public:
     }
 
     virtual std::string get_module_name() {
-        return "vonBertalanffyInterface";
+        return "vonBertalanffy";
     }
 
     template<typename Type>
@@ -167,6 +169,27 @@ public:
         return true;
 
     }
+        /**
+     * Print model values.
+     */
+    void show()const{
+
+        Rcout << "vonBertalanffy\n";
+        Rcout << "id:" << this->module_id << "\n";
+//        Rcout << "function value: " << this->objective_function_value << "\n";
+//
+//        Rcout << std::setw(15) << "observed  " << std::setw(15) << "predicted\n";
+//        for (int i = 0; i < this->predicted.size(); i++) {
+//            Rcout << std::setw(15) << this->obs[i] << std::setw(15) << this->predicted[i] << "\n";
+//        }
+//        Rcout << "k = " << exp(this->log_k_mean.value) << "\n";
+//        Rcout << "a_min = " << this->a_min.value << "\n";
+//        Rcout << "l_inf = " << exp(this->log_l_inf_mean.value) << "\n";
+//        Rcout << std::setw(15) << "log_k  " << std::setw(15) << "log_l_inf\n";
+//        for (int i = 0; i < this->log_k.size(); i++) {
+//            Rcout << std::setw(15) << Rcpp::as<Variable>(this->log_k[i]).value << std::setw(15) << Rcpp::as<Variable>(this->log_l_inf[i]).value << "\n";
+//        }
+    }
 
     /**
      * Update the model parameter values and finalize. Sets the parameter values and evaluates the
@@ -191,16 +214,18 @@ public:
 
     }
 
-    /**
-     * Print model values.
-     */
-    void show_() {
-        Rcpp::Rcout << "vonBertalanffy:\n";
-        Rcpp::Rcout << "k = " << this->k.value << "\n";
-        Rcpp::Rcout << "a_min = " << this->a_min.value << "\n";
-        Rcpp::Rcout << "l_inf = " << this->l_inf.value << "\n";
-    }
+//    /**
+//     * Print model values.
+//     */
+//    void show_() {
+//        Rcpp::Rcout << "vonBertalanffy:\n";
+//        Rcpp::Rcout << "k = " << this->k.value << "\n";
+//        Rcpp::Rcout << "a_min = " << this->a_min.value << "\n";
+//        Rcpp::Rcout << "l_inf = " << this->l_inf.value << "\n";
+//    }
 
 };
+
+
 
 #endif

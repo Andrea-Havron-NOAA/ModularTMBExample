@@ -80,9 +80,18 @@ public:
         T result;
         return (ss >> result) ? result : 0;
     }
+    
+    virtual void show_() {}
 
     bool StartsWith(const std::string &value1, const std::string &value2) {
         return value1.find(value2) == 0;
+    }
+
+    bool contains(std::string s1, std::string s2) {
+        if (s1.find(s2) != std::string::npos) {
+            return true;
+        }
+        return false;
     }
 
     void set_r_name() {
@@ -97,6 +106,9 @@ public:
             if (StartsWith(Rcpp::as<std::string>(l[i]), ".")) {
                 continue;
             }
+
+            std::cout << Rcpp::as<std::string>(l[i]) << "*******" << std::endl;
+
             SEXP expression, result;
             ParseStatus status;
 
@@ -112,11 +124,17 @@ public:
             if (TYPEOF(result) == STRSXP) {
                 for (int j = 0; j < LENGTH(result); j++) {
                     std::string str(CHAR(STRING_ELT(result, j)));
+                    std::cout << str << "\n\n\n";
+                    std::cout<<"---->"<<this->get_module_name()<<std::endl;
+                    
+                    std::cout<< "contains "<<contains(str, this->get_module_name())<<std::endl;
                     if (str == this->get_module_name()) {
 
                         std::string line(CHAR(STRING_ELT(result, j + 1)));
                         std::vector<std::string> tokens;
+                        std::cout<<"line = "<<line<<std::endl;
                         Tokenize(line, tokens, ":");
+                        std::cout<<"module id "<<this->module_id<<" == " <<StringToNumber<size_t> (tokens[1])<<std::endl;
                         if (StringToNumber<size_t> (tokens[1]) == this->module_id) {
                             this->r_name = Rcpp::as<std::string>(l[i]);
                         }

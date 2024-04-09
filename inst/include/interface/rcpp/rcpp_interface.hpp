@@ -83,7 +83,9 @@ RCPP_MODULE(growth) {
     .field("a_min", &vonBertalanffyInterface::a_min)
     .field("alpha", &vonBertalanffyInterface::alpha)
     .field("beta", &vonBertalanffyInterface::beta)
-    .method("get_id", &vonBertalanffyInterface::get_id);
+    .field("id", &vonBertalanffyInterface::id)
+    .method("get_id", &vonBertalanffyInterface::get_id)
+    .method("show", &vonBertalanffyInterface::show);;
     Rcpp::function("get_parameter_vector", get_parameter_vector);
     Rcpp::function("clear", clear);
     Rcpp::function("CreateModel", CreateModel);
