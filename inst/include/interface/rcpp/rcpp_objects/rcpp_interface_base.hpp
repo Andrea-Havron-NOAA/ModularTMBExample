@@ -18,6 +18,7 @@ public:
     static std::vector<Variable*> estimated_parameters;
     bool estimable = FALSE;
     double value = 0;
+    std::string name_m;
 
     Variable() {
         Variable::parameters.push_back(this);
@@ -35,7 +36,7 @@ public:
     static uint32_t module_id_g; /**< static id of the GrowthInterfaceBase object */
     uint32_t module_id; /**< local id of the GrowthInterfaceBase object */
     std::string r_name;
-    
+
     /**< FIMS interface object vectors */
     static std::vector<RcppInterfaceBase *> interface_objects;
 
@@ -50,7 +51,41 @@ public:
 
     virtual std::string get_module_name() = 0;
 
-    void set_name() {
+    static void Tokenize(const std::string& str, std::vector<std::string>& tokens,
+            const std::string& delimiters = " ", const bool trimEmpty = true) {
+        std::string::size_type pos, lastPos = 0;
+        while (true) {
+            pos = str.find_first_of(delimiters, lastPos);
+            if (pos == std::string::npos) {
+                pos = str.size();
+
+                if (pos != lastPos || !trimEmpty)
+                    tokens.push_back(std::vector<std::string>::value_type(str.data() + lastPos,
+                        (std::vector<std::string>::value_type::size_type)pos - lastPos));
+
+                break;
+            } else {
+                if (pos != lastPos || !trimEmpty)
+                    tokens.push_back(std::vector<std::string>::value_type(str.data() + lastPos,
+                        (std::vector<std::string>::value_type::size_type)pos - lastPos));
+            }
+
+            lastPos = pos + 1;
+        }
+    }
+
+    template <typename T>
+    T StringToNumber(const std::string &Text) {
+        std::istringstream ss(Text);
+        T result;
+        return (ss >> result) ? result : 0;
+    }
+
+    bool StartsWith(const std::string &value1, const std::string &value2) {
+        return value1.find(value2) == 0;
+    }
+
+    void set_r_name() {
         Rcpp::Environment env = Rcpp::Environment::global_env();
         Rcpp::List l = Rcpp::as<Rcpp::List>(env.ls(true));
         SEXP e, E, EE;
@@ -82,8 +117,8 @@ public:
                         std::string line(CHAR(STRING_ELT(result, j + 1)));
                         std::vector<std::string> tokens;
                         Tokenize(line, tokens, ":");
-                        if (StringToNumber<size_t> (tokens[1]) == this->id) {
-                            this->name = Rcpp::as<std::string>(l[i]);
+                        if (StringToNumber<size_t> (tokens[1]) == this->module_id) {
+                            this->r_name = Rcpp::as<std::string>(l[i]);
                         }
                     } else {
                         break;
