@@ -107,7 +107,6 @@ public:
                 continue;
             }
 
-            std::cout << Rcpp::as<std::string>(l[i]) << "*******" << std::endl;
 
             SEXP expression, result;
             ParseStatus status;
@@ -124,24 +123,20 @@ public:
             if (TYPEOF(result) == STRSXP) {
                 for (int j = 0; j < LENGTH(result); j++) {
                     std::string str(CHAR(STRING_ELT(result, j)));
-                    std::cout << str << "\n\n\n";
-                    std::cout<<"---->"<<this->get_module_name()<<std::endl;
-                    
-                    std::cout<< "contains "<<contains(str, this->get_module_name())<<std::endl;
+           
                     if (str == this->get_module_name()) {
 
                         std::string line(CHAR(STRING_ELT(result, j + 1)));
                         std::vector<std::string> tokens;
-                        std::cout<<"line = "<<line<<std::endl;
+                  
                         Tokenize(line, tokens, ":");
-                        std::cout<<"module id "<<this->module_id<<" == " <<StringToNumber<size_t> (tokens[1])<<std::endl;
                         if (StringToNumber<size_t> (tokens[1]) == this->module_id) {
                             this->r_name = Rcpp::as<std::string>(l[i]);
                         }
                     } else {
                         break;
                     }
-                    std::cout << CHAR(STRING_ELT(result, j)) << std::endl;
+//                    std::cout << CHAR(STRING_ELT(result, j)) << std::endl;
                 }
 
             }
