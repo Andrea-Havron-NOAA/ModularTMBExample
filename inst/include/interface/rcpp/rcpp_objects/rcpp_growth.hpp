@@ -28,7 +28,6 @@ public:
 
     GrowthInterfaceBase() {
         this->id = GrowthInterfaceBase::id_g++;
-        this->module_id = this->id;
         GrowthInterfaceBase::growth_objects[this->id] = this;
         RcppInterfaceBase::interface_objects.push_back(this);
     }
@@ -178,7 +177,7 @@ public:
     void show()const{
 
         Rcout << "vonBertalanffy\n";
-        Rcout << "id:" << this->module_id << "\n";
+        Rcout << "id:" << this->id << "\n";
 //        Rcout << "function value: " << this->objective_function_value << "\n";
 //
 //        Rcout << std::setw(15) << "observed  " << std::setw(15) << "predicted\n";

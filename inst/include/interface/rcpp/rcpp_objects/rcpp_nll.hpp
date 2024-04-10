@@ -69,12 +69,14 @@ public:
     
     void SetNLLLinks(std::string nll_type, size_t module_id, 
         std::string module_name, std::string name){
+        Rcout << "nll_type: " << nll_type << "modeule_id: " << module_id << "module_name: " << module_name << "name: " << name << std::endl;
         this->nll_type = nll_type;
 
         std::stringstream ss;
         ss << module_name << "_" << module_id << "_" << name;
 
         this->key = ss.str();
+        Rcout << "key: " << this->key << std::endl;
         ss.str("");
     }
 /*

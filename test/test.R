@@ -52,6 +52,7 @@ DataNLL$expected_value <- rep(0, length(length.data))
 DataNLL$log_sd <- 0
 DataNLL$nll_type = "data"
 DataNLL$estimate_log_sd <- TRUE
+c("data", Pop$get_id( ), Pop$get_module_name(), "length")
 DataNLL$set_nll_links( "data", Pop$get_id(), Pop$get_module_name(), "length")
 
 
