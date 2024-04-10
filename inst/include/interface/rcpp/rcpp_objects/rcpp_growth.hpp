@@ -78,7 +78,7 @@ public:
 
         std::stringstream ss;
 
-        ss << this->get_module_name() << "_" << this->get_id();// << "_" << this->r_name;
+        ss << this->get_module_name() << "_" << this->id;// << "_" << this->r_name;
 
         std::string key = ss.str();
         ss.str("");
@@ -89,6 +89,7 @@ public:
         ss << key << "_k";
         model->info->variable_map[ss.str()] = &(vb)->k[0];
         ss.str("");
+       
 
         if (this->k.estimable) {
             model->parameters.push_back(&(vb)->k[0]);
@@ -118,17 +119,19 @@ public:
             model->parameters.push_back(&(vb)->a_min[0]);
         }
 
+/*
         //initialize alpha
         vb->alpha.resize(1);
         vb->alpha[0] = this->alpha.value;
         ss << key << "_alpha";
         model->info->variable_map[ss.str()] = &(vb)->alpha[0];
-        Rcpp::Rcout << ss.str() << std::endl;
         ss.str("");
 
         if (this->alpha.estimable) {
             model->parameters.push_back(&(vb)->alpha[0]);
         }
+
+     
         //initialize beta
         vb->beta.resize(1);
         vb->beta[0] = this->beta.value;
@@ -141,7 +144,7 @@ public:
             model->parameters.push_back(&(vb)->beta[0]);
         }
 
-
+*/
 
 
 

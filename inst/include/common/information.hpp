@@ -35,7 +35,7 @@ class Information {
         uint32_t, std::shared_ptr<VonBertalanffy<Type> > >::iterator
         vb_iterator;
 
-    std::unordered_map<std::string, Type* > variable_map;
+    std::unordered_map<std::string, fims::Vector<Type> > variable_map;
 
     
     Information() {}
@@ -102,6 +102,7 @@ class Information {
 //        n->expected_value = assign_variable(n->module_id, n->module_name, 
 //                                  n->member_name); 
          n->expected_value = assign_variable(n->key);
+         Rcout << "length is: " << assign_variable(n->key)[0] << std::endl;
       }
     }
     }

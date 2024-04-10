@@ -66,13 +66,19 @@ public:
         for(int i =0; i < this->ages.size(); i++){
             pop->ages[i] = this->ages[i];
         }
-
+Rcout << "here" << std::endl;
+        //Set Population length
+        pop->length.resize(ages.size());
         std::stringstream ss;
-        ss << this->get_module_name() << "_" << this->get_id();
+        ss << this->get_module_name() << "_" << this->id;
         std::string key = ss.str();
         ss.str("");
-        model->info->variable_map[ss.str()] = &(pop)->length;
+        ss << key << "_length";
+        model->info->variable_map[ss.str()] = &(pop)->length; 
+        Rcpp::Rcout << ss.str() << std::endl;
+        ss.str("");
 
+        
         model->pop = pop;
         info->pop_models[pop->id] = pop;
      

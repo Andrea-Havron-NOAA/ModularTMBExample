@@ -64,15 +64,24 @@ class Model{
     //maybe here, setup functions can take a simulate flag and simulation can be controlled from model
     //setup pointers for priors
     this->info->setup_priors();
+     for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
+      std::shared_ptr<NLLBase<Type> > n = (*it).second;
+      if(n->nll_type != "priors"){
+        jnll += n->evaluate();
+      }
+    }
+
+    /*
     //setup pointers for random effects
     //info->setup_random_effects();
     //evaluate nlls for priors and random effects
      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
-      if(n->nll_type != "data"){
+      if(n->nll_type != "random_effects"){
         jnll += n->evaluate();
       }
     }
+    */
     pop->vb = this->vb;
     pop->evaluate();
     this->info->setup_data();

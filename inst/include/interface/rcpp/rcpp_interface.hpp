@@ -87,7 +87,8 @@ RCPP_MODULE(growth) {
     .field("beta", &vonBertalanffyInterface::beta)
     .field("id", &vonBertalanffyInterface::id)
     .method("get_id", &vonBertalanffyInterface::get_id)
-    .method("show", &vonBertalanffyInterface::show);;
+    .method("get_id", &vonBertalanffyInterface::get_module_name)
+    .method("show", &vonBertalanffyInterface::show);
     Rcpp::function("get_parameter_vector", get_parameter_vector);
     Rcpp::function("clear", clear);
     Rcpp::function("CreateModel", CreateModel);

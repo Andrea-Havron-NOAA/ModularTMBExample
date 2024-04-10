@@ -52,30 +52,29 @@ DataNLL$expected_value <- rep(0, length(length.data))
 DataNLL$log_sd <- 0
 DataNLL$nll_type = "data"
 DataNLL$estimate_log_sd <- TRUE
-DataNLL$module_name = "population"
-DataNLL$module_id = Pop$get_id()
-DataNLL$member_name = "length"
+DataNLL$set_nll_links( "data", Pop$get_id(), Pop$get_module_name(), "length")
 
-library(FishLife)
-library(mvtnorm)
-params <- matrix(c('Loo', 'K'), ncol=2)
-x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
-y <- Plot_taxa(x, params=params)
+
+#library(FishLife)
+#library(mvtnorm)
+#params <- matrix(c('Loo', 'K'), ncol=2)
+#x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
+#y <- Plot_taxa(x, params=params)
 
 ## multivariate normal in log space for two growth parameters
-mu <- c(Loo = 3.848605, K = exp(-1.984452)) #y[[1]]$Mean_pred[params]
-Sigma <- rbind(c( 0.1545170, -0.1147763),
-                c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
-row.names(Sigma) <- c('Loo', 'K')
-colnames(Sigma) <- c('Loo', 'K')
+#mu <- c(Loo = 3.848605, K = exp(-1.984452)) #y[[1]]$Mean_pred[params]
+#Sigma <- rbind(c( 0.1545170, -0.1147763),
+#                c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
+#row.names(Sigma) <- c('Loo', 'K')
+#colnames(Sigma) <- c('Loo', 'K')
 
-GrowthKPrior <- new(g$NormalNLL)
-GrowthKPrior$expected_value <- mu[2]
-GrowthKPrior$log_sd <- log(Sigma[2,2])
-GrowthKPrior$nll_type = "prior"
-GrowthKPrior$module_name = "growth"
-GrowthKPrior$module_id = vonB$get_id()
-GrowthKPrior$member_name = "k"
+#GrowthKPrior <- new(g$NormalNLL)
+#GrowthKPrior$expected_value <- mu[2]
+#GrowthKPrior$log_sd <- log(Sigma[2,2])
+#GrowthKPrior$nll_type = "prior"
+#GrowthKPrior$module_name = "growth"
+#GrowthKPrior$module_id = vonB$get_id()
+#GrowthKPrior$member_name = "k"
 
 #prepare for interfacing with TMB
 g$CreateModel()
