@@ -79,16 +79,16 @@ RCPP_MODULE(growth) {
    // .method("SetMu", &NormalNLLInterface::SetMu);
     Rcpp::class_<vonBertalanffyInterface>("vonBertalanffy")
     .constructor()
-    .method("finalize", &vonBertalanffyInterface::finalize)
+   // .method("finalize", &vonBertalanffyInterface::finalize)
     .field("k", &vonBertalanffyInterface::k)
     .field("l_inf", &vonBertalanffyInterface::l_inf)
     .field("a_min", &vonBertalanffyInterface::a_min)
     .field("alpha", &vonBertalanffyInterface::alpha)
     .field("beta", &vonBertalanffyInterface::beta)
-    .field("id", &vonBertalanffyInterface::id)
+    //.field("id", &vonBertalanffyInterface::id)
     .method("get_id", &vonBertalanffyInterface::get_id)
-    .method("get_id", &vonBertalanffyInterface::get_module_name)
-    .method("show", &vonBertalanffyInterface::show);
+    .method("get_module_name", &vonBertalanffyInterface::get_module_name);
+  //  .method("show", &vonBertalanffyInterface::show);
     Rcpp::function("get_parameter_vector", get_parameter_vector);
     Rcpp::function("clear", clear);
     Rcpp::function("CreateModel", CreateModel);

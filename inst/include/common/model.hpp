@@ -88,7 +88,8 @@ class Model{
     for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       if(n->nll_type == "data"){
-        jnll += n->evaluate();
+        Rcout << "data nll key is: " << n->key << std::endl;
+    //    jnll += n->evaluate();
       }
     }
     return jnll;

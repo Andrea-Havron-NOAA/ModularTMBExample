@@ -48,7 +48,7 @@ public:
     Variable a_min;
     Variable alpha;
     Variable beta;
-    uint32_t id;
+    //uint32_t id;
 
     vonBertalanffyInterface() : GrowthInterfaceBase() {
     }
@@ -112,6 +112,8 @@ public:
         ss << key << "_a_min";
         model->info->variable_map[ss.str()] = &(vb)->a_min[0];
         Rcpp::Rcout << ss.str() << std::endl;
+        Rcpp::Rcout << model->info->variable_map.size() << std::endl;
+        Rcpp::Rcout << model->info->variable_map[ss.str()].size() << std::endl;
         ss.str("");
 
         if (this->a_min.estimable) {
@@ -174,6 +176,7 @@ public:
         /**
      * Print model values.
      */
+ /*
     void show()const{
 
         Rcout << "vonBertalanffy\n";
@@ -192,11 +195,12 @@ public:
 //            Rcout << std::setw(15) << Rcpp::as<Variable>(this->log_k[i]).value << std::setw(15) << Rcpp::as<Variable>(this->log_l_inf[i]).value << "\n";
 //        }
     }
-
+*/
     /**
      * Update the model parameter values and finalize. Sets the parameter values and evaluates the
      * portable model once and transfers values back to the Rcpp interface.
      */
+    /*
     void finalize(Rcpp::NumericVector v) {
         std::shared_ptr< Model<double> > model = Model<double>::getInstance();
         //std::shared_ptr< VonBertalanffy<double> > vb;
@@ -215,7 +219,7 @@ public:
 
 
     }
-
+*/
 //    /**
 //     * Print model values.
 //     */

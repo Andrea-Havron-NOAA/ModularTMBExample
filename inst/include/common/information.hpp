@@ -36,6 +36,7 @@ class Information {
         vb_iterator;
 
     std::unordered_map<std::string, fims::Vector<Type> > variable_map;
+    //std::unordered_map<std::string, fims::Vector<Type*> > variable_vector_map;
 
     
     Information() {}
@@ -63,7 +64,7 @@ class Information {
       this->parameters.push_back(&p);
     }
 */
-  fims::Vector<Type> assign_variable(std::string key){
+  //fims::Vector<Type> assign_variable(std::string key){
   //fims::Vector<Type> assign_variable(size_t id, std::string module_name, std::string name){
 //    
 // 
@@ -80,10 +81,12 @@ class Information {
 //        pop_ptr = (*it).second;
 //        variable_map["length"] = pop_ptr->length;
 //    }
-     return variable_map[key];
+ //    return variable_map[key];
 //    
 //
-  }
+ // }
+
+ 
 //
     void setup_priors(){
       for(nll_iterator it = nll_models.begin(); it!= nll_models.end(); ++it){
@@ -91,7 +94,9 @@ class Information {
       if(n->nll_type == "prior"){
          //n->observed_value = assign_variable(n->module_id, n->module_name, 
          //                          n->member_name);
-         n->observed_value = assign_variable(n->key);
+         //n->observed_value = assign_variable(n->key);
+         n->observed_value = variable_map[n->key];
+      //   n->observed_value = &variable_vector_map[n->key];
       }
     }
     }
@@ -101,8 +106,9 @@ class Information {
       if(n->nll_type == "data"){
 //        n->expected_value = assign_variable(n->module_id, n->module_name, 
 //                                  n->member_name); 
-         n->expected_value = assign_variable(n->key);
-         Rcout << "length is: " << assign_variable(n->key)[0] << std::endl;
+        // n->expected_value = assign_variable(n->key);
+        n->expected_value = variable_map[n->key];
+       // n->expected_value = &variable_vector_map[n->key];
       }
     }
     }
