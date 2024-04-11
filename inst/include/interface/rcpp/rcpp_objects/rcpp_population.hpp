@@ -66,7 +66,6 @@ public:
         for(int i =0; i < this->ages.size(); i++){
             pop->ages[i] = this->ages[i];
         }
-Rcout << "here" << std::endl;
         //Set Population length
         pop->length.resize(ages.size());
         std::stringstream ss;
@@ -74,8 +73,15 @@ Rcout << "here" << std::endl;
         std::string key = ss.str();
         ss.str("");
         ss << key << "_length";
-        model->info->variable_map[ss.str()] = &(pop)->length; 
-        Rcpp::Rcout << ss.str() << std::endl;
+        model->info->variable_vector_map[ss.str()] = &(pop)->length; 
+        Rcpp::Rcout << ss.str() << std::endl; 
+        Rcpp::Rcout << "type of variable map[ss.str()] is: " << typeid(model->info->variable_vector_map[ss.str()]).name() << std::endl;
+        Rcpp::Rcout << "variable map size is: " << model->info->variable_vector_map.size() << std::endl;
+        Rcpp::Rcout <<"variable_map[ss.str()].size() is: "<< model->info->variable_vector_map[ss.str()].size() << std::endl;
+        Rcpp::Rcout << "type of &(pop)->length is: "  << typeid(&(pop)->length).name() << std::endl;
+        Rcpp::Rcout << "type of pop->length is: "  << typeid(pop->length).name() << std::endl;
+       // Rcpp::Rcout << "size of &(pop)->length is: "  << (&(pop)->length).size() << std::endl;
+        Rcpp::Rcout << "size of pop->length is: "  << pop->length.size() << std::endl;
         ss.str("");
 
         
