@@ -136,6 +136,7 @@ public:
             normal->log_sd[i] = this->log_sd[i];
             if(this ->estimate_log_sd){
                 model->parameters.push_back(&(normal)->log_sd[i]);
+                model->pnames.push_back("log_sd");
             }
         }
         

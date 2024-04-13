@@ -14,9 +14,9 @@ struct NormalNLL : public NLLBase<Type> {
     //      dnorm(fims::Vector<Type> x, Type eta, Type sd)
     //      dnorm(fims::Vector<Type> x, fims::Vector<Type> eta, Type sd)
     //      dnorm(fims::Vector<Type> x, fims::Vector<Type> eta, fims::Vector<Type> sd)
-    typename model_traits<Type>::data_vector log_sd;
-    typename model_traits<Type>::data_vector mu;
-    typename model_traits<Type>::data_vector sd;
+    fims::Vector<Type> log_sd;
+    fims::Vector<Type> mu;
+    fims::Vector<Type> sd;
     Type nll = 0.0;
     bool osa_flag;
     bool simulate_prior_flag;

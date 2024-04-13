@@ -12,7 +12,7 @@ template<typename Type>
 class Model{
     public:
 
-    std::vector<Type> predicted;
+    fims::Vector<Type> predicted;
     std::shared_ptr<Population<Type> >  pop;
     std::shared_ptr< VonBertalanffy<Type> > vb;
     std::shared_ptr< NormalNLL<Type> > normal;
@@ -26,6 +26,7 @@ class Model{
       
 
     std::vector<Type*> parameters;
+    std::vector<std::string> pnames;
     static std::shared_ptr<Model<Type> > model;
     std::shared_ptr<Information<Type> > info;
     
@@ -89,7 +90,7 @@ class Model{
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       if(n->nll_type == "data"){
         Rcout << "data nll key is: " << n->key << std::endl;
-    //    jnll += n->evaluate();
+        jnll += n->evaluate();
       }
     }
     return jnll;

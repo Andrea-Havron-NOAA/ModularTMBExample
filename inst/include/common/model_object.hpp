@@ -16,8 +16,7 @@ template <typename Type>
 struct ModelObject {
   uint32_t id; /**< unique identifier assigned for all fims objects */
   std::vector<Type*> parameters; /**< list of estimable parameters */
-  std::map<std::string, Type* > variable_map;
-  std::unordered_map<std::string, fims::Vector<Type*> > variable_vector_map;
+ // std::map<std::string, fims::Vector<Type*> > variable_map;
   
   
   virtual ~ModelObject() {}

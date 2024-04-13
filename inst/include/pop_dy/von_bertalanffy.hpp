@@ -18,11 +18,11 @@ class VonBertalanffy : public ModelObject<Type> {
 
 //Changed from type to fims::Vector for std::unordered_map to work
 // under this design, everything needs to be a fims::Vector, scalars are a vector size of 1
-  Type k;
-  Type l_inf;
-  Type a_min;
-  Type alpha;
-  Type beta;
+  fims::Vector<Type> k;
+  fims::Vector<Type> l_inf;
+  fims::Vector<Type> a_min;
+  fims::Vector<Type> alpha;
+  fims::Vector<Type> beta;
   
   
   VonBertalanffy(){
@@ -34,7 +34,7 @@ class VonBertalanffy : public ModelObject<Type> {
    * of observed and predicted length.
    */
   Type evaluate(const Type& age){
-    Type ret = this->l_inf * (1.0 - exp(-k * (age - this->a_min)));
+    Type ret = this->l_inf[0] * (1.0 - exp(-k[0] * (age - this->a_min[0])));
     return ret;
   }
   

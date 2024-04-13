@@ -35,8 +35,9 @@ class Information {
         uint32_t, std::shared_ptr<VonBertalanffy<Type> > >::iterator
         vb_iterator;
 
-    std::unordered_map<std::string, Type* > variable_map;
-    std::unordered_map<std::string, fims::Vector<Type*> > variable_vector_map;
+    std::unordered_map<std::string, fims::Vector<Type>* > variable_map;
+    typedef typename std::unordered_map<std::string, fims::Vector<Type>* >::iterator 
+      variable_map_iterator;
 
     
     Information() {}
@@ -92,11 +93,11 @@ class Information {
       for(nll_iterator it = nll_models.begin(); it!= nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       if(n->nll_type == "prior"){
-         //n->observed_value = assign_variable(n->module_id, n->module_name, 
-         //                          n->member_name);
-         //n->observed_value = assign_variable(n->key);
-         n->observed_value = &variable_map[n->key];
-         n->observed_value = &variable_vector_map[n->key];
+        //n->observed_value = assign_variable(n->module_id, n->module_name, 
+        //                          n->member_name);
+        //n->observed_value = assign_variable(n->key);
+        variable_map_iterator vmit = this->variable_map.find(n->key);
+      //  n->observed_value = (*vmit).second;
       }
     }
     }
@@ -107,8 +108,10 @@ class Information {
 //        n->expected_value = assign_variable(n->module_id, n->module_name, 
 //                                  n->member_name); 
         // n->expected_value = assign_variable(n->key);
-        n->expected_value = &variable_map[n->key];
-        n->expected_value = &variable_vector_map[n->key];
+        
+        variable_map_iterator vmit = this->variable_map.find(n->key);
+        n->expected_value = *(*vmit).second;
+       //Rcout << "*vmit type is: " << typeid(*(*vmit).second).name() << std::endl;
       }
     }
     }
