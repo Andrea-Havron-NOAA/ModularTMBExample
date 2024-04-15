@@ -70,11 +70,13 @@ RCPP_MODULE(growth) {
     Rcpp::class_<Variable>("Variable")
     .constructor()
     .field("value", &Variable::value)
-    .field("estimable",&Variable::estimable);
+    .field("estimable",&Variable::estimable)
+    .field("id",&Variable::id);
     Rcpp::class_<VariableVector>("VariableVector")
       .constructor()
       .constructor<size_t>()
-      .method("at", &VariableVector::at);
+      .method("at", &VariableVector::at)
+      .method("size", &VariableVector::size);
     Rcpp::class_<PopulationInterface>("Population")
     .constructor()
     .field("ages", &PopulationInterface::ages)

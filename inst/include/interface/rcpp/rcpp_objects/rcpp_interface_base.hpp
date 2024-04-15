@@ -13,7 +13,11 @@
  * interface between R and cpp.
  */
 class Variable {
-public:
+    static uint32_t id_g;
+
+   public:
+
+     uint32_t id;
     static std::vector<Variable*> parameters;
     static std::vector<Variable*> estimated_parameters;
     bool estimable = FALSE;
@@ -21,20 +25,20 @@ public:
     std::string name_m;
 
     Variable() {
+        this->id = Variable::id_g++;
         Variable::parameters.push_back(this);
     }
     
     Variable(const Variable& other){
+        this->id = other.id;
         this->estimable = other.estimable;
         this->value = other.value;
         this->name_m = other.name_m;
     }
 
-
-
 };
 
-
+uint32_t Variable::id_g = 0;
 
 class VariableVector{
   static uint32_t id_g;
@@ -65,6 +69,10 @@ public:
     }
     return this->vec_m[pos-1];
   }
+    
+    size_t size(){
+        return this->vec_m.size();
+    }
 
 
 };
