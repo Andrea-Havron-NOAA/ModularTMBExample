@@ -9,6 +9,6 @@ v[1]$value
 v[1]$value<-1
 v[1]$value
 
-for( i in 1:v$size()){
+for( i in 1:length(v)){
 print(v[i]$id)
 }

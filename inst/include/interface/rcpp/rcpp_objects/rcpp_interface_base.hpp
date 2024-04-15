@@ -78,6 +78,9 @@ public:
 };
 uint32_t VariableVector::id_g = 0;
 
+
+
+
 /**
  *@brief Base class for all interface objects
  */
