@@ -28,6 +28,42 @@ public:
 
 };
 
+
+
+class VariableVector{
+  static uint32_t id_g;
+  Rcpp::List vec_m;
+public:
+  uint32_t id;
+
+  VariableVector(){
+    this->id = VariableVector::id_g++;
+    Variable v;
+    this->vec_m.push_back(Rcpp::wrap(v));
+  }
+
+  VariableVector(size_t size ){
+    this->id = VariableVector::id_g++;
+    for(size_t i =0; i < size; i++){
+      Variable v;
+      this->vec_m.push_back(Rcpp::wrap(v));
+    }
+  }
+
+  inline Variable operator[](size_t pos) { return this->vec_m[pos]; }
+
+  SEXP at(size_t pos){
+    if(pos == 0 || pos > this->vec_m.size()){
+      Rcpp::Rcout <<"Index out of range.\n";
+      return NULL;
+    }
+    return this->vec_m[pos-1];
+  }
+
+
+};
+uint32_t VariableVector::id_g = 0;
+
 /**
  *@brief Base class for all interface objects
  */

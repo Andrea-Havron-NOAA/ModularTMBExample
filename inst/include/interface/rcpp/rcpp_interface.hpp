@@ -20,6 +20,7 @@ bool CreateModel(){
  * Exposes the Variable and vonBertalanffyInterface classes to R.
  */
 RCPP_EXPOSED_CLASS(Variable)
+RCPP_EXPOSED_CLASS(VariableVector)
 RCPP_EXPOSED_CLASS(vonBertalanffyInterface)
 RCPP_EXPOSED_CLASS(ObsDataInterface)
 
@@ -70,6 +71,10 @@ RCPP_MODULE(growth) {
     .constructor()
     .field("value", &Variable::value)
     .field("estimable",&Variable::estimable);
+    Rcpp::class_<VariableVector>("VariableVector")
+      .constructor()
+      .constructor<size_t>()
+      .method("at", &VariableVector::at);
     Rcpp::class_<PopulationInterface>("Population")
     .constructor()
     .field("ages", &PopulationInterface::ages)
