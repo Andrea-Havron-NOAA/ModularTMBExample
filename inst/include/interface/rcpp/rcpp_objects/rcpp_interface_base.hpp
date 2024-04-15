@@ -23,6 +23,12 @@ public:
     Variable() {
         Variable::parameters.push_back(this);
     }
+    
+    Variable(const Variable& other){
+        this->estimable = other.estimable;
+        this->value = other.value;
+        this->name_m = other.name_m;
+    }
 
 
 
