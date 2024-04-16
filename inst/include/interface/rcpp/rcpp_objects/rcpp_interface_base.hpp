@@ -74,6 +74,27 @@ public:
         return this->vec_m.size();
     }
 
+    void resize(size_t size){
+        size_t n = this->vec_m.size();
+        
+        if(size > n){
+            int m = size - n;
+            
+            for(size_t i = 0; i < m; i++){
+                Variable v;
+                this->vec_m.push_back(Rcpp::wrap(v));
+            }
+        }else if(n > size){
+            int m = size;
+            Rcpp::List l(m);
+            for(size_t i = 0; i < m; i++){
+                l[i] = this->vec_m[i];
+            }
+            this->vec_m = l;
+        }
+        
+    }
+    
 
 };
 uint32_t VariableVector::id_g = 0;

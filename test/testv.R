@@ -12,3 +12,15 @@ v[1]$value
 for( i in 1:length(v)){
 print(v[i]$id)
 }
+
+v$resize(5)
+
+for( i in 1:length(v)){
+print(v[i]$id)
+}
+
+v$resize(10)
+
+for( i in 1:length(v)){
+print(v[i]$id)
+}

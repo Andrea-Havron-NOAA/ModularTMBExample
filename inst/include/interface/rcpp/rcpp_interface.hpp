@@ -76,7 +76,8 @@ RCPP_MODULE(growth) {
       .constructor()
       .constructor<size_t>()
       .method("at", &VariableVector::at)
-      .method("size", &VariableVector::size);
+      .method("size", &VariableVector::size)
+      .method("resize", &VariableVector::resize);
     Rcpp::class_<PopulationInterface>("Population")
     .constructor()
     .field("ages", &PopulationInterface::ages)
