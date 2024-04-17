@@ -24,9 +24,16 @@ public:
     double value = 0;
     std::string name_m;
     
+    
     Variable() {
         this->id = Variable::id_g++;
         Variable::parameters.push_back(this);
+    }
+    
+    Variable(double d) {
+        this->id = Variable::id_g++;
+        Variable::parameters.push_back(this);
+        this->value = d;
     }
     
     Variable(const Variable& other){
@@ -123,6 +130,10 @@ public:
 uint32_t VariableVector::id_g = 0;
 
 
+
+VariableVector CreateVector(size_t size){
+    return VariableVector(size);
+}
 
 
 /**

@@ -18,3 +18,4 @@ setMethod("length", signature(x = "Rcpp_VariableVector"),
           function(x) {
             return(x$size())
           })
+

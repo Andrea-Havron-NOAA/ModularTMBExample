@@ -1,7 +1,7 @@
 library(ModularTMBExample)
 
 
-v<-new(VariableVector, 100)
+v<-CreateVector(100) #new(VariableVector, 100)
 
 str(v)
 str(v[1])
@@ -24,3 +24,11 @@ v$resize(10)
 for( i in 1:length(v)){
 print(v[i]$id)
 }
+
+
+var<-v[1] + cos(v[2])
+str(var)
+print(v[1]$value)
+print(v[2]$value)
+print(cos(v[2]$value))
+str(var)

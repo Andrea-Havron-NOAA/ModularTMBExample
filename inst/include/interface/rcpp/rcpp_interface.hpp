@@ -69,6 +69,7 @@ void clear(){
 RCPP_MODULE(growth) {
     Rcpp::class_<Variable>("Variable")
     .constructor()
+    .constructor<double>()
     .field("value", &Variable::value)
     .field("estimable",&Variable::estimable)
     .field("id",&Variable::id);
@@ -116,6 +117,7 @@ RCPP_MODULE(growth) {
     Rcpp::function("get_parameter_names_vector", get_parameter_names_vector);
     Rcpp::function("clear", clear);
     Rcpp::function("CreateModel", CreateModel);
+    Rcpp::function("CreateVector", CreateVector);
 };
 
 #endif
