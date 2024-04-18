@@ -3,11 +3,8 @@
 
 library(TMB)
 library(Rcpp)
-#library(ModularTMBExample)
-devtools::load_all()
+library(ModularTMBExample)
 
-#get the Rcpp module
-g<-Rcpp::Module(module = "growth",PACKAGE = "ModularTMBExample")
 
 #simulate data
 l_inf<- 10.0
@@ -24,10 +21,10 @@ set.seed(234)
 length.data <- Length + rnorm(length(ages), 0, .1)
 
 #clear the parameter list, if there already is one
-g$clear();
+clear()
 
 #create a von Bertalanffy object
-vonB<-new(g$vonBertalanffy)
+vonB<-new(vonBertalanffy)
 
 #initialize k
 vonB$k$value<-.05
@@ -42,11 +39,11 @@ vonB$l_inf$value<-7
 vonB$l_inf$estimable<-TRUE
 
 #set data
-Pop <- new(g$Population) 
+Pop <- new(Population) 
 #set ages 
 Pop$ages<-ages
 
-DataNLL <- new(g$NormalNLL)
+DataNLL <- new(NormalNLL)
 DataNLL$observed_value <- length.data
 DataNLL$expected_value <- rep(0, length(length.data))
 DataNLL$log_sd <- 0
@@ -79,7 +76,7 @@ DataNLL$set_nll_links( "data", Pop$get_id(), Pop$get_module_name(), "length")
 # GrowthKPrior$member_name = "k"
 
 #prepare for interfacing with TMB
-g$CreateModel()
+CreateModel()
 
 
 #create an empty data list (data set above)
@@ -87,7 +84,7 @@ Data <- list()
 
 #create a parameter list
 Parameters <- list(
-  p = g$get_parameter_vector()
+  p = get_parameter_vector()
 )
 
 obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
