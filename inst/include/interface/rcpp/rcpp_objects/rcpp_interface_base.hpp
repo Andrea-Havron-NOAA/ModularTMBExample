@@ -54,8 +54,9 @@ uint32_t Variable::id_g = 0;
  */
 class VariableVector{
     static uint32_t id_g;
-    Rcpp::List storage_m; //use a list because it's easier
+   
 public:
+    Rcpp::List storage_m; //use a list because it's easier
     uint32_t id;
     
     
@@ -81,7 +82,8 @@ public:
     /**
      * Accessor. First index starts is zero.
      */
-    inline Variable operator[](size_t pos) { return this->storage_m[pos]; }
+    inline Variable operator[](size_t pos) {
+        return this->storage_m[pos]; }
     
     /**
      * Accessor. First index is one. For calling from R.
@@ -134,6 +136,13 @@ uint32_t VariableVector::id_g = 0;
 VariableVector CreateVector(size_t size){
     return VariableVector(size);
 }
+
+//void fill(VariableVector& v, double val){
+//    for(size_t i =0; i < v.size(); i++){
+//        v[i].value = val;
+//    }
+//}
+
 
 
 /**
