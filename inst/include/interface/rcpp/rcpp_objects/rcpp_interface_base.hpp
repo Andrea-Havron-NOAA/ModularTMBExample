@@ -127,6 +127,11 @@ public:
         
     }
     
+    void set_all_estimable(bool estimable){
+        for(size_t i = 0; i < this->storage_m.size(); i++){
+            this->storage_m[i].estimable = estimable;
+        }
+    }
     
 };
 uint32_t VariableVector::id_g = 0;
