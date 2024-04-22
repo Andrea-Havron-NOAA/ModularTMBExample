@@ -71,13 +71,7 @@ setMethod("acos", signature(x = "Rcpp_Variable"), function (x) {new(Variable,aco
 #setMethod("=", c(e1 = "Rcpp_Variable", e2 = "numeric"), function (e1, e2){
  # (e1$value<- e2)})
 
-setMethod("fill", signature(e1 = "Rcpp_VariableVector", e2 = "numeric"), function (e1, e2){
 
-    for(i in 1:e1$size()){
-        e1[i]$value <- e2
-    }
-    
-     })
 
 setMethod("+", signature(e1 = "Rcpp_VariableVector", e2 = "Rcpp_VariableVector"), function (e1, e2){
     
@@ -86,11 +80,203 @@ setMethod("+", signature(e1 = "Rcpp_VariableVector", e2 = "Rcpp_VariableVector")
     }
     ret<-new(VariableVector, e1$size())
     for(i in 1:e1$size()){
-        ret<-e1[i]+e2[i]
+        ret[i]$value <-e1[i]$value +e2[i]$value
     }
     return(ret)
      })
-setMethod("^", signature(e1 = "Rcpp_Variable", e2 = "numeric"), function (e1, e2){
-  ((e1$value^ e2))})
-setMethod("^", signature(e1 = "numeric", e2 = "Rcpp_Variable"), function (e1, e2){
-  (e1^ e2$value)})
+
+
+setMethod("+", signature(e1 = "Rcpp_VariableVector", e2 = "numeric"), function (e1, e2){
+    
+    if(e1$size() != length(e2)){
+        
+        if(length(e2) == 1){
+            ret<-new(VariableVector, e1$size())
+            for(i in 1:e1$size()){
+                ret[i]$value <-e1[i]$value +e2
+            }
+            return(ret)
+        }
+        stop("Call to operator \"+\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e1$size())
+    for(i in 1:e1$size()){
+        ret[i]$value <-e1[i]$value +e2[i]
+    }
+    return(ret)
+     })
+
+setMethod("+", signature(e1 = "numeric", e2 = "Rcpp_VariableVector"), function (e1, e2){
+    
+    if(length(e1) != e2$size()){
+        if(length(e1) == 1){
+            ret<-new(VariableVector, e2$size())
+            for(i in 1:e2$size()){
+                ret[i]$value <-e1+e2[i]$value
+            }
+            return(ret)
+        }
+        stop("Call to operator \"+\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e2$size())
+    for(i in 1:e2$size()){
+        ret[i]$value <-e1[i]+e2[i]$value
+    }
+    return(ret)
+     })
+
+setMethod("-", signature(e1 = "Rcpp_VariableVector", e2 = "Rcpp_VariableVector"), function (e1, e2){
+    
+    if(e1$size() != e$size()){
+        stop("Call to operator \"-\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e1$size())
+    for(i in 1:e1$size()){
+        ret[i]$value <-e1[i]$value - e2[i]$value
+    }
+    return(ret)
+     })
+
+
+setMethod("-", signature(e1 = "Rcpp_VariableVector", e2 = "numeric"), function (e1, e2){
+    
+    if(e1$size() != length(e2)){
+        
+        if(length(e2) == 1){
+            ret<-new(VariableVector, e1$size())
+            for(i in 1:e1$size()){
+                ret[i]$value <-e1[i]$value - e2
+            }
+            return(ret)
+        }
+        stop("Call to operator \"-\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e1$size())
+    for(i in 1:e1$size()){
+        ret[i]$value <-e1[i]$value - e2[i]
+    }
+    return(ret)
+     })
+
+setMethod("-", signature(e1 = "numeric", e2 = "Rcpp_VariableVector"), function (e1, e2){
+    
+    if(length(e1) != e2$size()){
+        if(length(e1) == 1){
+            ret<-new(VariableVector, e2$size())
+            for(i in 1:e2$size()){
+                ret[i]$value <-e1-e2[i]$value
+            }
+            return(ret)
+        }
+        stop("Call to operator \"-\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e2$size())
+    for(i in 1:e2$size()){
+        ret[i]$value <-e1[i]-e2[i]$value
+    }
+    return(ret)
+     })
+
+setMethod("*", signature(e1 = "Rcpp_VariableVector", e2 = "Rcpp_VariableVector"), function (e1, e2){
+    
+    if(e1$size() != e$size()){
+        stop("Call to operator \"*\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e1$size())
+    for(i in 1:e1$size()){
+        ret[i]$value <-e1[i]$value * e2[i]$value
+    }
+    return(ret)
+     })
+
+
+setMethod("*", signature(e1 = "Rcpp_VariableVector", e2 = "numeric"), function (e1, e2){
+    
+    if(e1$size() != length(e2)){
+        
+        if(length(e2) == 1){
+            ret<-new(VariableVector, e1$size())
+            for(i in 1:e1$size()){
+                ret[i]$value <-e1[i]$value * e2
+            }
+            return(ret)
+        }
+        stop("Call to operator \"*\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e1$size())
+    for(i in 1:e1$size()){
+        ret[i]$value <-e1[i]$value * e2[i]
+    }
+    return(ret)
+     })
+
+setMethod("*", signature(e1 = "numeric", e2 = "Rcpp_VariableVector"), function (e1, e2){
+    
+    if(length(e1) != e2$size()){
+        if(length(e1) == 1){
+            ret<-new(VariableVector, e2$size())
+            for(i in 1:e2$size()){
+                ret[i]$value <-e1*e2[i]$value
+            }
+            return(ret)
+        }
+        stop("Call to operator \"*\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e2$size())
+    for(i in 1:e2$size()){
+        ret[i]$value <-e1[i]*e2[i]$value
+    }
+    return(ret)
+     })
+
+setMethod("/", signature(e1 = "Rcpp_VariableVector", e2 = "Rcpp_VariableVector"), function (e1, e2){
+    
+    if(e1$size() != e$size()){
+        stop("Call to operator \"/\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e1$size())
+    for(i in 1:e1$size()){
+        ret[i]$value <-e1[i]$value / e2[i]$value
+    }
+    return(ret)
+     })
+
+
+setMethod("/", signature(e1 = "Rcpp_VariableVector", e2 = "numeric"), function (e1, e2){
+    
+    if(e1$size() != length(e2)){
+        
+        if(length(e2) == 1){
+            ret<-new(VariableVector, e1$size())
+            for(i in 1:e1$size()){
+                ret[i]$value <-e1[i]$value / e2
+            }
+            return(ret)
+        }
+        stop("Call to operator \"/\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e1$size())
+    for(i in 1:e1$size()){
+        ret[i]$value <-e1[i]$value / e2[i]
+    }
+    return(ret)
+     })
+
+setMethod("/", signature(e1 = "numeric", e2 = "Rcpp_VariableVector"), function (e1, e2){
+    
+    if(length(e1) != e2$size()){
+        if(length(e1) == 1){
+            ret<-new(VariableVector, e2$size())
+            for(i in 1:e2$size()){
+                ret[i]$value <-e1/e2[i]$value
+            }
+            return(ret)
+        }
+        stop("Call to operator \"/\", vectors not equal length")
+    }
+    ret<-new(VariableVector, e2$size())
+    for(i in 1:e2$size()){
+        ret[i]$value <-e1[i]/e2[i]$value
+    }
+    return(ret)
+     })
