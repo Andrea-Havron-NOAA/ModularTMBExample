@@ -80,7 +80,8 @@ RCPP_MODULE(growth) {
       .method("at", &VariableVector::at)
       .method("size", &VariableVector::size)
       .method("resize", &VariableVector::resize)
-      .method("set_all_estimable", &VariableVector::set_all_estimable);
+      .method("set_all_estimable", &VariableVector::set_all_estimable)
+      .method("fill", &VariableVector::fill);
     Rcpp::class_<PopulationInterface>("Population")
     .constructor()
     .field("ages", &PopulationInterface::ages)

@@ -129,7 +129,17 @@ public:
     
     void set_all_estimable(bool estimable){
         for(size_t i = 0; i < this->storage_m.size(); i++){
-            this->storage_m[i].estimable = estimable;
+            Variable v = Rcpp::as<Variable>(this->storage_m[i]);
+            v.estimable = estimable;
+            this->storage_m[i] = Rcpp::wrap(v);
+        }
+    }
+    
+    void fill(double value){
+        for(size_t i = 0; i < this->storage_m.size(); i++){
+            Variable v = Rcpp::as<Variable>(this->storage_m[i]);
+            v.value = value;
+            this->storage_m[i] = Rcpp::wrap(v);
         }
     }
     
