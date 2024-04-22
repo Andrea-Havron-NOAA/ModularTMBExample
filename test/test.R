@@ -44,9 +44,18 @@ Pop <- new(Population)
 Pop$ages<-ages
 
 DataNLL <- new(NormalNLL)
-DataNLL$observed_value <- length.data
-DataNLL$expected_value <- rep(0, length(length.data))
-DataNLL$log_sd <- 0
+DataNLL$observed_value <- new(VariableVector, length(length.data))
+for(i in 1:length(length.data)){
+  DataNLL$observed_value[i]$value <- length.data[i]
+}
+
+DataNLL$expected_value <- new(VariableVector, length(length.data))
+for(i in 1:length(length.data)){
+  DataNLL$expected_value[i]$value <- 0
+}
+
+DataNLL$log_sd <- new(VariableVector, 1)
+DataNLL$log_sd[1]$value <- 0
 DataNLL$nll_type = "data"
 DataNLL$estimate_log_sd <- TRUE
 paste0(Pop$get_module_name(), "_",Pop$get_id(), "_length")

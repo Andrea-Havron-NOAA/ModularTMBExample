@@ -43,9 +43,9 @@ std::map<uint32_t, UnivariateNLLInterface*> UnivariateNLLInterface::univariate_n
 class NormalNLLInterface : public UnivariateNLLInterface{
 
 public:
-    Rcpp::NumericVector observed_value;
-    Rcpp::NumericVector expected_value;
-    Rcpp::NumericVector log_sd;
+    VariableVector observed_value;
+    VariableVector expected_value;
+    VariableVector log_sd;
     std::string nll_type;
     //uint32_t module_id; 
     //std::string module_name;
@@ -69,7 +69,6 @@ public:
     
     void SetNLLLinks(std::string nll_type, size_t module_id, 
         std::string module_name, std::string name){
-        Rcout << "nll_type: " << nll_type << "modeule_id: " << module_id << "module_name: " << module_name << "name: " << name << std::endl;
         this->nll_type = nll_type;
 
         std::stringstream ss;
@@ -115,25 +114,24 @@ public:
         } else {
             normal->osa_flag = false;
         }
-
          //initialize x and mu : how do I differentiate this from the SetX and SetMu functions above? flags?
         normal->observed_value.resize(this->observed_value.size());
         for(size_t i=0; i<this->observed_value.size(); i++){
-            normal->observed_value[i] = this->observed_value[i];
+            normal->observed_value[i] = this->observed_value[i].value;
             if(this ->estimate_observed_value){
                 model->parameters.push_back(&(normal)->observed_value[i]);
             }
         }
         normal->expected_value.resize(this->expected_value.size());
         for(size_t i=0; i<this->expected_value.size(); i++){
-            normal->expected_value[i] = this->expected_value[i];
+            normal->expected_value[i] = this->expected_value[i].value;
             if(this ->estimate_expected_value){
                 model->parameters.push_back(&(normal)->expected_value[i]);
             }
         }
         normal->log_sd.resize(this->log_sd.size());
         for(size_t i=0; i<this->log_sd.size(); i++){
-            normal->log_sd[i] = this->log_sd[i];
+            normal->log_sd[i] = this->log_sd[i].value;
             if(this ->estimate_log_sd){
                 model->parameters.push_back(&(normal)->log_sd[i]);
                 model->pnames.push_back("log_sd");
@@ -152,7 +150,7 @@ public:
      * Prepares the model to work with TMB.
      */
     virtual bool prepare() {
-
+       
 #ifdef TMB_MODEL
         this->prepare_local<TMB_FIMS_REAL_TYPE>();
         this->prepare_local<TMB_FIMS_FIRST_ORDER>();
