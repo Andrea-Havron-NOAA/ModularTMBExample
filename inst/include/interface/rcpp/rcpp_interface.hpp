@@ -76,6 +76,7 @@ RCPP_MODULE(growth) {
     Rcpp::class_<VariableVector>("VariableVector")
       .constructor()
       .constructor<size_t>()
+      .constructor<Rcpp::NumericVector, size_t>()
       .field("data", &VariableVector::storage_m)
       .method("at", &VariableVector::at)
       .method("size", &VariableVector::size)

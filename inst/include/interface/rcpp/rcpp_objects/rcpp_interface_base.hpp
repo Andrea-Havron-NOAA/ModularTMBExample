@@ -78,6 +78,16 @@ public:
             this->storage_m.push_back(Rcpp::wrap(v));
         }
     }
+    /**
+     * vector constructor
+     */
+    VariableVector(Rcpp::NumericVector x, size_t size){
+        this->id = VariableVector::id_g++;
+        for(size_t i =0; i < size; i++){
+            Variable v = x[i];
+            this->storage_m.push_back(Rcpp::wrap(v));
+        }
+    }
     
     /**
      * Accessor. First index starts is zero.
@@ -151,6 +161,7 @@ uint32_t VariableVector::id_g = 0;
 VariableVector CreateVector(size_t size){
     return VariableVector(size);
 }
+
 
 //void fill(VariableVector& v, double val){
 //    for(size_t i =0; i < v.size(); i++){
