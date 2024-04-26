@@ -8,6 +8,8 @@
 template <typename Type>
 struct Population : public ModelObject<Type> {
   static uint32_t id_g; /**< The ID of the instance of the Population class */
+  // growth
+  int growth_id = -999; /*!< id of growth model object*/
 
   fims::Vector<Type> length;
   fims::Vector<Type> ages;

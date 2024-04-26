@@ -32,6 +32,7 @@ virtual ~PopulationInterfaceBase() {}
 /** @brief get_id method for child classes to inherit */
 virtual uint32_t get_id() = 0;
 
+
 };
 uint32_t PopulationInterfaceBase::id_g = 1;
 
@@ -39,12 +40,17 @@ uint32_t PopulationInterfaceBase::id_g = 1;
 class PopulationInterface  : public PopulationInterfaceBase {
 public:
     Rcpp::NumericVector ages;
+    uint32_t growth_id;        /**< id of the growth function*/
+
     
     PopulationInterface() : PopulationInterfaceBase() {}
     
     virtual ~PopulationInterface() {}
     
     virtual uint32_t get_id() { return this->id; }
+
+    void SetGrowth(uint32_t growth_id) { this->growth_id = growth_id; }
+
 
     virtual std::string get_module_name() {
         return "Population";
@@ -59,7 +65,8 @@ public:
         std::shared_ptr< Population<Type> > pop = 
             std::make_shared<Population<Type> >();
         
-    //    pop->id = this->id;
+        pop->id = this->id;
+        pop->growth_id = this->growth_id;
         
         pop->ages.resize(this->ages.size());
         
@@ -77,7 +84,7 @@ public:
         ss.str("");
 
         
-        model->pop = pop;
+     //   model->pop = pop;
         info->pop_models[pop->id] = pop;
      
         return true;

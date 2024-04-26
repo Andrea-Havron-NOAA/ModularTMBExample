@@ -87,6 +87,7 @@ RCPP_MODULE(growth) {
     .constructor()
     .field("ages", &PopulationInterface::ages)
     .method("get_id", &PopulationInterface::get_id)
+    .method("set_growth", &PopulationInterface::SetGrowth)
     .method("get_module_name", &PopulationInterface::get_module_name);
     Rcpp::class_<NormalNLLInterface>("NormalNLL")
     .constructor()

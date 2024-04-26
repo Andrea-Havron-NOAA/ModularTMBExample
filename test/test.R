@@ -42,6 +42,7 @@ vonB$l_inf$estimable<-TRUE
 Pop <- new(Population) 
 #set ages 
 Pop$ages<-ages
+Pop$set_growth(vonB$get_id())
 
 DataNLL <- new(NormalNLL)
 

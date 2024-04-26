@@ -23,10 +23,11 @@ colnames(Sigma) <- c('Linf', 'K')
 
 #simulate data
 set.seed(123)
-sim.parms <- mvtnorm::rmvnorm(1, mu, Sigma)
+sim.parms <- mvtnorm::rmvnorm(1, y[[1]]$Mean_pred[params], 
+                                  y[[1]]$Cov_pred[params, params])
 l_inf<- sim.parms[1]
 a_min<- 0.1
-k<- sim.parms[2]
+k<- exp(sim.parms[2])
 ages<-c(0.1, 1,2,3,4,5,6,7,8)
 #data<-c(replicate(length(ages), 0.0), 0.0)
 Length<-replicate(length(ages), 0.0)
@@ -59,6 +60,7 @@ vonB$l_inf$estimable<-TRUE
 Pop <- new(Population) 
 #set ages 
 Pop$ages<-ages
+Pop$set_growth(vonB$get_id())
 
 DataNLL <- new(NormalNLL)
 
