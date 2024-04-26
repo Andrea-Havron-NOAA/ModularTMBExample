@@ -86,8 +86,8 @@ class Information {
 //    
 //
  // }
+    
 
- 
 //
     void setup_priors(){
       for(nll_iterator it = nll_models.begin(); it!= nll_models.end(); ++it){
@@ -97,7 +97,7 @@ class Information {
         //                          n->member_name);
         //n->observed_value = assign_variable(n->key);
         variable_map_iterator vmit = this->variable_map.find(n->key);
-      //  n->observed_value = (*vmit).second;
+        n->observed_value = *(*vmit).second;
       }
     }
     }
@@ -111,8 +111,7 @@ class Information {
         
         variable_map_iterator vmit = this->variable_map.find(n->key);
         n->expected_value = *(*vmit).second;
-       //Rcout << "*vmit type is: " << typeid(*(*vmit).second).name() << std::endl;
-      }
+          }
     }
     }
 };
