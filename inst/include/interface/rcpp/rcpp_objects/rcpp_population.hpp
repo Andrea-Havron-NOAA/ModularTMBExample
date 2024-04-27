@@ -86,6 +86,7 @@ public:
         
      //   model->pop = pop;
         info->pop_models[pop->id] = pop;
+        model->pop_models[pop->id] = pop;
      
         return true;
     }

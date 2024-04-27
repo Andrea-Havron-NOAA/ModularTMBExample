@@ -86,6 +86,16 @@ class Information {
 //    
 //
  // }
+
+    void setup_population(){
+      for (pop_iterator it = this->pop_models.begin();
+         it != this->pop_models.end(); ++it) {
+      std::shared_ptr<Population<Type> > pop = (*it).second;
+      uint32_t growth_uint = static_cast<uint32_t>(pop->growth_id);
+      vb_iterator vbit = this->vb_models.find(growth_uint);  
+      pop->vb = (*vbit).second; 
+    }
+    }
     
 
 //

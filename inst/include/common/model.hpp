@@ -73,7 +73,7 @@ class Model{
   Type evaluate(){
     Type jnll = 0.0;
 
-   // this->info->setup_population();
+    this->info->setup_population();
     
     //maybe here, setup functions can take a simulate flag and simulation can be controlled from model
     //setup pointers for priors
@@ -99,11 +99,6 @@ class Model{
     for (pop_iterator it = this->pop_models.begin();
          it != this->pop_models.end(); ++it) {
       std::shared_ptr<Population<Type> > pop = (*it).second;
-      uint32_t growth_uint = static_cast<uint32_t>(pop->growth_id);
-      vb_iterator vbit = this->vb_models.find(growth_uint);  
-      if (vbit != this->vb_models.end()) {
-        pop->vb = (*vbit).second; 
-      }
       pop->evaluate(); 
     }
     this->info->setup_data();

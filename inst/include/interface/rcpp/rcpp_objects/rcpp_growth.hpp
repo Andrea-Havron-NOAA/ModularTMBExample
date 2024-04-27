@@ -80,6 +80,9 @@ public:
 
          std::string key = ss.str();
         ss.str("");
+
+        vb->id = this->id;
+
         //initialize k
         vb->k.resize(1);
         vb->k[0] = this->k.value;
