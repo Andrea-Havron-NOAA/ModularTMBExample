@@ -149,11 +149,6 @@ public:
 */
 
 
-
-
-
-
-     //   model->vb = vb;
         info->vb_models[vb->id] = vb;
         return true;
 

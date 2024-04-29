@@ -11,9 +11,6 @@ static uint32_t id_g; /**< The ID of the instance of the NLLBase class */
 fims::Vector<Type> observed_value; 
 fims::Vector<Type> expected_value;
 std::string nll_type;
-//uint32_t module_id; 
-//std::string module_name;
-//std::string member_name;
 std::vector<std::string> key;
 
   /** @brief Constructor.

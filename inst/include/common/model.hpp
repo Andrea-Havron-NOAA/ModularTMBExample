@@ -13,10 +13,6 @@ class Model{
     public:
 
     fims::Vector<Type> predicted;
-   // std::shared_ptr<Population<Type> >  pop;
-    //std::shared_ptr< VonBertalanffy<Type> > vb;
-    //std::shared_ptr< NormalNLL<Type> > normal;
-
 
     std::map<uint32_t, std::shared_ptr<NLLBase<Type> > >
       nll_models;
@@ -42,15 +38,7 @@ class Model{
     std::shared_ptr<Information<Type> > info;
     
 
-    Model(){
-     //   this->pop = std::make_shared<Population<Type> >();
-     //   this->vb = std::make_shared<VonBertalanffy<Type> >();
-      //  this->normal = std::make_shared<NormalNLL<Type> >();
-    }
-
-
-    //singleton instance based on Type
- //static std::shared_ptr<Model<Type> > instance;
+    Model(){ }
   
   /**
    * Returns the sigleton instance of VonBertalanffyModel
@@ -107,7 +95,6 @@ class Model{
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       if(n->nll_type == "data"){
         jnll += n->evaluate();
-        Rcout << "jnll inside model is: " << jnll << std::endl;
       }
     }
     return jnll;

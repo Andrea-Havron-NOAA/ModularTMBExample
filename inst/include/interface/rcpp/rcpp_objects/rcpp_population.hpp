@@ -83,8 +83,6 @@ public:
         info->variable_map[ss.str()] = &(pop)->length; 
         ss.str("");
 
-        
-     //   model->pop = pop;
         info->pop_models[pop->id] = pop;
         model->pop_models[pop->id] = pop;
      

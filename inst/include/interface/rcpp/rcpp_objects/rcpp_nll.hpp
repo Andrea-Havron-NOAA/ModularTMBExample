@@ -47,9 +47,6 @@ public:
     VariableVector expected_value;
     VariableVector log_sd;
     std::string nll_type;
-    //uint32_t module_id; 
-    //std::string module_name;
-    //std::string member_name;
     std::vector<std::string> key;
 
     bool estimate_observed_value = false;
@@ -79,22 +76,7 @@ public:
             ss.str("");
         }
     }
-/*
-    void SetX(size_t module_id, std::string module_name, std::string name){
-        std::shared_ptr<NormalNLL<double> > normal =
-        std::make_shared<NormalNLL<double> >();
-        for(int i=0; i<this->observed_value; i++){
-            normal->observed_value[i] = this->observed_value[i];
-        }
-        //this -> x = assign_variable(id, module_name, name);
-    }
-    void SetMu(size_t id, std::string module_name, std::string name){
-        //how do I set the id?
-        //?normal -> mu.resize();
-        //this -> mu = assign_variable(id, module_name, name);
-        Rcout << "size of assign_variable is: " << assign_variable(id, module_name, name).size() << std::endl;
-    }
-*/
+
     template<typename Type>
     bool prepare_local() {
     std::shared_ptr<Information<Type> > info =
@@ -105,9 +87,6 @@ public:
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
         normal->nll_type = this->nll_type;
         normal->id = this->id;
-        //normal->module_id = this->module_id;
-        //normal->module_name = this->module_name;
-        //normal->member_name = this->member_name;
         normal->key.resize(this->key.size());
         for(int i=0; i<key.size(); i++){
             normal->key[i] = this-> key[i];
@@ -143,10 +122,8 @@ public:
             }
         }
         
-     //   model->normal = normal;
         model->nll_models[normal->id] = normal;
         info->nll_models[normal->id] = normal;
-        //model->normal_models[this->id] = normal;
         return true;
     }
 
