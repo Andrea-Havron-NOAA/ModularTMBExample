@@ -1,10 +1,6 @@
 # A simple example showing how to use portable models
 # with Rcpp and TMB
 
-library(TMB)
-library(Rcpp)
-library(ModularTMBExample)
-
 #Get parameters from FishLife
 #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
 library(FishLife)
@@ -56,7 +52,7 @@ vonB1$a_min$value<-.1
 vonB1$a_min$estimable<-FALSE
 
 #initialize l_inf
-vonB1$l_inf$value<-7
+vonB1$l_inf$value<-5
 vonB1$l_inf$estimable<-TRUE
 
 #create second von Bertalanffy object
@@ -71,7 +67,7 @@ vonB2$a_min$value<-.1
 vonB2$a_min$estimable<-FALSE
 
 #initialize l_inf
-vonB2$l_inf$value<-7
+vonB2$l_inf$value<-5
 vonB2$l_inf$estimable<-TRUE
 
 #set data
@@ -130,9 +126,24 @@ print(obj$gr(obj$par))
 
 ## Fit model
 opt <- nlminb(obj$par, obj$fn, obj$gr)
-rep <- sdreport(obj)
+sdr <- sdreport(obj)
 
-rep
+mean.sdr <- as.list(sdr, "Est")$p
+std.sdr <- as.list(sdr, "Std")$p
+ci <- list()
+for(i in seq_along(mean.sdr)){
+  ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
+}
+
+test_that("test single prior",{
+  expect_equal( k[1] > ci[[1]][1] & k[1] < ci[[1]][2], TRUE)
+  expect_equal( l_inf[1] > ci[[2]][1] & l_inf[1] < ci[[2]][2], TRUE)
+ # expect_equal( k[2] > ci[[3]][1] & k[2] < ci[[3]][2], TRUE)
+  expect_equal( l_inf[2] > ci[[4]][1] & l_inf[2] < ci[[4]][2], TRUE)
+  expect_equal( log(.1) > ci[[5]][1] & log(.1) < ci[[5]][2], TRUE)
+  expect_equal( log(.1) > ci[[6]][1] & log(.1) < ci[[6]][2], TRUE)
+})
+
 
 #update the von Bertalanffy object with updated parameters
 vonB$finalize(rep$par.fixed)

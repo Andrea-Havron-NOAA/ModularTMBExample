@@ -1,9 +1,6 @@
 # A simple example showing how to use portable models
 # with Rcpp and TMB
 
-library(TMB)
-library(Rcpp)
-library(ModularTMBExample)
 
 #Get parameters from FishLife
 #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
@@ -104,9 +101,20 @@ print(obj$gr(obj$par))
 
 ## Fit model
 opt <- nlminb(obj$par, obj$fn, obj$gr)
-rep <- sdreport(obj)
+sdr <- sdreport(obj)
 
-rep
+mean.sdr <- as.list(sdr, "Est")$p
+std.sdr <- as.list(sdr, "Std")$p
+ci <- list()
+for(i in seq_along(mean.sdr)){
+  ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
+}
+
+test_that("test single prior",{
+  expect_equal( k > ci[[1]][1] & k < ci[[1]][2], TRUE)
+  expect_equal( l_inf > ci[[2]][1] & l_inf < ci[[2]][2], TRUE)
+  expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
+})
 
 #update the von Bertalanffy object with updated parameters
 vonB$finalize(rep$par.fixed)
