@@ -15,7 +15,7 @@ class Model{
     fims::Vector<Type> predicted;
    // std::shared_ptr<Population<Type> >  pop;
     //std::shared_ptr< VonBertalanffy<Type> > vb;
-    std::shared_ptr< NormalNLL<Type> > normal;
+    //std::shared_ptr< NormalNLL<Type> > normal;
 
 
     std::map<uint32_t, std::shared_ptr<NLLBase<Type> > >
@@ -45,7 +45,7 @@ class Model{
     Model(){
      //   this->pop = std::make_shared<Population<Type> >();
      //   this->vb = std::make_shared<VonBertalanffy<Type> >();
-        this->normal = std::make_shared<NormalNLL<Type> >();
+      //  this->normal = std::make_shared<NormalNLL<Type> >();
     }
 
 
@@ -80,7 +80,7 @@ class Model{
     this->info->setup_priors();
      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
-      if(n->nll_type != "priors"){
+      if(n->nll_type == "priors"){
         jnll += n->evaluate();
       }
     }
@@ -91,11 +91,12 @@ class Model{
     //evaluate nlls for priors and random effects
      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
-      if(n->nll_type != "random_effects"){
+      if(n->nll_type == "random_effects"){
         jnll += n->evaluate();
       }
     }
     */
+    Rcout << "pop_models size is: " << pop_models.size() << std::endl;
     for (pop_iterator it = this->pop_models.begin();
          it != this->pop_models.end(); ++it) {
       std::shared_ptr<Population<Type> > pop = (*it).second;
@@ -105,8 +106,8 @@ class Model{
     for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       if(n->nll_type == "data"){
-        Rcout << "data nll key is: " << n->key << std::endl;
         jnll += n->evaluate();
+        Rcout << "jnll inside model is: " << jnll << std::endl;
       }
     }
     return jnll;

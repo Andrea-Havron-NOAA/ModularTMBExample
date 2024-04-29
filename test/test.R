@@ -27,11 +27,11 @@ clear()
 vonB<-new(vonBertalanffy)
 
 #initialize k
-vonB$k$value<-.05
+vonB$k$value<-.01
 vonB$k$estimable<-TRUE
 
 #initialize a_min
-vonB$a_min$value<-.01
+vonB$a_min$value<-.1
 vonB$a_min$estimable<-FALSE
 
 #initialize l_inf
@@ -48,10 +48,10 @@ DataNLL <- new(NormalNLL)
 
 DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
 
-DataNLL$expected_value <- new(VariableVector, length(length.data))
-for(i in 1:length(length.data)){
-  DataNLL$expected_value[i]$value <- 0
-}
+# DataNLL$expected_value <- new(VariableVector, 0)
+# for(i in 1:length(length.data)){
+#   DataNLL$expected_value[i]$value <- 0
+# }
 
 DataNLL$log_sd <- new(VariableVector, 1)
 DataNLL$log_sd[1]$value <- 0
@@ -95,16 +95,16 @@ Parameters <- list(
   p = get_parameter_vector()
 )
 
-obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
+obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample", trace = TRUE)
 newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))
 
 ## Fit model
 opt <- nlminb(obj$par, obj$fn, obj$gr)
-rep <- sdreport(obj)
+report <- sdreport(obj)
 
-rep
+
 
 #update the von Bertalanffy object with updated parameters
 vonB$finalize(rep$par.fixed)
@@ -117,3 +117,5 @@ obj$report()
 #show final gradient
 print("final gradient:")
 print(rep$gradient.fixed)
+
+

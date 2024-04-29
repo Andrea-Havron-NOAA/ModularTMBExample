@@ -52,7 +52,7 @@ vonB1$k$value<-.05
 vonB1$k$estimable<-TRUE
 
 #initialize a_min
-vonB1$a_min$value<-.01
+vonB1$a_min$value<-.1
 vonB1$a_min$estimable<-FALSE
 
 #initialize l_inf
@@ -67,7 +67,7 @@ vonB2$k$value<-.05
 vonB2$k$estimable<-TRUE
 
 #initialize a_min
-vonB2$a_min$value<-.01
+vonB2$a_min$value<-.1
 vonB2$a_min$estimable<-FALSE
 
 #initialize l_inf
@@ -78,18 +78,15 @@ vonB2$l_inf$estimable<-TRUE
 Pop1 <- new(Population) 
 #set ages 
 Pop1$ages<-ages
+Pop1$set_growth(vonB1$get_id())
 Pop2 <- new(Population) 
 #set ages 
 Pop2$ages<-ages
+Pop2$set_growth(vonB2$get_id())
 
 DataNLL1 <- new(NormalNLL)
 DataNLL1$observed_value <- 
   new(VariableVector, length.data1, length(length.data1))
-
-DataNLL1$expected_value <- new(VariableVector, length(length.data1))
-for(i in 1:length(length.data1)){
-  DataNLL1$expected_value[i]$value <- 0
-}
 
 DataNLL1$log_sd <- new(VariableVector, 1)
 DataNLL1$log_sd[1]$value <- 0
@@ -101,11 +98,6 @@ DataNLL2 <- new(NormalNLL)
 DataNLL2$observed_value <- 
   new(VariableVector, length.data2, length(length.data2))
 
-DataNLL2$expected_value <- new(VariableVector, length(length.data2))
-for(i in 1:length(length.data2)){
-  DataNLL2$expected_value[i]$value <- 0
-}
-
 DataNLL2$log_sd <- new(VariableVector, 1)
 DataNLL2$log_sd[1]$value <- 0
 DataNLL2$nll_type = "data"
@@ -113,10 +105,11 @@ DataNLL2$estimate_log_sd <- TRUE
 DataNLL2$set_nll_links("data", Pop2$get_id(), Pop2$get_module_name(), "length")
 
 
-# GrowthKPrior <- new(NormalNLL)
-# GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)
-# GrowthKPrior$nll_type = "prior"
-# GrowthKPrior$set_nll_links( "prior", vonB$get_id(), vonB$get_module_name(), "k")
+GrowthKPrior <- new(NormalNLL)
+GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)
+GrowthKPrior$nll_type = "prior"
+GrowthKPrior$set_nll_links( "prior", c(vonB1$get_id(),vonB2$get_id()), 
+  c(vonB1$get_module_name(),vonB2$get_module_name()), c("k", "k"))
 
 #prepare for interfacing with TMB
 CreateModel()

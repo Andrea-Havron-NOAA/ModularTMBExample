@@ -14,7 +14,7 @@ std::string nll_type;
 //uint32_t module_id; 
 //std::string module_name;
 //std::string member_name;
-std::string key;
+std::vector<std::string> key;
 
   /** @brief Constructor.
    */

@@ -50,7 +50,7 @@ public:
     //uint32_t module_id; 
     //std::string module_name;
     //std::string member_name;
-    std::string key;
+    std::vector<std::string> key;
 
     bool estimate_observed_value = false;
     bool estimate_expected_value = false;
@@ -67,16 +67,17 @@ public:
         return "NormalNLLInterface";
     }
     
-    void SetNLLLinks(std::string nll_type, size_t module_id, 
-        std::string module_name, std::string name){
+    void SetNLLLinks(std::string nll_type, Rcpp::IntegerVector module_id, 
+        Rcpp::StringVector module_name, Rcpp::StringVector name){
         this->nll_type = nll_type;
 
         std::stringstream ss;
-        ss << module_name << "_" << module_id << "_" << name;
-
-        this->key = ss.str();
-        Rcout << "key: " << this->key << std::endl;
-        ss.str("");
+        this->key.resize(module_id.size());
+        for(int i=0; i<module_id.size(); i++){
+            ss << module_name[i] << "_" << module_id[i] << "_" << name[i];
+            this->key[i] = ss.str();
+            ss.str("");
+        }
     }
 /*
     void SetX(size_t module_id, std::string module_name, std::string name){
@@ -103,10 +104,14 @@ public:
 
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
         normal->nll_type = this->nll_type;
+        normal->id = this->id;
         //normal->module_id = this->module_id;
         //normal->module_name = this->module_name;
         //normal->member_name = this->member_name;
-        normal->key = this-> key;
+        normal->key.resize(this->key.size());
+        for(int i=0; i<key.size(); i++){
+            normal->key[i] = this-> key[i];
+        }
         normal->simulate_prior_flag = this->simulate_prior_flag;
         normal->simulate_data_flag = this->simulate_data_flag;
         if(this->nll_type == "data"){
@@ -138,7 +143,7 @@ public:
             }
         }
         
-        model->normal = normal;
+     //   model->normal = normal;
         model->nll_models[normal->id] = normal;
         info->nll_models[normal->id] = normal;
         //model->normal_models[this->id] = normal;

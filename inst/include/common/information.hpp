@@ -90,11 +90,11 @@ class Information {
     void setup_population(){
       for (pop_iterator it = this->pop_models.begin();
          it != this->pop_models.end(); ++it) {
-      std::shared_ptr<Population<Type> > pop = (*it).second;
-      uint32_t growth_uint = static_cast<uint32_t>(pop->growth_id);
-      vb_iterator vbit = this->vb_models.find(growth_uint);  
-      pop->vb = (*vbit).second; 
-    }
+        std::shared_ptr<Population<Type> > pop = (*it).second;
+        uint32_t growth_uint = static_cast<uint32_t>(pop->growth_id);
+        vb_iterator vbit = this->vb_models.find(growth_uint);  
+        pop->vb = (*vbit).second; 
+      }
     }
     
 
@@ -103,11 +103,16 @@ class Information {
       for(nll_iterator it = nll_models.begin(); it!= nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       if(n->nll_type == "prior"){
+        size_t key_size = n->key.size();
+        variable_map_iterator vmit;
+        for(size_t i=0; i<key_size; i++){
+          vmit = this->variable_map.find(n->key[i]); 
+          n->observed_value.insert(std::end(n->observed_value), 
+            std::begin(*(*vmit).second), std::end(*(*vmit).second));
+        } 
         //n->observed_value = assign_variable(n->module_id, n->module_name, 
         //                          n->member_name);
         //n->observed_value = assign_variable(n->key);
-        variable_map_iterator vmit = this->variable_map.find(n->key);
-        n->observed_value = *(*vmit).second;
       }
     }
     }
@@ -119,11 +124,18 @@ class Information {
 //                                  n->member_name); 
         // n->expected_value = assign_variable(n->key);
         
-        variable_map_iterator vmit = this->variable_map.find(n->key);
+        variable_map_iterator vmit;
+        vmit = this->variable_map.find(n->key[0]); 
         n->expected_value = *(*vmit).second;
-          }
+        
+        for(size_t i=1; i<n->key.size(); i++){
+          vmit = this->variable_map.find(n->key[i]); 
+          n->expected_value.insert(std::end(n->expected_value), 
+            std::begin(*(*vmit).second), std::end(*(*vmit).second));
+        } 
+      }
     }
-    }
+  }
 };
 
 template<typename Type>
