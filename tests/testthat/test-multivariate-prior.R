@@ -1,10 +1,30 @@
 # A simple example showing how to use portable models
 # with Rcpp and TMB
 
+
+#Get parameters from FishLife
+#install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
+library(FishLife)
+library(mvtnorm)
+params <- matrix(c('Loo', 'K'), ncol=2)
+x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
+y <- Plot_taxa(x, params=params)
+
+# multivariate normal in log space for two growth parameters
+mu <- c(Linf = 3.848605, K = exp(-1.984452)) #y[[1]]$Mean_pred[params]
+Sigma <- rbind(c( 0.1545170, -0.1147763),
+               c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
+row.names(Sigma) <- c('Linf', 'K')
+colnames(Sigma) <- c('Linf', 'K')
+
+
 #simulate data
-l_inf<- 10.0
+set.seed(123)
+sim.parms <- mvtnorm::rmvnorm(1, y[[1]]$Mean_pred[params], 
+                                  y[[1]]$Cov_pred[params, params])
+l_inf<- sim.parms[1]
 a_min<- 0.1
-k<- .5
+k<- exp(sim.parms[2])
 ages<-c(0.1, 1,2,3,4,5,6,7,8)
 #data<-c(replicate(length(ages), 0.0), 0.0)
 Length<-replicate(length(ages), 0.0)
@@ -22,7 +42,7 @@ clear()
 vonB<-new(vonBertalanffy)
 
 #initialize k
-vonB$k$value<-.01
+vonB$k$value<-.05
 vonB$k$estimable<-TRUE
 
 #initialize a_min
@@ -43,40 +63,26 @@ DataNLL <- new(NormalNLL)
 
 DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
 
-# DataNLL$expected_value <- new(VariableVector, 0)
-# for(i in 1:length(length.data)){
-#   DataNLL$expected_value[i]$value <- 0
-# }
+DataNLL$expected_value <- new(VariableVector, length(length.data))
+for(i in 1:length(length.data)){
+  DataNLL$expected_value[i]$value <- 0
+}
 
 DataNLL$log_sd <- new(VariableVector, 1)
 DataNLL$log_sd[1]$value <- 0
-DataNLL$nll_type = "data"
+DataNLL$nll_type <- "data"
 DataNLL$estimate_log_sd <- TRUE
 paste0(Pop$get_module_name(), "_", Pop$get_id(), "_length")
 DataNLL$set_nll_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 
 
-# library(FishLife)
-# library(mvtnorm)
-# params <- matrix(c('Loo', 'K'), ncol=2)
-# x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
-# y <- Plot_taxa(x, params=params)
 
-# # multivariate normal in log space for two growth parameters
-# mu <- c(Loo = 3.848605, K = exp(-1.984452)) #y[[1]]$Mean_pred[params]
-# Sigma <- rbind(c( 0.1545170, -0.1147763),
-#                c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
-# row.names(Sigma) <- c('Loo', 'K')
-# colnames(Sigma) <- c('Loo', 'K')
-
-# GrowthKPrior <- new(g$NormalNLL)
-# GrowthKPrior$expected_value <- mu[2]
-# GrowthKPrior$log_sd <- log(Sigma[2,2])
-# GrowthKPrior$nll_type = "prior"
-# GrowthKPrior$set_nll_links( "prior", vonB$get_id(), vonB$get_module_name(), "k")
-# GrowthKPrior$module_name = "growth"
-# GrowthKPrior$module_id = vonB$get_id()
-# GrowthKPrior$member_name = "k"
+GrowthMVPrior <- new(MVNormNLL)
+GrowthMVPrior$expected_value <- new(VariableVector, mu, 1)
+GrowthMVPrior$nll_type <- "prior"
+GrowthMVPrior$Sigma <- Sigma
+GrowthMVPrior$set_nll_links( "prior", c(vonB$get_id(), vonB$get_id()),
+     c(vonB$get_module_name(),vonB$get_module_name()) c("k", "l_inf"))
 
 #prepare for interfacing with TMB
 CreateModel()
@@ -90,7 +96,7 @@ Parameters <- list(
   p = get_parameter_vector()
 )
 
-obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample", trace = TRUE)
+obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
 newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))
@@ -106,13 +112,17 @@ for(i in seq_along(mean.sdr)){
   ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
 }
 
-test_that("test single nll",{
+test_that("test multivariate prior",{
   expect_equal( k > ci[[1]][1] & k < ci[[1]][2], TRUE)
   expect_equal( l_inf > ci[[2]][1] & l_inf < ci[[2]][2], TRUE)
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
-
+#Fully Bayesian
+library(tmbstan)
+newobj <- tmbstan(obj, warmup = 1000, iter = 4000)
+library(shinystan)
+launch_shinystan(newobj)
 
 # #update the von Bertalanffy object with updated parameters
 # vonB$finalize(rep$par.fixed)
@@ -125,5 +135,3 @@ test_that("test single nll",{
 # #show final gradient
 # print("final gradient:")
 # print(rep$gradient.fixed)
-
-

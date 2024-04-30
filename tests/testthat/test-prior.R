@@ -46,7 +46,7 @@ vonB$k$value<-.05
 vonB$k$estimable<-TRUE
 
 #initialize a_min
-vonB$a_min$value<-.01
+vonB$a_min$value<-.1
 vonB$a_min$estimable<-FALSE
 
 #initialize l_inf
@@ -116,14 +116,14 @@ test_that("test single prior",{
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
-#update the von Bertalanffy object with updated parameters
-vonB$finalize(rep$par.fixed)
+# #update the von Bertalanffy object with updated parameters
+# vonB$finalize(rep$par.fixed)
 
-#show results
-vonB$show()
+# #show results
+# vonB$show()
 
-obj$report()
+# obj$report()
 
-#show final gradient
-print("final gradient:")
-print(rep$gradient.fixed)
+# #show final gradient
+# print("final gradient:")
+# print(rep$gradient.fixed)

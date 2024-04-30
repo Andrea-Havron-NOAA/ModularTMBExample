@@ -100,6 +100,16 @@ RCPP_MODULE(growth) {
     .field("nll_type", &NormalNLLInterface::nll_type)
     .method("get_id", &NormalNLLInterface::get_id)
     .method("set_nll_links", &NormalNLLInterface::SetNLLLinks);
+    Rcpp::class_<MVNormNLLInterface>("MVNormNLL")
+    .constructor()
+    .field("observed_value", &MVNormNLLInterface::observed_value)
+    .field("expected_value", &MVNormNLLInterface::expected_value)
+    .field("Sigma", &MVNormNLLInterface::Sigma)
+    .field("estimate_observed_value", &MVNormNLLInterface::estimate_observed_value)
+    .field("estimate_expected_value", &MVNormNLLInterface::estimate_expected_value)
+    .field("nll_type", &MVNormNLLInterface::nll_type)
+    .method("get_id", &MVNormNLLInterface::get_id)
+    .method("set_nll_links", &MVNormNLLInterface::SetNLLLinks);
     Rcpp::class_<vonBertalanffyInterface>("vonBertalanffy")
     .constructor()
    // .method("finalize", &vonBertalanffyInterface::finalize)

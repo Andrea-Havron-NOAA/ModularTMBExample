@@ -145,14 +145,14 @@ test_that("test single prior",{
 })
 
 
-#update the von Bertalanffy object with updated parameters
-vonB$finalize(rep$par.fixed)
+# #update the von Bertalanffy object with updated parameters
+# vonB$finalize(rep$par.fixed)
 
-#show results
-vonB$show()
+# #show results
+# vonB$show()
 
-obj$report()
+# obj$report()
 
-#show final gradient
-print("final gradient:")
-print(rep$gradient.fixed)
+# #show final gradient
+# print("final gradient:")
+# print(rep$gradient.fixed)
