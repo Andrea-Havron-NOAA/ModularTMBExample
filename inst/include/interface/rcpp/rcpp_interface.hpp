@@ -98,14 +98,8 @@ RCPP_MODULE(growth) {
     .field("estimate_expected_value", &NormalNLLInterface::estimate_expected_value)
     .field("estimate_log_sd", &NormalNLLInterface::estimate_log_sd)
     .field("nll_type", &NormalNLLInterface::nll_type)
-    //.field("module_name", &NormalNLLInterface::module_name)
-    //.field("module_id", &NormalNLLInterface::module_id)
-    //.field("member_name", &NormalNLLInterface::member_name)
     .method("get_id", &NormalNLLInterface::get_id)
     .method("set_nll_links", &NormalNLLInterface::SetNLLLinks);
-    //.method("get_module_id", &NormalNLLInterface::get_module_id)
-   // .method("SetX", &NormalNLLInterface::SetX)
-   // .method("SetMu", &NormalNLLInterface::SetMu);
     Rcpp::class_<vonBertalanffyInterface>("vonBertalanffy")
     .constructor()
    // .method("finalize", &vonBertalanffyInterface::finalize)
@@ -114,7 +108,6 @@ RCPP_MODULE(growth) {
     .field("a_min", &vonBertalanffyInterface::a_min)
     .field("alpha", &vonBertalanffyInterface::alpha)
     .field("beta", &vonBertalanffyInterface::beta)
-    //.field("id", &vonBertalanffyInterface::id)
     .method("get_id", &vonBertalanffyInterface::get_id)
     .method("get_module_name", &vonBertalanffyInterface::get_module_name);
   //  .method("show", &vonBertalanffyInterface::show);
