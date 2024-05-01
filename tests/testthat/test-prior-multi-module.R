@@ -10,7 +10,7 @@ x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
 y <- Plot_taxa(x, params=params)
 
 # multivariate normal in log space for two growth parameters
-mu <- c(Linf = 3.848605, K = exp(-1.984452)) #y[[1]]$Mean_pred[params]
+mu <- c(Linf = 3.848605, K = -1.984452) #y[[1]]$Mean_pred[params]
 Sigma <- rbind(c( 0.1545170, -0.1147763),
                c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
 row.names(Sigma) <- c('Linf', 'K')
@@ -44,8 +44,8 @@ clear()
 vonB1<-new(vonBertalanffy)
 
 #initialize k
-vonB1$k$value<-.05
-vonB1$k$estimable<-TRUE
+vonB1$logk$value<-log(.05)
+vonB1$logk$estimable<-TRUE
 
 #initialize a_min
 vonB1$a_min$value<-.1
@@ -59,8 +59,8 @@ vonB1$l_inf$estimable<-TRUE
 vonB2<-new(vonBertalanffy)
 
 #initialize k
-vonB2$k$value<-.05
-vonB2$k$estimable<-TRUE
+vonB2$logk$value<-log(.05)
+vonB2$logk$estimable<-TRUE
 
 #initialize a_min
 vonB2$a_min$value<-.1
@@ -103,9 +103,10 @@ DataNLL2$set_nll_links("data", Pop2$get_id(), Pop2$get_module_name(), "length")
 
 GrowthKPrior <- new(NormalNLL)
 GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)
-GrowthKPrior$nll_type = "prior"
+GrowthKPrior$nll_type <- "prior"
+GrowthKPrior$log_sd[1]$value <- log(0.1579867)
 GrowthKPrior$set_nll_links( "prior", c(vonB1$get_id(),vonB2$get_id()), 
-  c(vonB1$get_module_name(),vonB2$get_module_name()), c("k", "k"))
+  c(vonB1$get_module_name(),vonB2$get_module_name()), c("logk", "logk"))
 
 #prepare for interfacing with TMB
 CreateModel()
@@ -136,9 +137,9 @@ for(i in seq_along(mean.sdr)){
 }
 
 test_that("test single prior",{
-  expect_equal( k[1] > ci[[1]][1] & k[1] < ci[[1]][2], TRUE)
+  expect_equal( log(k[1]) > ci[[1]][1] & log(k[1]) < ci[[1]][2], TRUE)
   expect_equal( l_inf[1] > ci[[2]][1] & l_inf[1] < ci[[2]][2], TRUE)
- # expect_equal( k[2] > ci[[3]][1] & k[2] < ci[[3]][2], TRUE)
+ # expect_equal( log(k[2]) > ci[[3]][1] & log(k[2]) < ci[[3]][2], TRUE)
   expect_equal( l_inf[2] > ci[[4]][1] & l_inf[2] < ci[[4]][2], TRUE)
   expect_equal( log(.1) > ci[[5]][1] & log(.1) < ci[[5]][2], TRUE)
   expect_equal( log(.1) > ci[[6]][1] & log(.1) < ci[[6]][2], TRUE)

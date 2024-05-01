@@ -43,7 +43,7 @@ std::map<uint32_t, GrowthInterfaceBase*> GrowthInterfaceBase::growth_objects;
 
 class vonBertalanffyInterface : public GrowthInterfaceBase {
 public:
-    Variable k;
+    Variable logk;
     Variable l_inf;
     Variable a_min;
     Variable alpha;
@@ -84,17 +84,17 @@ public:
         vb->id = this->id;
 
         //initialize k
-        vb->k.resize(1);
-        vb->k[0] = this->k.value;
+        vb->logk.resize(1);
+        vb->logk[0] = this->logk.value;
         //need to set up maps even when parameters are not estimable (e.g. for penalties or random effects)
-        ss << key << "_k";
-        info->variable_map[ss.str()] = &(vb)->k;
+        ss << key << "_logk";
+        info->variable_map[ss.str()] = &(vb)->logk;
         ss.str("");
        
 
-        if (this->k.estimable) {
-            model->parameters.push_back(&(vb)->k[0]);
-            model->pnames.push_back("k");
+        if (this->logk.estimable) {
+            model->parameters.push_back(&(vb)->logk[0]);
+            model->pnames.push_back("logk");
         }
 
         //initialize l_inf

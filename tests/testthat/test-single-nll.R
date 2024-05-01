@@ -22,8 +22,8 @@ clear()
 vonB<-new(vonBertalanffy)
 
 #initialize k
-vonB$k$value<-.01
-vonB$k$estimable<-TRUE
+vonB$logk$value<-log(.01)
+vonB$logk$estimable<-TRUE
 
 #initialize a_min
 vonB$a_min$value<-.1
@@ -107,7 +107,7 @@ for(i in seq_along(mean.sdr)){
 }
 
 test_that("test single nll",{
-  expect_equal( k > ci[[1]][1] & k < ci[[1]][2], TRUE)
+  expect_equal( log(k) > ci[[1]][1] & log(k) < ci[[1]][2], TRUE)
   expect_equal( l_inf > ci[[2]][1] & l_inf < ci[[2]][2], TRUE)
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })

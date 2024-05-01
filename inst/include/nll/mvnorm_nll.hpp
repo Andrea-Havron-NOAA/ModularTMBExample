@@ -11,7 +11,7 @@
 template<typename Type>
 struct MVNormNLL : public NLLBase<Type> {
     matrix<Type> Sigma;
-    fims::Vector<Type> nll;
+    Type nll;
     bool osa_flag;
     bool simulate_prior_flag;
     bool simulate_data_flag;

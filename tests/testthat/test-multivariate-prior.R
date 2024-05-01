@@ -11,7 +11,7 @@ x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
 y <- Plot_taxa(x, params=params)
 
 # multivariate normal in log space for two growth parameters
-mu <- c(Linf = 3.848605, K = exp(-1.984452)) #y[[1]]$Mean_pred[params]
+mu <- c(Linf = 3.848605, K = -1.984452) #y[[1]]$Mean_pred[params]
 Sigma <- rbind(c( 0.1545170, -0.1147763),
                c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
 row.names(Sigma) <- c('Linf', 'K')
@@ -42,8 +42,8 @@ clear()
 vonB<-new(vonBertalanffy)
 
 #initialize k
-vonB$k$value<-.05
-vonB$k$estimable<-TRUE
+vonB$logk$value<-log(.05)
+vonB$logk$estimable<-TRUE
 
 #initialize a_min
 vonB$a_min$value<-.1
@@ -62,12 +62,6 @@ Pop$set_growth(vonB$get_id())
 DataNLL <- new(NormalNLL)
 
 DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
-
-DataNLL$expected_value <- new(VariableVector, length(length.data))
-for(i in 1:length(length.data)){
-  DataNLL$expected_value[i]$value <- 0
-}
-
 DataNLL$log_sd <- new(VariableVector, 1)
 DataNLL$log_sd[1]$value <- 0
 DataNLL$nll_type <- "data"
@@ -82,7 +76,7 @@ GrowthMVPrior$expected_value <- new(VariableVector, mu, 1)
 GrowthMVPrior$nll_type <- "prior"
 GrowthMVPrior$Sigma <- Sigma
 GrowthMVPrior$set_nll_links( "prior", c(vonB$get_id(), vonB$get_id()),
-     c(vonB$get_module_name(),vonB$get_module_name()) c("k", "l_inf"))
+     c(vonB$get_module_name(),vonB$get_module_name()), c("l_inf", "logk"))
 
 #prepare for interfacing with TMB
 CreateModel()
@@ -113,7 +107,7 @@ for(i in seq_along(mean.sdr)){
 }
 
 test_that("test multivariate prior",{
-  expect_equal( k > ci[[1]][1] & k < ci[[1]][2], TRUE)
+  expect_equal( log(k) > ci[[1]][1] & log(k) < ci[[1]][2], TRUE)
   expect_equal( l_inf > ci[[2]][1] & l_inf < ci[[2]][2], TRUE)
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })

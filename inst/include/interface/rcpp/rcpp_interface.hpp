@@ -113,7 +113,7 @@ RCPP_MODULE(growth) {
     Rcpp::class_<vonBertalanffyInterface>("vonBertalanffy")
     .constructor()
    // .method("finalize", &vonBertalanffyInterface::finalize)
-    .field("k", &vonBertalanffyInterface::k)
+    .field("logk", &vonBertalanffyInterface::logk)
     .field("l_inf", &vonBertalanffyInterface::l_inf)
     .field("a_min", &vonBertalanffyInterface::a_min)
     .field("alpha", &vonBertalanffyInterface::alpha)
