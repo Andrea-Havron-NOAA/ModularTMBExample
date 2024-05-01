@@ -5,11 +5,12 @@
 #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
 library(FishLife)
 library(mvtnorm)
+# extraxt l_infinity and k
 params <- matrix(c('Loo', 'K'), ncol=2)
 x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
 y <- Plot_taxa(x, params=params)
 
-# multivariate normal in log space for two growth parameters
+# multivariate normal in log space for two growth parameters 
 mu <- c(Linf = 3.848605, K = -1.984452) #y[[1]]$Mean_pred[params]
 Sigma <- rbind(c( 0.1545170, -0.1147763),
                c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
@@ -23,15 +24,16 @@ sim.parms <- mvtnorm::rmvnorm(2, y[[1]]$Mean_pred[params],
                                   y[[1]]$Cov_pred[params, params])
 l_inf<- sim.parms[,1]
 a_min<- 0.1
+#k parameter is in logspace and needs to be transformed
 k<- exp(sim.parms[,2])
 ages<-c(0.1, 1,2,3,4,5,6,7,8)
-#data<-c(replicate(length(ages), 0.0), 0.0)
 Length1 <- Length2 <- replicate(length(ages), 0.0)
 
 for(i in 1:length(ages)){
   Length1[i] = (l_inf[1] * (1.0 - exp(-k[1] * (ages[i] - a_min))))
   Length2[i] = (l_inf[2] * (1.0 - exp(-k[2] * (ages[i] - a_min))))
 }
+#add observation error
 set.seed(234)
 length.data1 <- Length1 + rnorm(length(ages), 0, .1)
 set.seed(345)
@@ -43,7 +45,7 @@ clear()
 #create first von Bertalanffy object
 vonB1<-new(vonBertalanffy)
 
-#initialize k
+#initialize logk
 vonB1$logk$value<-log(.05)
 vonB1$logk$estimable<-TRUE
 
@@ -58,7 +60,7 @@ vonB1$l_inf$estimable<-TRUE
 #create second von Bertalanffy object
 vonB2<-new(vonBertalanffy)
 
-#initialize k
+#initialize logk
 vonB2$logk$value<-log(.05)
 vonB2$logk$estimable<-TRUE
 
@@ -70,41 +72,50 @@ vonB2$a_min$estimable<-FALSE
 vonB2$l_inf$value<-5
 vonB2$l_inf$estimable<-TRUE
 
-#set data
+#setup first population, set ages and link to vonB1
 Pop1 <- new(Population) 
 #set ages 
 Pop1$ages<-ages
 Pop1$set_growth(vonB1$get_id())
+
+#setup second population, set ages and link to vonB2
 Pop2 <- new(Population) 
 #set ages 
 Pop2$ages<-ages
 Pop2$set_growth(vonB2$get_id())
 
+#setup data log-likelihood for Length1
 DataNLL1 <- new(NormalNLL)
+#input length.data1
 DataNLL1$observed_value <- 
   new(VariableVector, length.data1, length(length.data1))
-
+#initialize log_sd
 DataNLL1$log_sd <- new(VariableVector, 1)
 DataNLL1$log_sd[1]$value <- 0
 DataNLL1$nll_type = "data"
 DataNLL1$estimate_log_sd <- TRUE
+#link data log-likelihood to length from Pop1
 DataNLL1$set_nll_links("data", Pop1$get_id(), Pop1$get_module_name(), "length")
 
+#setup data log-likelihood for Length2
 DataNLL2 <- new(NormalNLL)
+#input length.data2
 DataNLL2$observed_value <- 
   new(VariableVector, length.data2, length(length.data2))
-
+#initialize log_sd
 DataNLL2$log_sd <- new(VariableVector, 1)
 DataNLL2$log_sd[1]$value <- 0
 DataNLL2$nll_type = "data"
 DataNLL2$estimate_log_sd <- TRUE
+#link data log-likelihood to length from Pop2
 DataNLL2$set_nll_links("data", Pop2$get_id(), Pop2$get_module_name(), "length")
 
-
+#set up shared prior for logk
 GrowthKPrior <- new(NormalNLL)
 GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)
 GrowthKPrior$nll_type <- "prior"
 GrowthKPrior$log_sd[1]$value <- log(0.1579867)
+#link prior log-likelihood to the logk parameters from vonB1 and vonB2
 GrowthKPrior$set_nll_links( "prior", c(vonB1$get_id(),vonB2$get_id()), 
   c(vonB1$get_module_name(),vonB2$get_module_name()), c("logk", "logk"))
 
@@ -120,6 +131,7 @@ Parameters <- list(
   p = get_parameter_vector()
 )
 
+#setup TMB object
 obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
 newtonOption(obj, smartsearch=FALSE)
 
@@ -136,7 +148,7 @@ for(i in seq_along(mean.sdr)){
   ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
 }
 
-test_that("test single prior",{
+test_that("test shared prior",{
   expect_equal( log(k[1]) > ci[[1]][1] & log(k[1]) < ci[[1]][2], TRUE)
   expect_equal( l_inf[1] > ci[[2]][1] & l_inf[1] < ci[[2]][2], TRUE)
  # expect_equal( log(k[2]) > ci[[3]][1] & log(k[2]) < ci[[3]][2], TRUE)

@@ -6,6 +6,7 @@
 #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
 library(FishLife)
 library(mvtnorm)
+# extraxt l_infinity and k
 params <- matrix(c('Loo', 'K'), ncol=2)
 x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
 y <- Plot_taxa(x, params=params)
@@ -24,14 +25,15 @@ sim.parms <- mvtnorm::rmvnorm(1, y[[1]]$Mean_pred[params],
                                   y[[1]]$Cov_pred[params, params])
 l_inf<- sim.parms[1]
 a_min<- 0.1
+#k parameter is in logspace and needs to be transformed
 k<- exp(sim.parms[2])
 ages<-c(0.1, 1,2,3,4,5,6,7,8)
-#data<-c(replicate(length(ages), 0.0), 0.0)
 Length<-replicate(length(ages), 0.0)
 
 for(i in 1:length(ages)){
   Length[i] = (l_inf * (1.0 - exp(-k * (ages[i] - a_min))))
 }
+#add observation error
 set.seed(234)
 length.data <- Length + rnorm(length(ages), 0, .1)
 
@@ -41,7 +43,7 @@ clear()
 #create a von Bertalanffy object
 vonB<-new(vonBertalanffy)
 
-#initialize k
+#initialize logk
 vonB$logk$value<-log(.05)
 vonB$logk$estimable<-TRUE
 
@@ -53,28 +55,30 @@ vonB$a_min$estimable<-FALSE
 vonB$l_inf$value<-7
 vonB$l_inf$estimable<-TRUE
 
-#set data
+#setup first population, set ages and link to vonB
 Pop <- new(Population) 
 #set ages 
 Pop$ages<-ages
 Pop$set_growth(vonB$get_id())
 
+#setup data log-likelihood for Length
 DataNLL <- new(NormalNLL)
-
+#input length.data
 DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
+#initialize log_sd
 DataNLL$log_sd <- new(VariableVector, 1)
 DataNLL$log_sd[1]$value <- 0
 DataNLL$nll_type <- "data"
 DataNLL$estimate_log_sd <- TRUE
-paste0(Pop$get_module_name(), "_", Pop$get_id(), "_length")
+#link data log-likelihood to length from Pop
 DataNLL$set_nll_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 
-
-
+#set up multivariate prior for l_inf and logk
 GrowthMVPrior <- new(MVNormNLL)
 GrowthMVPrior$expected_value <- new(VariableVector, mu, 1)
 GrowthMVPrior$nll_type <- "prior"
 GrowthMVPrior$Sigma <- Sigma
+#link prior log-likelihood to the l_inf and logk parameters from vonB
 GrowthMVPrior$set_nll_links( "prior", c(vonB$get_id(), vonB$get_id()),
      c(vonB$get_module_name(),vonB$get_module_name()), c("l_inf", "logk"))
 
@@ -90,6 +94,7 @@ Parameters <- list(
   p = get_parameter_vector()
 )
 
+#setup TMB object
 obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
 newtonOption(obj, smartsearch=FALSE)
 
