@@ -73,9 +73,10 @@ class Information {
       for(nll_iterator it = nll_models.begin(); it!= nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       if(n->nll_type == "prior"){
-        size_t key_size = n->key.size();
         variable_map_iterator vmit;
-        for(size_t i=0; i<key_size; i++){
+        vmit = this->variable_map.find(n->key[0]); 
+        n->observed_value = *(*vmit).second;
+        for(size_t i=1; i<n->key.size(); i++){
           vmit = this->variable_map.find(n->key[i]); 
           n->observed_value.insert(std::end(n->observed_value), 
             std::begin(*(*vmit).second), std::end(*(*vmit).second));
