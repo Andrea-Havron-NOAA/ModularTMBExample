@@ -17,4 +17,5 @@ LinkingTo:
     TMB,
     RcppEigen
 Suggests:
-    testthat
+    testthat,
+    mvtnorm
