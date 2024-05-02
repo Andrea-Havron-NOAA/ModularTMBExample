@@ -13,6 +13,7 @@
 #include <fstream>
 #include <signal.h>
 #include <csignal>
+#include <memory>
 
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
@@ -49,8 +50,15 @@
 
 #ifdef FIMS_WINDOWS
 #include <Windows.h>
-#define __PRETTY_FUNCTION__ __FUNCSIG__
+//#define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
+
+#if !defined(__PRETTY_FUNCTION__) && !defined(__GNUC__)
+  #ifdef FIMS_WINDOWS
+    #define __PRETTY_FUNCTION__ __FUNCSIG__
+  #endif
+#endif
+
 
 struct LogEntry {
   std::string timestamp;
