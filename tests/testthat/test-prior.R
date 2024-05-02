@@ -2,13 +2,13 @@
 # with Rcpp and TMB
 
 
-#Get parameters from FishLife
-#install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
-library(FishLife)
+# #Get parameters from FishLife
+# #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
+# library(FishLife)
+# params <- matrix(c('Loo', 'K'), ncol=2)
+# x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
+# y <- Plot_taxa(x, params=params)
 library(mvtnorm)
-params <- matrix(c('Loo', 'K'), ncol=2)
-x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
-y <- Plot_taxa(x, params=params)
 
 # multivariate normal in log space for two growth parameters
 mu <- c(Linf = 3.848605, K = -1.984452) #y[[1]]$Mean_pred[params]
@@ -20,13 +20,11 @@ colnames(Sigma) <- c('Linf', 'K')
 
 #simulate data
 set.seed(123)
-sim.parms <- mvtnorm::rmvnorm(1, y[[1]]$Mean_pred[params], 
-                                  y[[1]]$Cov_pred[params, params])
+sim.parms <- mvtnorm::rmvnorm(1, mu, Sigma)
 l_inf<- sim.parms[1]
 a_min<- 0.1
 k<- exp(sim.parms[2])
 ages<-c(0.1, 1,2,3,4,5,6,7,8)
-#data<-c(replicate(length(ages), 0.0), 0.0)
 Length<-replicate(length(ages), 0.0)
 
 for(i in 1:length(ages)){
@@ -62,20 +60,11 @@ Pop$set_growth(vonB$get_id())
 DataNLL <- new(NormalNLL)
 
 DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
-
-DataNLL$expected_value <- new(VariableVector, length(length.data))
-# for(i in 1:length(length.data)){
-#   DataNLL$expected_value[i]$value <- 0
-# }
-
 DataNLL$log_sd <- new(VariableVector, 1)
 DataNLL$log_sd[1]$value <- 0
 DataNLL$nll_type = "data"
 DataNLL$estimate_log_sd <- TRUE
-paste0(Pop$get_module_name(), "_", Pop$get_id(), "_length")
 DataNLL$set_nll_links("data", Pop$get_id(), Pop$get_module_name(), "length")
-
-
 
 GrowthKPrior <- new(NormalNLL)
 GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)

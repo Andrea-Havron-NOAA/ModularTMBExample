@@ -51,8 +51,9 @@ typeof(x)
 
 
 v1<-new(VariableVector, 10)
-str(fill)
-fill(v1,3.1459)
+#str(fill)
+#fill(v1,3.1459)
 
 v2<-new(VariableVector, 10)
+
 

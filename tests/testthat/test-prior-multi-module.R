@@ -1,16 +1,15 @@
 # A simple example showing how to use portable models
 # with Rcpp and TMB
 
-#Get parameters from FishLife
-#install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
-library(FishLife)
+# #Get parameters from FishLife
+# #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
+# library(FishLife)
+# params <- matrix(c('Loo', 'K'), ncol=2)
+# x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
+# y <- Plot_taxa(x, params=params)
 library(mvtnorm)
-# extraxt l_infinity and k
-params <- matrix(c('Loo', 'K'), ncol=2)
-x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
-y <- Plot_taxa(x, params=params)
 
-# multivariate normal in log space for two growth parameters 
+# multivariate normal in log space for two growth parameters
 mu <- c(Linf = 3.848605, K = -1.984452) #y[[1]]$Mean_pred[params]
 Sigma <- rbind(c( 0.1545170, -0.1147763),
                c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
