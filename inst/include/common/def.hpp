@@ -13,6 +13,9 @@
 #ifndef DEF_HPP
 #define DEF_HPP
 
+#include "fims_log.hpp"
+
+
 #define TMB_MODEL
 
 

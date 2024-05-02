@@ -7,6 +7,8 @@
 #include "rcpp_objects/rcpp_data.hpp"
 
 bool CreateModel(){
+    
+  FIMS_LOG("CreateModel: "+ fims::to_string(RcppInterfaceBase::interface_objects.size())+ " instantiated model objects.")
   for (size_t i = 0; i < RcppInterfaceBase::interface_objects.size();
        i++) {
     RcppInterfaceBase::interface_objects[i]->prepare();
@@ -42,6 +44,45 @@ void clear(){
     Variable::parameters.clear();
 }
 
+std::string GetLog() {
+  return FIMSLog::fims_log->get_log();
+}
+
+std::string GetLogErrors() {
+  return FIMSLog::fims_log->get_errors();
+}
+
+std::string GetLogWarnings() {
+  return FIMSLog::fims_log->get_warnings();
+}
+
+std::string GetLogInfo() {
+  return FIMSLog::fims_log->get_info();
+}
+
+std::string GetLogModule(const std::string& module) {
+  return FIMSLog::fims_log->get_module(module);
+}
+
+void WriteLog(bool write) {
+  FIMS_LOG("Setting FIMS write log: "+ fims::to_string(write))
+  FIMSLog::fims_log->write_on_exit = write;
+}
+
+void SetLogPath(const std::string& path) {
+  FIMS_LOG("Setting FIMS log path: "+ path)
+  FIMSLog::fims_log->set_path(path);
+}
+
+void InitLogging(){
+  FIMS_LOG("Initializing FIMS logging system.")
+  std::signal(SIGSEGV, &WriteAtExit);
+  std::signal(SIGINT, &WriteAtExit);
+  std::signal(SIGABRT, &WriteAtExit);
+  std::signal(SIGFPE, &WriteAtExit);
+  std::signal(SIGILL, &WriteAtExit);
+  std::signal(SIGTERM, &WriteAtExit);
+}
 
 /**
  * Define the Rcpp module.
@@ -67,6 +108,14 @@ RCPP_MODULE(growth) {
     Rcpp::function("get_parameter_vector", get_parameter_vector);
     Rcpp::function("clear", clear);
     Rcpp::function("CreateModel", CreateModel);
+    Rcpp::function("GetLog", GetLog);
+    Rcpp::function("GetLogErrors", GetLogErrors);
+    Rcpp::function("GetLogWarnings", GetLogWarnings);
+    Rcpp::function("GetLogInfo", GetLogInfo);
+    Rcpp::function("GetLogModule", GetLogModule);
+    Rcpp::function("WriteLog", WriteLog);
+    Rcpp::function("SetLogPath", SetLogPath);
+    Rcpp::function("InitLogging", InitLogging);
 };
 
 #endif

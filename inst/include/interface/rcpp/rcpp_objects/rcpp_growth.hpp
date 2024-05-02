@@ -51,7 +51,8 @@ public:
 
     template<typename Type>
     bool prepare_local() {
-
+        FIMS_LOG("vonBertalanffyInterface::prepare_local.")
+        
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
         std::shared_ptr< VonBertalanffy<Type> > vb = 
             std::make_shared<VonBertalanffy<Type> >();
@@ -102,7 +103,7 @@ public:
      * Prepares the model to work with TMB.
      */
     virtual bool prepare() {
-
+        FIMS_LOG("vonBertalanffyInterface::prepare.")
 #ifdef TMB_MODEL
         this->prepare_local<TMB_FIMS_REAL_TYPE>();
         this->prepare_local<TMB_FIMS_FIRST_ORDER>();
@@ -119,6 +120,7 @@ public:
      * portable model once and transfers values back to the Rcpp interface.
      */
     void finalize(Rcpp::NumericVector v) {
+        FIMS_LOG("vonBertalanffyInterface::finalize.")
         std::shared_ptr< Model<double> > model = Model<double>::getInstance();
         //std::shared_ptr< VonBertalanffy<double> > vb;
         //vb = std::make_shared<VonBertalanffy<double> >();
@@ -141,6 +143,7 @@ public:
      * Print model values.
      */
     void show_() {
+        FIMS_LOG("vonBertalanffyInterface::show.")
         Rcpp::Rcout << "vonBertalanffy:\n";
         Rcpp::Rcout << "k = " << this->k.value << "\n";
         Rcpp::Rcout << "a_min = " << this->a_min.value << "\n";

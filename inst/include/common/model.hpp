@@ -39,6 +39,12 @@ class Model{
    * of observed and predicted length.
    */
   Type evaluate(){
+      if (obsdata -> ages.size() == 0) {
+          FIMS_WARNING("Model::obsdata -> ages.size() == 0.")
+      }
+      
+      
+      
     Type norm2 = 0.0;
     for(int i =0; i < obsdata -> ages.size(); i++){
         Type pred = vb -> evaluate(obsdata -> ages[i]);

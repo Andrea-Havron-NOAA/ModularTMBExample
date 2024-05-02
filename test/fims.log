@@ -1,0 +1,90 @@
+[
+{
+"timestamp" : "Thu May  2 10:37:45 2024",
+"level" : "info",
+"message" : "Initializing FIMS logging system.",
+"id" : "0",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "./../inst/include/interface/rcpp/rcpp_interface.hpp",
+"function" : "void InitLogging()",
+"line" : "78"
+},
+{
+"timestamp" : "Thu May  2 10:37:45 2024",
+"level" : "info",
+"message" : "CreateModel: 2 instantiated model objects.",
+"id" : "1",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "./../inst/include/interface/rcpp/rcpp_interface.hpp",
+"function" : "bool CreateModel()",
+"line" : "11"
+},
+{
+"timestamp" : "Thu May  2 10:37:45 2024",
+"level" : "info",
+"message" : "vonBertalanffyInterface::prepare.",
+"id" : "2",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "./../inst/include/interface/rcpp/rcpp_objects/rcpp_growth.hpp",
+"function" : "virtual bool vonBertalanffyInterface::prepare()",
+"line" : "106"
+},
+{
+"timestamp" : "Thu May  2 10:37:45 2024",
+"level" : "info",
+"message" : "vonBertalanffyInterface::prepare_local.",
+"id" : "3",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "./../inst/include/interface/rcpp/rcpp_objects/rcpp_growth.hpp",
+"function" : "bool vonBertalanffyInterface::prepare_local() [Type = double]",
+"line" : "54"
+},
+{
+"timestamp" : "Thu May  2 10:37:45 2024",
+"level" : "info",
+"message" : "vonBertalanffyInterface::prepare_local.",
+"id" : "4",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "./../inst/include/interface/rcpp/rcpp_objects/rcpp_growth.hpp",
+"function" : "bool vonBertalanffyInterface::prepare_local() [Type = CppAD::AD<double>]",
+"line" : "54"
+},
+{
+"timestamp" : "Thu May  2 10:37:45 2024",
+"level" : "info",
+"message" : "vonBertalanffyInterface::prepare_local.",
+"id" : "5",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "./../inst/include/interface/rcpp/rcpp_objects/rcpp_growth.hpp",
+"function" : "bool vonBertalanffyInterface::prepare_local() [Type = CppAD::AD<CppAD::AD<double>>]",
+"line" : "54"
+},
+{
+"timestamp" : "Thu May  2 10:37:45 2024",
+"level" : "info",
+"message" : "vonBertalanffyInterface::prepare_local.",
+"id" : "6",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "./../inst/include/interface/rcpp/rcpp_objects/rcpp_growth.hpp",
+"function" : "bool vonBertalanffyInterface::prepare_local() [Type = CppAD::AD<CppAD::AD<CppAD::AD<double>>>]",
+"line" : "54"
+},
+{
+"timestamp" : "Thu May  2 10:37:45 2024",
+"level" : "info",
+"message" : "vonBertalanffyInterface::finalize.",
+"id" : "7",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "./../inst/include/interface/rcpp/rcpp_objects/rcpp_growth.hpp",
+"function" : "void vonBertalanffyInterface::finalize(Rcpp::NumericVector)",
+"line" : "123"
+}
+]

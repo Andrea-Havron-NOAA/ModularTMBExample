@@ -20,6 +20,9 @@ for(i in 1:length(ages)){
   data[i] = (l_inf * (1.0 - exp(-k * (ages[i] - a_min))))* runif(1,.90,1.5)
 }
 
+
+g$InitLogging()
+
 #clear the parameter list, if there already is one
 g$clear();
 
@@ -78,3 +81,4 @@ obj$report()
 #show final gradient
 print("final gradient:")
 print(rep$gradient.fixed)
+cat(g$GetLog())
