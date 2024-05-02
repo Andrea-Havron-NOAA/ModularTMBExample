@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <vector>
 #include <chrono>
-#include <format>
 #include <sstream>
 #include <iostream>
 #include <filesystem>
