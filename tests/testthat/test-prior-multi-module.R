@@ -19,8 +19,7 @@ colnames(Sigma) <- c('Linf', 'K')
 
 #simulate data
 set.seed(123)
-sim.parms <- mvtnorm::rmvnorm(2, y[[1]]$Mean_pred[params], 
-                                  y[[1]]$Cov_pred[params, params])
+sim.parms <- mvtnorm::rmvnorm(2, mu, Sigma)
 l_inf<- sim.parms[,1]
 a_min<- 0.1
 #k parameter is in logspace and needs to be transformed
