@@ -12,6 +12,7 @@
 #include <fstream>
 #include <signal.h>
 #include <csignal>
+#include <cstring>
 #include <memory>
 
 
