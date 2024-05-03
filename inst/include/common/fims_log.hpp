@@ -292,7 +292,7 @@ public:
     std::stringstream ss;
     std::vector<LogEntry> info;
     for (size_t i = 0; i < log_entries.size(); i++) {
-      if (log_entries[i].file == module) {
+      if (log_entries[i].file.find(module) != std::string::npos) {
         info.push_back(this->log_entries[i]);
       }
     }

@@ -86,7 +86,7 @@ print(rep$gradient.fixed)
 cat(g$GetLog())
 
 
-fims_log<-fromJSON(g$GetLog(),simplifyVector = FALSE)
+fims_log<-fromJSON(g$GetLogModule("rcpp_interface") ,simplifyVector = FALSE)
 for(i in 1:length(fims_log)){
     print(fims_log[[i]])
     }
