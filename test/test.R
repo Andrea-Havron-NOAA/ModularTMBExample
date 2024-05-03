@@ -102,3 +102,6 @@ for(i in 1:length(fims_log)){
     print(fims_log[[i]]$routine)
    cat("\n\n")
 }
+
+#intentional crash, should write fims.log
+.Call("abort")
