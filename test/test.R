@@ -4,6 +4,8 @@
 library(TMB)
 library(Rcpp)
 library(ModularTMBExample)
+library(jsonlite)
+
 
 #get the Rcpp module
 g<-Rcpp::Module(module = "growth",PACKAGE = "ModularTMBExample")
@@ -82,3 +84,21 @@ obj$report()
 print("final gradient:")
 print(rep$gradient.fixed)
 cat(g$GetLog())
+
+
+fims_log<-fromJSON(g$GetLog(),simplifyVector = FALSE)
+for(i in 1:length(fims_log)){
+    print(fims_log[[i]])
+    }
+
+for(i in 1:length(fims_log)){
+    print(fims_log[[i]]$user)
+    print(fims_log[[i]]$timestamp)
+    print(fims_log[[i]]$id)
+    print(fims_log[[i]]$level)
+    print(fims_log[[i]]$message)
+    print(fims_log[[i]]$line)
+    print(fims_log[[i]]$file)
+    print(fims_log[[i]]$func)
+   cat("\n\n")
+}

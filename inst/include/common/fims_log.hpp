@@ -80,7 +80,7 @@ struct LogEntry {
     ss << "\"user\" : " << "\"" << this->user << "\",\n";
     ss << "\"wd\" : " << "\"" << this->wd << "\",\n";
     ss << "\"file\" : " << "\"" << this->file << "\",\n";
-    ss << "\"function\" : " << "\"" << this->func << "\",\n";
+    ss << "\"func\" : " << "\"" << this->func << "\",\n";
     ss << "\"line\" : " << "\"" << this->line << "\"\n";
     return ss.str();
   }
