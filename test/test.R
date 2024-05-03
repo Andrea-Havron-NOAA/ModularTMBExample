@@ -97,8 +97,8 @@ for(i in 1:length(fims_log)){
     print(fims_log[[i]]$id)
     print(fims_log[[i]]$level)
     print(fims_log[[i]]$message)
-    print(fims_log[[i]]$line)
     print(fims_log[[i]]$file)
-    print(fims_log[[i]]$func)
+    print(fims_log[[i]]$line)
+    print(fims_log[[i]]$routine)
    cat("\n\n")
 }
