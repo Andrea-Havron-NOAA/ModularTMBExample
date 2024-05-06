@@ -102,7 +102,7 @@ void SetLogThrowOnError(bool throw_on_error) {
 }
 
 /**
- * Initializes the logging syste, Sets all signal handling. 
+ * Initializes the logging syste, Sets all signal handling.
  */
 void InitLogging(){
   FIMS_LOG("Initializing FIMS logging system.")
@@ -112,6 +112,27 @@ void InitLogging(){
   std::signal(SIGFPE, &WriteAtExit);
   std::signal(SIGILL, &WriteAtExit);
   std::signal(SIGTERM, &WriteAtExit);
+}
+
+/**
+ * Add log info entry from R.
+ */
+void LogInfo(std::string log_entry){
+    FIMSLog::fims_log->message(log_entry, -999, "R_callback", "R_script_entry");
+}
+
+/**
+ * Add log warning entry from R.
+ */
+void LogWarning(std::string log_entry){
+    FIMSLog::fims_log->warning_message(log_entry, -999, "R_callback", "R_script_entry");
+}
+
+/**
+ * Add log error entry from R.
+ */
+void LogError(std::string log_entry){
+    FIMSLog::fims_log->error_message(log_entry, -999, "R_callback", "R_script_entry");
 }
 
 /**
@@ -146,6 +167,11 @@ RCPP_MODULE(growth) {
     Rcpp::function("WriteLog", WriteLog);
     Rcpp::function("SetLogPath", SetLogPath);
     Rcpp::function("InitLogging", InitLogging);
+    Rcpp::function("SetLogThrowOnError", SetLogThrowOnError);
+    Rcpp::function("LogInfo", LogInfo);
+    Rcpp::function("LogWarning", LogWarning);
+    Rcpp::function("LogError", LogError);
+    
 };
 
 #endif

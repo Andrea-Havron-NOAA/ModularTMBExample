@@ -79,6 +79,9 @@ vonB$finalize(rep$par.fixed)
 vonB$show()
 
 obj$report()
+g$SetLogThrowOnError(TRUE)
+
+
 
 #show final gradient
 print("final gradient:")
@@ -136,6 +139,8 @@ for(i in 1:length(fims_log)){
     print(fims_log[[i]]$routine)
    cat("\n\n")
 }
+
+g$LogError("test error callback")
 
 #intentional crash, should write fims.log
 .Call("abort")
