@@ -23,7 +23,12 @@ for(i in 1:length(ages)){
 }
 
 
+#initialize the logging sytem, sets signal handlers in case a
+#runtime error occurs, like segfault, abnormal termination, etc.
 g$InitLogging()
+
+#write log even in crash occurs
+g$WriteLog(TRUE)
 
 #clear the parameter list, if there already is one
 g$clear();
