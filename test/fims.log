@@ -1,6 +1,6 @@
 [
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
+"timestamp" : "Mon May  6 11:32:19 2024",
 "level" : "info",
 "message" : "Initializing FIMS logging system.",
 "id" : "0",
@@ -11,7 +11,7 @@
 "line" : "108"
 },
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
+"timestamp" : "Mon May  6 11:32:20 2024",
 "level" : "info",
 "message" : "CreateModel: 2 instantiated model objects.",
 "id" : "1",
@@ -22,7 +22,7 @@
 "line" : "11"
 },
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
+"timestamp" : "Mon May  6 11:32:20 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare.",
 "id" : "2",
@@ -33,7 +33,7 @@
 "line" : "106"
 },
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
+"timestamp" : "Mon May  6 11:32:20 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare_local.",
 "id" : "3",
@@ -44,7 +44,7 @@
 "line" : "54"
 },
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
+"timestamp" : "Mon May  6 11:32:20 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare_local.",
 "id" : "4",
@@ -55,7 +55,7 @@
 "line" : "54"
 },
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
+"timestamp" : "Mon May  6 11:32:20 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare_local.",
 "id" : "5",
@@ -66,7 +66,7 @@
 "line" : "54"
 },
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
+"timestamp" : "Mon May  6 11:32:20 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare_local.",
 "id" : "6",
@@ -77,7 +77,7 @@
 "line" : "54"
 },
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
+"timestamp" : "Mon May  6 11:32:20 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::finalize.",
 "id" : "7",
@@ -88,14 +88,36 @@
 "line" : "123"
 },
 {
-"timestamp" : "Mon May  6 10:17:36 2024",
-"level" : "error",
-"message" : "test error callback",
+"timestamp" : "Mon May  6 11:32:20 2024",
+"level" : "info",
+"message" : "test info callback",
 "id" : "8",
 "user" : "mattadmin",
 "wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
 "file" : "R_callback",
 "routine" : "R_script_entry",
-"line" : "0"
+"line" : "-999"
+},
+{
+"timestamp" : "Mon May  6 11:32:20 2024",
+"level" : "warning",
+"message" : "test warning callback",
+"id" : "9",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "R_callback",
+"routine" : "R_script_entry",
+"line" : "-999"
+},
+{
+"timestamp" : "Mon May  6 11:32:20 2024",
+"level" : "error",
+"message" : "test error callback",
+"id" : "10",
+"user" : "mattadmin",
+"wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
+"file" : "R_callback",
+"routine" : "R_script_entry",
+"line" : "-999"
 }
 ]

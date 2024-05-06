@@ -70,7 +70,7 @@ struct LogEntry {
   std::string wd;
   std::string file;
   std::string func;
-  size_t line;
+  int line;
 
   std::string to_string() {
     std::stringstream ss;
@@ -177,7 +177,9 @@ public:
     this->log_entries.push_back(l);
       
       if (this->throw_on_error) {
-          throw std::runtime_error(l.to_string().c_str());
+          std::stringstream ss;
+          ss<<"\n\n"<<l.to_string()<<"\n\n";
+          throw std::runtime_error(ss.str().c_str());
       }
 
   }

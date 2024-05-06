@@ -79,6 +79,11 @@ vonB$finalize(rep$par.fixed)
 vonB$show()
 
 obj$report()
+
+g$LogInfo("test info callback")
+g$LogWarning("test warning callback")
+
+#set to throw on error entry
 g$SetLogThrowOnError(TRUE)
 
 
@@ -140,6 +145,7 @@ for(i in 1:length(fims_log)){
    cat("\n\n")
 }
 
+#should throw
 g$LogError("test error callback")
 
 #intentional crash, should write fims.log
