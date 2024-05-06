@@ -86,10 +86,44 @@ print(rep$gradient.fixed)
 cat(g$GetLog())
 
 
-fims_log<-fromJSON(g$GetLogModule("rcpp_interface") ,simplifyVector = FALSE)
+#extract log info entries only
+print("log 'info' entries:")
+fims_log<-fromJSON(g$GetLogInfo() ,simplifyVector = FALSE)
+
+
 for(i in 1:length(fims_log)){
-    print(fims_log[[i]])
-    }
+    print(fims_log[[i]]$user)
+    print(fims_log[[i]]$timestamp)
+    print(fims_log[[i]]$id)
+    print(fims_log[[i]]$level)
+    print(fims_log[[i]]$message)
+    print(fims_log[[i]]$file)
+    print(fims_log[[i]]$line)
+    print(fims_log[[i]]$routine)
+   cat("\n\n")
+}
+
+#extract log entries by rcpp_interface module
+print("log 'rcpp_interface' entries:")
+fims_log<-fromJSON(g$GetLogModule("rcpp_interface") ,simplifyVector = FALSE)
+
+
+for(i in 1:length(fims_log)){
+    print(fims_log[[i]]$user)
+    print(fims_log[[i]]$timestamp)
+    print(fims_log[[i]]$id)
+    print(fims_log[[i]]$level)
+    print(fims_log[[i]]$message)
+    print(fims_log[[i]]$file)
+    print(fims_log[[i]]$line)
+    print(fims_log[[i]]$routine)
+   cat("\n\n")
+}
+
+
+#extract log entries by growth module
+print("log 'growth' entries:")
+fims_log<-fromJSON(g$GetLogModule("growth") ,simplifyVector = FALSE)
 
 for(i in 1:length(fims_log)){
     print(fims_log[[i]]$user)
