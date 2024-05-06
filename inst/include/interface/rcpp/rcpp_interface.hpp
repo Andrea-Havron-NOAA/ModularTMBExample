@@ -44,36 +44,66 @@ void clear(){
     Variable::parameters.clear();
 }
 
+/**
+ * Returns the entire log as a string in JSON format.
+ */
 std::string GetLog() {
   return FIMSLog::fims_log->get_log();
 }
-
+/**
+ * Returns only error entries from log as a string in JSON format.
+ */
 std::string GetLogErrors() {
   return FIMSLog::fims_log->get_errors();
 }
 
+/**
+ * Returns only warning entries from log as a string in JSON format.
+ */
 std::string GetLogWarnings() {
   return FIMSLog::fims_log->get_warnings();
 }
 
+/**
+ * Returns only info entries from log as a string in JSON format.
+ */
 std::string GetLogInfo() {
   return FIMSLog::fims_log->get_info();
 }
 
+/**
+ * Returns  log entries by module as a string in JSON format.
+ */
 std::string GetLogModule(const std::string& module) {
   return FIMSLog::fims_log->get_module(module);
 }
 
+/**
+ * If true, writes the log on exit .
+ */
 void WriteLog(bool write) {
   FIMS_LOG("Setting FIMS write log: "+ fims::to_string(write))
   FIMSLog::fims_log->write_on_exit = write;
 }
 
+/**
+ * Sets the path for the log file to written.
+ */
 void SetLogPath(const std::string& path) {
   FIMS_LOG("Setting FIMS log path: "+ path)
   FIMSLog::fims_log->set_path(path);
 }
 
+/**
+ * If true, throws a  runtime exception when an error is logged .
+ */
+void SetLogThrowOnError(bool throw_on_error) {
+    FIMSLog::fims_log->throw_on_error = throw_on_error;
+}
+
+/**
+ * Initializes the logging syste, Sets all signal handling. 
+ */
 void InitLogging(){
   FIMS_LOG("Initializing FIMS logging system.")
   std::signal(SIGSEGV, &WriteAtExit);

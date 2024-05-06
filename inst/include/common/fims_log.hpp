@@ -14,6 +14,7 @@
 #include <csignal>
 #include <cstring>
 #include <memory>
+#include <stdexcept>
 
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
@@ -110,6 +111,7 @@ class FIMSLog {
   }
 public:
   bool write_on_exit = true;
+    bool throw_on_error = false;
   static std::shared_ptr<FIMSLog> fims_log;
 
   FIMSLog() {
@@ -173,6 +175,10 @@ public:
     l.line = line;
     l.func = func;
     this->log_entries.push_back(l);
+      
+      if (this->throw_on_error) {
+          throw std::runtime_error(l.to_string().c_str());
+      }
 
   }
 
