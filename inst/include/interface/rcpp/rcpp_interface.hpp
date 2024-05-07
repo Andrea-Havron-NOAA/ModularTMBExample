@@ -118,14 +118,14 @@ void InitLogging(){
  * Add log info entry from R.
  */
 void LogInfo(std::string log_entry){
-    FIMSLog::fims_log->message(log_entry, -999, "R_env", "R_script_entry");
+    FIMSLog::fims_log->message(log_entry, -1, "R_env", "R_script_entry");
 }
 
 /**
  * Add log warning entry from R.
  */
 void LogWarning(std::string log_entry){
-    FIMSLog::fims_log->warning_message(log_entry, -999, "R_env", "R_script_entry");
+    FIMSLog::fims_log->warning_message(log_entry, -1, "R_env", "R_script_entry");
 }
 
 /**
@@ -160,7 +160,7 @@ void LogError(std::string log_entry){
 //    Rcpp::Environment base = Rcpp::Environment::global_env();
 //    Rcpp::Function f  = base["traceback"];
 //    std::string ret = Rcpp::as<std::string>(f());
-    FIMSLog::fims_log->error_message(log_entry, -999,  "R_env", ret.c_str());
+    FIMSLog::fims_log->error_message(log_entry, -1,  "R_env", ret.c_str());
 }
 
 /**
