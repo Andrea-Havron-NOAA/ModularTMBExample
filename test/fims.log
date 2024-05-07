@@ -1,6 +1,6 @@
 [
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "Initializing FIMS logging system.",
 "id" : "0",
@@ -11,7 +11,7 @@
 "line" : "108"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "Setting FIMS write log: 1",
 "id" : "1",
@@ -22,7 +22,7 @@
 "line" : "85"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "CreateModel: 2 instantiated model objects.",
 "id" : "2",
@@ -33,7 +33,7 @@
 "line" : "11"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare.",
 "id" : "3",
@@ -44,7 +44,7 @@
 "line" : "106"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare_local.",
 "id" : "4",
@@ -55,7 +55,7 @@
 "line" : "54"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare_local.",
 "id" : "5",
@@ -66,7 +66,7 @@
 "line" : "54"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare_local.",
 "id" : "6",
@@ -77,7 +77,7 @@
 "line" : "54"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::prepare_local.",
 "id" : "7",
@@ -88,7 +88,7 @@
 "line" : "54"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "vonBertalanffyInterface::finalize.",
 "id" : "8",
@@ -99,7 +99,7 @@
 "line" : "123"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "info",
 "message" : "test info callback",
 "id" : "9",
@@ -107,10 +107,10 @@
 "wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
 "file" : "R_env",
 "routine" : "R_script_entry",
-"line" : "-999"
+"line" : "-1"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "warning",
 "message" : "test warning callback",
 "id" : "10",
@@ -118,10 +118,10 @@
 "wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
 "file" : "R_env",
 "routine" : "R_script_entry",
-"line" : "-999"
+"line" : "-1"
 },
 {
-"timestamp" : "Tue May  7 13:13:23 2024",
+"timestamp" : "Tue May  7 14:01:16 2024",
 "level" : "error",
 "message" : "test error callback",
 "id" : "11",
@@ -129,8 +129,15 @@
 "wd" : "/Users/mattadmin/ModularTMBExample/logging-refactor/ModularTMBExample/test",
 "file" : "R_env",
 "routine" : "traceback:
-No traceback available 
+4: .External(list(name = "InternalFunction_invoke", address = <pointer: 0x6000001d8fc0>, 
+       dll = list(name = "Rcpp", path = "/Users/mattadmin/Library/R/x86_64/4.3/library/Rcpp/libs/Rcpp.so", 
+           dynamicLookup = TRUE, handle = <pointer: 0x7ff9145c8170>, 
+           info = <pointer: 0x6000025d8180>), numParameters = -1L), 
+       <pointer: 0x600000fd4c00>, ...)
+3: g$LogError("test error callback")
+2: nested_test_error()
+1: test_error()
 ",
-"line" : "-999"
+"line" : "-1"
 }
 ]
