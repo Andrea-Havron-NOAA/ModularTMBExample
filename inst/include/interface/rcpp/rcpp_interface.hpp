@@ -148,7 +148,7 @@ void LogError(std::string log_entry){
     Rcpp::Rcout<<"after call.";
     UNPROTECT(2);
     std::stringstream ss_ret;
-    ss_ret<<"\n";
+    ss_ret<<"traceback:\n";
     for (int j = 0; j < LENGTH(result); j++) {
         std::string str(CHAR(STRING_ELT(result, j)));
         ss_ret<<str<<"\n";

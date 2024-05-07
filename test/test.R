@@ -150,8 +150,18 @@ for(i in 1:length(fims_log)){
    cat("\n\n")
 }
 
-#should throw
-g$LogError("test error callback")
+
+nested_test_error<-function(){
+    #should throw
+    g$LogError("test error callback")
+}
+test_error<-function(){
+    nested_test_error()
+}
+
+
+#should add full R stack trace to the error message
+test_error()
 
 #intentional crash, should write fims.log
 .Call("abort")
