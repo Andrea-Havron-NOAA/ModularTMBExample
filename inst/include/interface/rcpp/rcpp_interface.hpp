@@ -118,21 +118,49 @@ void InitLogging(){
  * Add log info entry from R.
  */
 void LogInfo(std::string log_entry){
-    FIMSLog::fims_log->message(log_entry, -999, "R_callback", "R_script_entry");
+    FIMSLog::fims_log->message(log_entry, -999, "R_env", "R_script_entry");
 }
 
 /**
  * Add log warning entry from R.
  */
 void LogWarning(std::string log_entry){
-    FIMSLog::fims_log->warning_message(log_entry, -999, "R_callback", "R_script_entry");
+    FIMSLog::fims_log->warning_message(log_entry, -999, "R_env", "R_script_entry");
 }
 
 /**
  * Add log error entry from R.
  */
 void LogError(std::string log_entry){
-    FIMSLog::fims_log->error_message(log_entry, -999, "R_callback", "R_script_entry");
+  
+    std::stringstream ss;
+                ss << "capture.output(traceback(4))";
+    SEXP expression, result;
+                ParseStatus status;
+
+                PROTECT(expression = R_ParseVector(Rf_mkString(ss.str().c_str()), 1, &status, R_NilValue));
+                if (status != PARSE_OK) {
+                    std::cout << "Error parsing expression" << std::endl;
+                    UNPROTECT(1);
+                }
+    Rcpp::Rcout<<"before call.";
+                PROTECT(result = Rf_eval(VECTOR_ELT(expression, 0), R_GlobalEnv));
+    Rcpp::Rcout<<"after call.";
+    UNPROTECT(2);
+    std::stringstream ss_ret;
+    ss_ret<<"\n";
+    for (int j = 0; j < LENGTH(result); j++) {
+        std::string str(CHAR(STRING_ELT(result, j)));
+        ss_ret<<str<<"\n";
+    }
+    
+    std::string ret = ss_ret.str();//"find error";//Rcpp::as<std::string>(result);
+
+    
+//    Rcpp::Environment base = Rcpp::Environment::global_env();
+//    Rcpp::Function f  = base["traceback"];
+//    std::string ret = Rcpp::as<std::string>(f());
+    FIMSLog::fims_log->error_message(log_entry, -999,  "R_env", ret.c_str());
 }
 
 /**
