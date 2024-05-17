@@ -105,11 +105,15 @@ test_that("test single prior",{
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
-library(tmbstan)
-fit <- tmbstan(obj)
-library(shinystan)
-library(ggplot2)
-launch_shinystan(fit)
+test_that( "test_tmbstan", {
+skip_on_ci(library(tmbstan))
+skip_on_ci(fit <- tmbstan(obj))
+skip_on_ci(library(shinystan))
+skip_on_ci(library(ggplot2))
+skip_on_ci(launch_shinystan(fit))
+})
+
+clear()
 # #update the von Bertalanffy object with updated parameters
 # vonB$finalize(rep$par.fixed)
 

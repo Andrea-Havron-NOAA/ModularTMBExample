@@ -56,12 +56,40 @@ Rcpp::StringVector get_parameter_names_vector() {
 
 
 /**
- * Clears the vector of independent variables.
+ * Clears parameters
  */
-void clear(){
-    Variable::parameters.clear();
+template <typename Type>
+void clear_internal() {
+  std::shared_ptr<Model<Type> > model = 
+    Model<Type>::getInstance();
+  model->parameters.clear();
 }
 
+/**
+ * Clears memory from model.
+ */
+void clear() {
+  RcppInterfaceBase::interface_objects.clear();
+  Variable::parameters.clear();
+  
+  // rcpp_growth
+  GrowthInterfaceBase::id_g = 1;
+  GrowthInterfaceBase::growth_objects.clear();
+  
+  //rcpp_nll
+  NLLInterface::id_g = 1;
+  NLLInterface::nll_objects.clear();
+  
+  //rcpp_population
+  PopulationInterfaceBase::id_g = 1;
+  PopulationInterfaceBase::interface_objects.clear();
+  
+  
+  clear_internal<TMB_FIMS_REAL_TYPE>();
+  clear_internal<TMB_FIMS_FIRST_ORDER>();
+  clear_internal<TMB_FIMS_SECOND_ORDER>();
+  clear_internal<TMB_FIMS_THIRD_ORDER>();
+}
 
 /**
  * Define the Rcpp module.

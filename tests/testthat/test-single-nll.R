@@ -112,7 +112,7 @@ test_that("test single nll",{
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
-
+clear()
 
 # #update the von Bertalanffy object with updated parameters
 # vonB$finalize(rep$par.fixed)

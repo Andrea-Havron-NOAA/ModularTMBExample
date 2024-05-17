@@ -28,7 +28,7 @@ k<- exp(sim.parms[2])
 ages<-c(0.1, 1,2,3,4,5,6,7,8)
 Length<-replicate(length(ages), 0.0)
 
-for(i in 1:length(ages)){
+for(i in seq_along(ages)){
   Length[i] = (l_inf * (1.0 - exp(-k * (ages[i] - a_min))))
 }
 #add observation error
@@ -102,24 +102,31 @@ print(obj$gr(obj$par))
 opt <- nlminb(obj$par, obj$fn, obj$gr)
 sdr <- sdreport(obj)
 
-mean.sdr <- as.list(sdr, "Est")$p
-std.sdr <- as.list(sdr, "Std")$p
+mean_sdr <- as.list(sdr, "Est")$p
+std_sdr <- as.list(sdr, "Std")$p
 ci <- list()
-for(i in seq_along(mean.sdr)){
-  ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
+for(i in seq_along(mean_sdr)){
+  ci[[i]] <- mean_sdr[i] + c(-1, 1) * qnorm(.975) * std_sdr[i]
 }
 
-test_that("test multivariate prior",{
+test_that("test multivariate prior", {
   expect_equal( log(k) > ci[[1]][1] & log(k) < ci[[1]][2], TRUE)
   expect_equal( l_inf > ci[[2]][1] & l_inf < ci[[2]][2], TRUE)
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
 #Fully Bayesian
-library(tmbstan)
-newobj <- tmbstan(obj, warmup = 1000, iter = 4000)
-library(shinystan)
-launch_shinystan(newobj)
+test_that("test_tmbstan", {
+  skip_on_ci("skip tmbstan")
+  library(tmbstan)
+  library(shinystan)
+  library(ggplot2)
+  newobj <- tmbstan(obj, warmup = 1000, iter = 4000)
+  launch_shinystan(newobj)
+})
+
+clear()
+
 
 # #update the von Bertalanffy object with updated parameters
 # vonB$finalize(rep$par.fixed)
