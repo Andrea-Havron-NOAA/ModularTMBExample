@@ -126,7 +126,7 @@ public:
                 Variable v;
                 this->storage_m.push_back(Rcpp::wrap(v));
             }
-        }else if(n > size){
+        }else if(n < size){
             int m = size;
             Rcpp::List l(m);
             for(size_t i = 0; i < m; i++){
