@@ -115,14 +115,18 @@ test_that("test multivariate prior", {
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
+DataNLL$finalize(opt$par)
+GrowthMVPrior$finalize(opt$par)
+DataNLL$nll_vec
+GrowthMVPrior$nll_vec
 #Fully Bayesian
 test_that("test_tmbstan", {
   skip_on_ci("skip tmbstan")
   library(tmbstan)
   library(shinystan)
   library(ggplot2)
-  newobj <- tmbstan(obj, warmup = 1000, iter = 4000)
-  launch_shinystan(newobj)
+  fit <- tmbstan(obj, init = "best.last.par")
+  launch_shinystan(obj)
 })
 
 clear()

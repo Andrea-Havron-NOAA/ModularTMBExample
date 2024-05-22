@@ -105,14 +105,20 @@ test_that("test single prior",{
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
-test_that( "test_tmbstan", {
-skip_on_ci(library(tmbstan))
-skip_on_ci(fit <- tmbstan(obj))
-skip_on_ci(library(shinystan))
-skip_on_ci(library(ggplot2))
-skip_on_ci(launch_shinystan(fit))
-})
+#Check nll output
+DataNLL$finalize(opt$par)
+GrowthKPrior$finalize(opt$par)
+DataNLL$nll_vec
+GrowthKPrior$nll_vec
 
+test_that("test_tmbstan", {
+  skip_on_ci("skip tmbstan")
+  library(tmbstan)
+  library(shinystan)
+  library(ggplot2)
+  fit <- tmbstan(obj, init = "best.last.par")
+  launch_shinystan(obj)
+})
 clear()
 # #update the von Bertalanffy object with updated parameters
 # vonB$finalize(rep$par.fixed)
