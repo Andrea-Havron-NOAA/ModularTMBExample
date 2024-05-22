@@ -47,14 +47,16 @@ struct NormalNLL : public NLLBase<Type> {
                 sd[i] = exp(log_sd[i]);
             }
         }
+        this->nll_vec.resize(this->observed_value.size());
         for(int i=0; i<this->observed_value.size(); i++){
-      //      nll -= keep[i] * dnorm(x[i], eta[i], sd[i], true);
-            nll -= dnorm(this->observed_value[i], mu[i], sd[i], true);
+      //      nll = keep[i] * -dnorm(x[i], eta[i], sd[i], true);
+            this->nll_vec[i] = -dnorm(this->observed_value[i], mu[i], sd[i], true);
+            nll += this->nll_vec[i];
             /*
             if(osa_flag){//data observation type implements osa residuals
                 //code for osa cdf method
-                nll -= keep.cdf_lower[i] * log( pnorm(x[i], eta[i], sd[i]) );
-                nll -= keep.cdf_upper[i] * log( 1.0 - pnorm(x[i], eta[i], sd[i]) );
+                this->nll_vec[i] = keep.cdf_lower[i] * -log( pnorm(x[i], eta[i], sd[i]) );
+                this->nll_vec[i] = keep.cdf_upper[i] * -log( 1.0 - pnorm(x[i], eta[i], sd[i]) );
             }
             */
         }

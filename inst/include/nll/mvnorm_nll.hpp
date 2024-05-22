@@ -28,10 +28,14 @@ struct MVNormNLL : public NLLBase<Type> {
     virtual const Type evaluate(){
         fims::Vector<Type> resid;
         resid.resize(this->observed_value.size());
+        this->nll_vec.resize(1);
         for(int i=0; i<this->observed_value.size(); i++){
             resid[i] = this->observed_value[i] - this->expected_value[i];
         } 
         nll += density::MVNORM(Sigma)(resid);
+        this->nll_vec[0] = nll;
+        
+
         return(nll);
     }
 

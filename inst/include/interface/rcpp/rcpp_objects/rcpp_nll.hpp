@@ -47,6 +47,7 @@ public:
     VariableVector observed_value;
     VariableVector expected_value;
     VariableVector log_sd;
+    std::vector<double> nll_vec;
     std::string nll_type;
     std::vector<std::string> key;
 
@@ -144,6 +145,45 @@ public:
         return true;
 
     }
+
+    /**
+     * Update the model parameter values and finalize. Sets the parameter values and evaluates the
+     * portable model once and transfers values back to the Rcpp interface.
+     */
+     
+    void finalize(Rcpp::NumericVector v) {
+        std::shared_ptr< Model<double> > model = Model<double>::getInstance();
+        std::shared_ptr<NLLBase<double> > nll_base = model->nll_models[this->id];
+        NormalNLL<double>* norm = (NormalNLL<double>*) nll_base.get();    
+
+        for (int i = 0; i < v.size(); i++) {
+            (*model->parameters[i]) = v[i];
+        }
+
+        double f = model->evaluate();
+        /*
+        this->observed_value.resize(norm->observed_value.size());
+        for(int i=0; i<norm->observed_value.size(); i++){
+            this->observed_value[i].value = norm->observed_value[i];
+        }
+        this->expected_value.resize(norm->expected_value.size());
+        for(int i=0; i<norm->expected_value.size(); i++){
+            this->expected_value[i].value = norm->expected_value[i];
+        }
+        this->log_sd.resize(norm->log_sd.size());
+        Rcout << "log sd size after is: " << this->log_sd.size() << std::endl;
+        for(int i=0; i<norm->log_sd.size(); i++){
+            this->log_sd[i].value = norm->log_sd[i];
+        }
+        */
+        this->nll_vec.resize(norm->nll_vec.size());
+        for(int i=0; i<norm->nll_vec.size(); i++){
+            this->nll_vec[i] = norm->nll_vec[i];
+        }
+
+
+    }
+
 };
 
 
@@ -153,6 +193,7 @@ public:
     VariableVector observed_value;
     VariableVector expected_value;
     Rcpp::NumericMatrix Sigma;
+    std::vector<double> nll_vec;
     std::string nll_type;
     std::vector<std::string> key;
 
@@ -238,21 +279,57 @@ public:
     }
 
     
- /**
-     * Prepares the model to work with TMB.
+    /**
+    * Prepares the model to work with TMB.
      */
     virtual bool prepare() {
        
-#ifdef TMB_MODEL
+    #ifdef TMB_MODEL
         this->prepare_local<TMB_FIMS_REAL_TYPE>();
         this->prepare_local<TMB_FIMS_FIRST_ORDER>();
         this->prepare_local<TMB_FIMS_SECOND_ORDER>();
-        this->prepare_local<TMB_FIMS_THIRD_ORDER>();
-        
-#endif
+        this->prepare_local<TMB_FIMS_THIRD_ORDER>();    
+    #endif
         return true;
 
     }
+
+    /**
+     * Update the model parameter values and finalize. Sets the parameter values and evaluates the
+     * portable model once and transfers values back to the Rcpp interface.
+     */
+    void finalize(Rcpp::NumericVector v) {
+        
+        std::shared_ptr< Model<double> > model = Model<double>::getInstance();
+        std::shared_ptr<NLLBase<double> > nll_base = model->nll_models[this->id];
+        MVNormNLL<double>* mvnorm = (MVNormNLL<double>*) nll_base.get();  
+
+        for (int i = 0; i < v.size(); i++) {
+            (*model->parameters[i]) = v[i];
+        }
+
+        double f = model->evaluate();
+
+/*
+        for(int i=0; i<mvnorm->observed_value.size(); i++){
+            this->observed_value[i].value = mvnorm->observed_value[i];
+        }
+        for(int i=0; i<mvnorm->expected_value.size(); i++){
+            this->expected_value[i].value = mvnorm->expected_value[i];
+        }
+        for(int i=0; i<mvnorm->Sigma.col(0).size(); i++){
+            for(int j=0; j<mvnorm->Sigma.row(0).size(); j++){
+                this->Sigma[i,j] = mvnorm->Sigma(i,j);
+            }
+        }
+        */
+        this->nll_vec.resize(mvnorm->nll_vec.size());
+        for(int i=0; i<mvnorm->nll_vec.size(); i++){
+            this->nll_vec[i] = mvnorm->nll_vec[i];
+        }
+
+    }
+
 };
 
 

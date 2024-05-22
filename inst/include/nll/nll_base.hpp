@@ -10,6 +10,7 @@ static uint32_t id_g; /**< The ID of the instance of the NLLBase class */
 
 fims::Vector<Type> observed_value; 
 fims::Vector<Type> expected_value;
+fims::Vector<Type> nll_vec;
 std::string nll_type;
 std::vector<std::string> key;
 

@@ -112,6 +112,15 @@ test_that("test single nll",{
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
+#access output from Rcpp object
+vonB$finalize(opt$par)
+DataNLL$finalize(opt$par)
+#print optimzed values from RCPP
+vonB$logk$value
+vonB$l_inf$value
+#print itemized nll
+DataNLL$nll_vec
+
 clear()
 
 # #update the von Bertalanffy object with updated parameters

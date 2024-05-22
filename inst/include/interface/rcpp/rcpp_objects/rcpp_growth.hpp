@@ -196,12 +196,9 @@ public:
      * Update the model parameter values and finalize. Sets the parameter values and evaluates the
      * portable model once and transfers values back to the Rcpp interface.
      */
-    /*
     void finalize(Rcpp::NumericVector v) {
+        std::shared_ptr< Information<double> > info = Information<double>::getInstance();
         std::shared_ptr< Model<double> > model = Model<double>::getInstance();
-        //std::shared_ptr< VonBertalanffy<double> > vb;
-        //vb = std::make_shared<VonBertalanffy<double> >();
-
 
         for (int i = 0; i < v.size(); i++) {
             (*model->parameters[i]) = v[i];
@@ -209,13 +206,13 @@ public:
 
         double f = model->evaluate();
 
-        this->k.value = model->vb->k[0];
-        this->a_min.value = model->vb->a_min[0];
-        this->l_inf.value = model->vb->l_inf[0];
+        this->logk.value = info->vb_models[this->id]->logk[0];
+        this->a_min.value = info->vb_models[this->id]->a_min[0];
+        this->l_inf.value = info->vb_models[this->id]->l_inf[0];
 
 
-    }
-*/
+    } 
+
 //    /**
 //     * Print model values.
 //     */
