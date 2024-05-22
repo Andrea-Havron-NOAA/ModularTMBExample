@@ -25,11 +25,6 @@ class Model{
     typedef typename std::map<
       uint32_t, std::shared_ptr<Population<Type> > >::iterator
       pop_iterator;
-    std::map<uint32_t, std::shared_ptr<VonBertalanffy<Type> > >
-      vb_models;
-    typedef typename std::map<
-      uint32_t, std::shared_ptr<VonBertalanffy<Type> > >::iterator
-      vb_iterator;
       
 
     std::vector<Type*> parameters;
