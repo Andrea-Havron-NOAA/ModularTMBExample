@@ -63,7 +63,7 @@ class Model{
     this->info->setup_priors();
      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
-      if(n->nll_type == "priors"){
+      if(n->nll_type == "prior"){
         jnll += n->evaluate();
       }
     }
