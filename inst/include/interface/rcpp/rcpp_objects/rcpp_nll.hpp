@@ -51,11 +51,7 @@ public:
     std::string nll_type;
     std::vector<std::string> key;
 
-    bool estimate_observed_value = false;
-    bool estimate_expected_value = false;
-    bool estimate_log_sd = false;
-    bool simulate_prior_flag = false;
-    bool simulate_data_flag = false;
+    bool simulate_flag = false;
     
     NormalNLLInterface() : NLLInterface(){}
     
@@ -93,32 +89,30 @@ public:
         for(int i=0; i<key.size(); i++){
             normal->key[i] = this-> key[i];
         }
-        normal->simulate_prior_flag = this->simulate_prior_flag;
-        normal->simulate_data_flag = this->simulate_data_flag;
+        normal->simulate_flag = this->simulate_flag;
         if(this->nll_type == "data"){
             normal->osa_flag = true;
         } else {
             normal->osa_flag = false;
         }
-         //initialize x and mu : how do I differentiate this from the SetX and SetMu functions above? flags?
         normal->observed_value.resize(this->observed_value.size());
         for(size_t i=0; i<this->observed_value.size(); i++){
             normal->observed_value[i] = this->observed_value[i].value;
-            if(this ->estimate_observed_value){
+            if(this->observed_value[i].estimable){
                 model->parameters.push_back(&(normal)->observed_value[i]);
             }
         }
         normal->expected_value.resize(this->expected_value.size());
         for(size_t i=0; i<this->expected_value.size(); i++){
             normal->expected_value[i] = this->expected_value[i].value;
-            if(this ->estimate_expected_value){
+            if(this->expected_value[i].estimable){
                 model->parameters.push_back(&(normal)->expected_value[i]);
             }
         }
         normal->log_sd.resize(this->log_sd.size());
         for(size_t i=0; i<this->log_sd.size(); i++){
             normal->log_sd[i] = this->log_sd[i].value;
-            if(this ->estimate_log_sd){
+            if(this->log_sd[i].estimable){
                 model->parameters.push_back(&(normal)->log_sd[i]);
                 model->pnames.push_back("log_sd");
             }
@@ -192,16 +186,13 @@ class MVNormNLLInterface : public NLLInterface{
 public:
     VariableVector observed_value;
     VariableVector expected_value;
-    Rcpp::NumericMatrix Sigma;
+    VariableVector log_sd;
+    VariableVector logit_phi;
     std::vector<double> nll_vec;
     std::string nll_type;
     std::vector<std::string> key;
 
-    bool estimate_observed_value = false;
-    bool estimate_expected_value = false;
-    bool estimate_sigma = false;
-    bool simulate_prior_flag = false;
-    bool simulate_data_flag = false;
+    bool simulate_flag = false;
     
     MVNormNLLInterface() : NLLInterface(){}
     
@@ -239,8 +230,7 @@ public:
         for(int i=0; i<key.size(); i++){
             mvnorm->key[i] = this-> key[i];
         }
-        mvnorm->simulate_prior_flag = this->simulate_prior_flag;
-        mvnorm->simulate_data_flag = this->simulate_data_flag;
+        mvnorm->simulate_flag = this->simulate_flag;
         if(this->nll_type == "data"){
            mvnorm->osa_flag = true;
         } else {
@@ -250,28 +240,35 @@ public:
         mvnorm->observed_value.resize(this->observed_value.size());
         for(size_t i=0; i<this->observed_value.size(); i++){
             mvnorm->observed_value[i] = this->observed_value[i].value;
-            if(this ->estimate_observed_value){
+            if(this->observed_value[i].estimable){
                 model->parameters.push_back(&(mvnorm)->observed_value[i]);
             }
         }
         mvnorm->expected_value.resize(this->expected_value.size());
         for(size_t i=0; i<this->expected_value.size(); i++){
             mvnorm->expected_value[i] = this->expected_value[i].value;
-            if(this ->estimate_expected_value){
+            if(this->expected_value[i].estimable){
                 model->parameters.push_back(&(mvnorm)->expected_value[i]);
             }
         }
-        mvnorm->Sigma.resize(this->Sigma.nrow(), this->Sigma.ncol());
-        for(size_t i=0; i<this->Sigma.nrow(); i++){
-            for(size_t j=0; j<this->Sigma.ncol(); j++){
-                mvnorm->Sigma(i,j) = this->Sigma[i,j];
-            
-                if(this ->estimate_sigma){
-                    model->parameters.push_back(&(mvnorm)->Sigma(i,j));
-                    model->pnames.push_back("Sigma");
-                }
+        mvnorm->log_sd.resize(this->log_sd.size());
+        for(size_t i=0; i<this->log_sd.size(); i++){
+            mvnorm->log_sd[i] = this->log_sd[i].value;
+            if(this->log_sd[i].estimable){
+                model->parameters.push_back(&(mvnorm)->log_sd[i]);
+                model->pnames.push_back("log_sd");
             }
         }
+
+        mvnorm->logit_phi.resize(this->logit_phi.size());
+        for(size_t i=0; i<this->logit_phi.size(); i++){
+            mvnorm->logit_phi[i] = this->logit_phi[i].value;
+            if(this->logit_phi[i].estimable){
+                model->parameters.push_back(&(mvnorm)->logit_phi[i]);
+                model->pnames.push_back("logit_phi");
+            }
+        }
+    
         
         model->nll_models[mvnorm->id] = mvnorm;
         info->nll_models[mvnorm->id] = mvnorm;

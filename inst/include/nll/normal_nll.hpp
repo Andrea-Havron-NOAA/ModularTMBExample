@@ -18,9 +18,6 @@ struct NormalNLL : public NLLBase<Type> {
     fims::Vector<Type> mu;
     fims::Vector<Type> sd;
     Type nll = 0.0;
-    bool osa_flag;
-    bool simulate_prior_flag;
-    bool simulate_data_flag;
     //data_indicator<tmbutils::vector<Type> , Type> keep;
     ::objective_function<Type>
       *of;  
