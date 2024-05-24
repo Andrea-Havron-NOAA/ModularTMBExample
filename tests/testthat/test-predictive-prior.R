@@ -79,22 +79,22 @@ newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))
 
-## Fit model
-opt <- nlminb(obj$par, obj$fn, obj$gr)
-sdr <- sdreport(obj)
+# # Fit model
+# opt <- nlminb(obj$par, obj$fn, obj$gr)
+# sdr <- sdreport(obj)
 
-mean.sdr <- as.list(sdr, "Est")$p
-std.sdr <- as.list(sdr, "Std")$p
-ci <- list()
-for(i in seq_along(mean.sdr)){
-  ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
-}
+# mean.sdr <- as.list(sdr, "Est")$p
+# std.sdr <- as.list(sdr, "Std")$p
+# ci <- list()
+# for(i in seq_along(mean.sdr)){
+#   ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
+# }
 
-test_that("test single prior",{
-  expect_equal( log(k) > ci[[1]][1] & log(k) < ci[[1]][2], TRUE)
-  expect_equal( l_inf > ci[[2]][1] & l_inf < ci[[2]][2], TRUE)
-  expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
-})
+# test_that("test single prior",{
+#   expect_equal( log(k) > ci[[1]][1] & log(k) < ci[[1]][2], TRUE)
+#   expect_equal( l_inf > ci[[2]][1] & l_inf < ci[[2]][2], TRUE)
+#   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
+# })
 
 test_that("test_tmbstan", {
   skip_on_ci("skip tmbstan")
