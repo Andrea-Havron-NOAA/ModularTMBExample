@@ -31,6 +31,9 @@ class Model{
     std::vector<std::string> pnames;
     static std::shared_ptr<Model<Type> > model;
     std::shared_ptr<Information<Type> > info;
+    #ifdef TMB_MODEL
+      ::objective_function<Type> *of;
+    #endif
     
 
     Model(){ }
@@ -63,6 +66,9 @@ class Model{
     this->info->setup_priors();
      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
+      #ifdef TMB_MODEL
+        (*it).second->of = this->of;
+      #endif
       if(n->nll_type == "prior"){
         jnll += n->evaluate();
       }
@@ -74,6 +80,9 @@ class Model{
     //evaluate nlls for priors and random effects
      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
+      #ifdef TMB_MODEL
+        n->of = this->of;
+      #endif
       if(n->nll_type == "random_effects"){
         jnll += n->evaluate();
       }
@@ -88,6 +97,9 @@ class Model{
     this->info->setup_data();
     for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
+      #ifdef TMB_MODEL
+        (*it).second->of = this->of;
+      #endif
       if(n->nll_type == "data"){
         jnll += n->evaluate();
       }

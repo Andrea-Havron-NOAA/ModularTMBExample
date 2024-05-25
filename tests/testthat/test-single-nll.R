@@ -50,8 +50,9 @@ DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
 
 DataNLL$log_sd <- new(VariableVector, 1)
 DataNLL$log_sd[1]$value <- 0
-DataNLL$nll_type = "data"
-DataNLL$estimate_log_sd <- TRUE
+DataNLL$log_sd[1]$estimable <- TRUE
+DataNLL$nll_type <- "data"
+DataNLL$simulate_flag <- TRUE 
 paste0(Pop$get_module_name(), "_", Pop$get_id(), "_length")
 DataNLL$set_nll_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 

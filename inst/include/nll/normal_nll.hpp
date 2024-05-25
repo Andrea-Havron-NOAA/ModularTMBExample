@@ -19,8 +19,7 @@ struct NormalNLL : public NLLBase<Type> {
     fims::Vector<Type> sd;
     Type nll = 0.0;
     //data_indicator<tmbutils::vector<Type> , Type> keep;
-    ::objective_function<Type>
-      *of;  
+   
 
     NormalNLL() : NLLBase<Type>() {
 
@@ -49,6 +48,13 @@ struct NormalNLL : public NLLBase<Type> {
       //      nll = keep[i] * -dnorm(x[i], eta[i], sd[i], true);
             this->nll_vec[i] = -dnorm(this->observed_value[i], mu[i], sd[i], true);
             nll += this->nll_vec[i];
+            #ifdef TMB_MODEL
+            if(this->simulate_flag){
+                SIMULATE_F(this->of){
+                    this->observed_value[i] = rnorm(mu[i], sd[i]);
+                }
+            }
+            #endif
             /*
             if(osa_flag){//data observation type implements osa residuals
                 //code for osa cdf method
@@ -57,6 +63,10 @@ struct NormalNLL : public NLLBase<Type> {
             }
             */
         }
+        #ifdef TMB_MODEL
+            vector<Type> normal_observed_value = this->observed_value;
+            REPORT_F(normal_observed_value, this->of);
+        #endif
         return(nll);
     }
 

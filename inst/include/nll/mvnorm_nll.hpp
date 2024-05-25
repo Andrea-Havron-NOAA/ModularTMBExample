@@ -15,8 +15,6 @@ struct MVNormNLL : public NLLBase<Type> {
     
     Type nll;
     //data_indicator<tmbutils::vector<Type> , Type> keep;
-    ::objective_function<Type>
-      *of;  
 
     MVNormNLL() : NLLBase<Type>() {
 

@@ -14,7 +14,11 @@ fims::Vector<Type> nll_vec;
 std::string nll_type;
 bool simulate_flag;
 bool osa_flag;
-std::vector<std::string> key;
+std::vector<std::string> key; 
+#ifdef TMB_MODEL
+::objective_function<Type>
+      *of;  
+#endif
 
   /** @brief Constructor.
    */
