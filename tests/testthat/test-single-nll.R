@@ -117,23 +117,12 @@ test_that("test single nll",{
 vonB$finalize(opt$par)
 DataNLL$finalize(opt$par)
 #print optimzed values from RCPP
-vonB$logk$value
-vonB$l_inf$value
-#print itemized nll
-DataNLL$nll_vec
+test_that("test rcpp output", {
+  expect_equal(unname(opt$par[1]), vonB$logk$value)
+  expect_equal(unname(opt$par[2]), vonB$l_inf$value)
+})
+
+# currently fails due to bug in finalize functions
+# expect_equal(opt$objective, sum(DataNLL$nll_vec))
 
 clear()
-
-# #update the von Bertalanffy object with updated parameters
-# vonB$finalize(rep$par.fixed)
-
-# #show results
-# vonB$show()
-
-# obj$report()
-
-# #show final gradient
-# print("final gradient:")
-# print(rep$gradient.fixed)
-
-
