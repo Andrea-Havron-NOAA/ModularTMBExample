@@ -44,7 +44,7 @@ struct NormalNLL : public NLLBase<Type> {
                 sd[i] = exp(log_sd[i]);
             }
         }
-        nll_vec.resize(this->observed_value.size());
+        this->nll_vec.resize(this->observed_value.size());
         for(int i=0; i<this->observed_value.size(); i++){
            // this->nll_vec[i] = this->keep[i] * -dnorm(this->observed_value[i], mu[i], sd[i], true);
             this->nll_vec[i] = -dnorm(this->observed_value[i], mu[i], sd[i], true);
