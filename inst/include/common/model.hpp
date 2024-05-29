@@ -33,6 +33,8 @@ class Model{
     std::shared_ptr<Information<Type> > info;
     #ifdef TMB_MODEL
       ::objective_function<Type> *of;
+      using DataIndicator = typename model_traits<Type>::data_indicator_;
+      DataIndicator keep;
     #endif
     
 
@@ -67,7 +69,8 @@ class Model{
      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       #ifdef TMB_MODEL
-        (*it).second->of = this->of;
+        n->of = this->of;
+        n->keep = this->keep;
       #endif
       if(n->nll_type == "prior"){
         jnll += n->evaluate();
@@ -82,6 +85,7 @@ class Model{
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       #ifdef TMB_MODEL
         n->of = this->of;
+        n->keep = this->keep;
       #endif
       if(n->nll_type == "random_effects"){
         jnll += n->evaluate();
@@ -98,7 +102,8 @@ class Model{
     for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
       std::shared_ptr<NLLBase<Type> > n = (*it).second;
       #ifdef TMB_MODEL
-        (*it).second->of = this->of;
+        n->of = this->of;
+        n->keep = this->keep;
       #endif
       if(n->nll_type == "data"){
         jnll += n->evaluate();

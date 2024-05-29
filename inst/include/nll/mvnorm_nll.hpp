@@ -12,6 +12,7 @@ template<typename Type>
 struct MVNormNLL : public NLLBase<Type> {
     fims::Vector<Type> log_sd;
     fims::Vector<Type> logit_phi;
+    bool osa_flag;
     
     Type nll;
     //data_indicator<tmbutils::vector<Type> , Type> keep;

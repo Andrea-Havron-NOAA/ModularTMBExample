@@ -55,6 +55,7 @@ template<typename Type>
 struct model_traits{
   typedef typename CppAD::vector<Type> data_vector;
   typedef typename CppAD::vector<Type> parameter_vector;
+  typedef data_indicator<tmbutils::vector<Type> , Type>  data_indicator_;
 };
 
 template<typename T>

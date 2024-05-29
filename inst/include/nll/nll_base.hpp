@@ -13,11 +13,12 @@ fims::Vector<Type> expected_value;
 fims::Vector<Type> nll_vec;
 std::string nll_type;
 bool simulate_flag;
-bool osa_flag;
 std::vector<std::string> key; 
 #ifdef TMB_MODEL
 ::objective_function<Type>
       *of;  
+using DataIndicator = typename model_traits<Type>::data_indicator_;
+DataIndicator keep;
 #endif
 
   /** @brief Constructor.

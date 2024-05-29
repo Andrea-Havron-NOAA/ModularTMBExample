@@ -17,6 +17,7 @@ struct NormalNLL : public NLLBase<Type> {
     fims::Vector<Type> log_sd;
     fims::Vector<Type> mu;
     fims::Vector<Type> sd;
+    bool osa_flag;
     Type nll = 0.0;
     //data_indicator<tmbutils::vector<Type> , Type> keep;
    
@@ -43,9 +44,9 @@ struct NormalNLL : public NLLBase<Type> {
                 sd[i] = exp(log_sd[i]);
             }
         }
-        this->nll_vec.resize(this->observed_value.size());
+        nll_vec.resize(this->observed_value.size());
         for(int i=0; i<this->observed_value.size(); i++){
-      //      nll = keep[i] * -dnorm(x[i], eta[i], sd[i], true);
+           // this->nll_vec[i] = this->keep[i] * -dnorm(this->observed_value[i], mu[i], sd[i], true);
             this->nll_vec[i] = -dnorm(this->observed_value[i], mu[i], sd[i], true);
             nll += this->nll_vec[i];
             #ifdef TMB_MODEL
@@ -53,15 +54,17 @@ struct NormalNLL : public NLLBase<Type> {
                 SIMULATE_F(this->of){
                     this->observed_value[i] = rnorm(mu[i], sd[i]);
                 }
+                
             }
-            #endif
-            /*
+          /* osa not working yet
             if(osa_flag){//data observation type implements osa residuals
                 //code for osa cdf method
-                this->nll_vec[i] = keep.cdf_lower[i] * -log( pnorm(x[i], eta[i], sd[i]) );
-                this->nll_vec[i] = keep.cdf_upper[i] * -log( 1.0 - pnorm(x[i], eta[i], sd[i]) );
-            }
-            */
+                this->nll_vec[i] = this->keep.cdf_lower[i] * -log( pnorm(this->observed_value[i], mu[i], sd[i]) );
+                this->nll_vec[i] = this->keep.cdf_upper[i] * -log( 1.0 - pnorm(this->observed_value[i], mu[i], sd[i]) );
+            } */
+            #endif
+           
+            
         }
         #ifdef TMB_MODEL
             vector<Type> normal_observed_value = this->observed_value;

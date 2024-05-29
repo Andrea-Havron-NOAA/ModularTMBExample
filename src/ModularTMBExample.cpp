@@ -30,7 +30,8 @@ Type objective_function<Type>::operator()(){
     //get the singleton instance for type Type
    std::shared_ptr< Model<Type> > model =
     Model<Type>::getInstance();
-    
+   // need observed_value for osa - setup through rcpp interface
+   // DATA_VECTOR_INDICATOR(keep,observed_value);
     //get the parameter values
     PARAMETER_VECTOR(p)
     
@@ -40,6 +41,7 @@ Type objective_function<Type>::operator()(){
     }
 
     model -> of = this;
+    //model -> keep = keep;
     
     //evaluate the model objective function value
     return model->evaluate();
