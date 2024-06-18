@@ -57,10 +57,10 @@ Pop <- new(Population)
 Pop$ages<-ages
 Pop$set_growth(vonB$get_id())
 
-GrowthKPrior <- new(NormalNLL)
+GrowthKPrior <- new(NormalLPDF)
 GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)
-GrowthKPrior$nll_type = "prior"
-GrowthKPrior$set_nll_links( "prior", vonB$get_id(), vonB$get_module_name(), "logk")
+GrowthKPrior$input_type = "prior"
+GrowthKPrior$set_distribution_links( "prior", vonB$get_id(), vonB$get_module_name(), "logk")
 
 #prepare for interfacing with TMB
 CreateModel()

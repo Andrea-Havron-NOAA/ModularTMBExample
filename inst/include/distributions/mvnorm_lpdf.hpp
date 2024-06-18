@@ -1,7 +1,7 @@
-#ifndef MVNorm_NLL_HPP
-#define MVNorm_NLL_HPP
+#ifndef MVNORM_LPDF_HPP
+#define MVNORM_LPDF_HPP
 
-#include "nll_base.hpp"
+#include "density_components_base.hpp"
 #include "../common/fims_vector.hpp"
 #include "../common/def.hpp"
 
@@ -9,7 +9,7 @@
  * Normal Negative Log-Likelihood
  */
 template<typename Type>
-struct MVNormNLL : public NLLBase<Type> {
+struct MVNormLPDF : public DensityComponentBase<Type> {
     fims::Vector<Type> log_sd;
     fims::Vector<Type> logit_phi;
     bool osa_flag;
@@ -17,11 +17,11 @@ struct MVNormNLL : public NLLBase<Type> {
     Type nll;
     //data_indicator<tmbutils::vector<Type> , Type> keep;
 
-    MVNormNLL() : NLLBase<Type>() {
+    MVNormLPDF() : DensityComponentBase<Type>() {
 
     }
 
-    virtual ~MVNormNLL() {}
+    virtual ~MVNormLPDF() {}
 
     virtual const Type evaluate(){
         const int n = this->log_sd.size();
@@ -46,12 +46,12 @@ struct MVNormNLL : public NLLBase<Type> {
         Rcout << "Sigma[0,1] is: " << Sigma(0,1) << std::endl;
         fims::Vector<Type> resid;
         resid.resize(this->observed_value.size());
-        this->nll_vec.resize(1);
+        this->log_likelihood_vec.resize(1);
         for(int i=0; i<this->observed_value.size(); i++){
             resid[i] = this->observed_value[i] - this->expected_value[i];
         } 
         nll += density::MVNORM(Sigma)(resid);
-        this->nll_vec[0] = nll;
+        this->log_likelihood_vec[0] = nll;
         
 
         return(nll);

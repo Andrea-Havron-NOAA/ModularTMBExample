@@ -83,38 +83,38 @@ Pop2$ages<-ages
 Pop2$set_growth(vonB2$get_id())
 
 #setup data log-likelihood for Length1
-DataNLL1 <- new(NormalNLL)
+DataLL1 <- new(NormalLPDF)
 #input length.data1
-DataNLL1$observed_value <- 
+DataLL1$observed_value <- 
   new(VariableVector, length.data1, length(length.data1))
 #initialize log_sd
-DataNLL1$log_sd <- new(VariableVector, 1)
-DataNLL1$log_sd[1]$value <- 0
-DataNLL1$nll_type = "data"
-DataNLL1$estimate_log_sd <- TRUE
+DataLL1$log_sd <- new(VariableVector, 1)
+DataLL1$log_sd[1]$value <- 0
+DataLL1$input_type = "data"
+DataLL1$estimate_log_sd <- TRUE
 #link data log-likelihood to length from Pop1
-DataNLL1$set_nll_links("data", Pop1$get_id(), Pop1$get_module_name(), "length")
+DataLL1$set_distribution_links("data", Pop1$get_id(), Pop1$get_module_name(), "length")
 
 #setup data log-likelihood for Length2
-DataNLL2 <- new(NormalNLL)
+DataLL2 <- new(NormalLPDF)
 #input length.data2
-DataNLL2$observed_value <- 
+DataLL2$observed_value <- 
   new(VariableVector, length.data2, length(length.data2))
 #initialize log_sd
-DataNLL2$log_sd <- new(VariableVector, 1)
-DataNLL2$log_sd[1]$value <- 0
-DataNLL2$nll_type = "data"
-DataNLL2$estimate_log_sd <- TRUE
+DataLL2$log_sd <- new(VariableVector, 1)
+DataLL2$log_sd[1]$value <- 0
+DataLL2$input_type = "data"
+DataLL2$estimate_log_sd <- TRUE
 #link data log-likelihood to length from Pop2
-DataNLL2$set_nll_links("data", Pop2$get_id(), Pop2$get_module_name(), "length")
+DataLL2$set_distribution_links("data", Pop2$get_id(), Pop2$get_module_name(), "length")
 
 #set up shared prior for logk
-GrowthKPrior <- new(NormalNLL)
+GrowthKPrior <- new(NormalLPDF)
 GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)
-GrowthKPrior$nll_type <- "prior"
+GrowthKPrior$input_type <- "prior"
 GrowthKPrior$log_sd[1]$value <- log(0.1579867)
 #link prior log-likelihood to the logk parameters from vonB1 and vonB2
-GrowthKPrior$set_nll_links( "prior", c(vonB1$get_id(),vonB2$get_id()), 
+GrowthKPrior$set_distribution_links( "prior", c(vonB1$get_id(),vonB2$get_id()), 
   c(vonB1$get_module_name(),vonB2$get_module_name()), c("logk", "logk"))
 
 #prepare for interfacing with TMB

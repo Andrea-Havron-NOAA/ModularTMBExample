@@ -39,22 +39,22 @@ Pop <- new(Population)
 Pop$ages<-ages
 Pop$set_growth(vonB$get_id())
 
-DataNLL <- new(NormalNLL)
+DataLL <- new(NormalLPDF)
 
-DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
+DataLL$observed_value <- new(VariableVector, length.data, length(length.data))
 
-# DataNLL$expected_value <- new(VariableVector, 0)
+# DataLL$expected_value <- new(VariableVector, 0)
 # for(i in 1:length(length.data)){
-#   DataNLL$expected_value[i]$value <- 0
+#   DataLL$expected_value[i]$value <- 0
 # }
 
-DataNLL$log_sd <- new(VariableVector, 1)
-DataNLL$log_sd[1]$value <- 0
-DataNLL$log_sd[1]$estimable <- TRUE
-DataNLL$nll_type <- "data"
-DataNLL$simulate_flag <- TRUE 
+DataLL$log_sd <- new(VariableVector, 1)
+DataLL$log_sd[1]$value <- 0
+DataLL$log_sd[1]$estimable <- TRUE
+DataLL$input_type <- "data"
+DataLL$simulate_flag <- TRUE 
 paste0(Pop$get_module_name(), "_", Pop$get_id(), "_length")
-DataNLL$set_nll_links("data", Pop$get_id(), Pop$get_module_name(), "length")
+DataLL$set_distribution_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 
 
 # library(FishLife)
@@ -70,11 +70,11 @@ DataNLL$set_nll_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 # row.names(Sigma) <- c('Loo', 'K')
 # colnames(Sigma) <- c('Loo', 'K')
 
-# GrowthKPrior <- new(g$NormalNLL)
+# GrowthKPrior <- new(g$NormalLPDF)
 # GrowthKPrior$expected_value <- mu[2]
 # GrowthKPrior$log_sd <- log(Sigma[2,2])
-# GrowthKPrior$nll_type = "prior"
-# GrowthKPrior$set_nll_links( "prior", vonB$get_id(), vonB$get_module_name(), "k")
+# GrowthKPrior$input_type = "prior"
+# GrowthKPrior$set_distribution_links( "prior", vonB$get_id(), vonB$get_module_name(), "k")
 # GrowthKPrior$module_name = "growth"
 # GrowthKPrior$module_id = vonB$get_id()
 # GrowthKPrior$member_name = "k"
@@ -115,7 +115,7 @@ test_that("test single nll",{
 
 #access output from Rcpp object
 vonB$finalize(opt$par)
-DataNLL$finalize(opt$par)
+DataLL$finalize(opt$par)
 #print optimzed values from RCPP
 test_that("test rcpp output", {
   expect_equal(unname(opt$par[1]), vonB$logk$value)
@@ -123,6 +123,6 @@ test_that("test rcpp output", {
 })
 
 # currently fails due to bug in finalize functions
-# expect_equal(opt$objective, sum(DataNLL$nll_vec))
+# expect_equal(opt$objective, sum(DataLL$log_likelihood_vec))
 
 clear()

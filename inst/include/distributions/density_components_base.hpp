@@ -1,17 +1,17 @@
-#ifndef NLL_BASE_HPP
-#define NLL_BASE_HPP
+#ifndef DENSITY_COMPONENTS_BASE_HPP
+#define DENSITY_COMPONENTS_BASE_HPP
 
 #include "../common/def.hpp"
 #include "../common/model_object.hpp"
 #include "../common/fims_vector.hpp"
 template <typename Type>
-struct NLLBase : public ModelObject<Type> {
-static uint32_t id_g; /**< The ID of the instance of the NLLBase class */
+struct DensityComponentBase : public ModelObject<Type> {
+static uint32_t id_g; /**< The ID of the instance of the DensityComponentBase class */
 
 fims::Vector<Type> observed_value; 
 fims::Vector<Type> expected_value;
-fims::Vector<Type> nll_vec;
-std::string nll_type;
+fims::Vector<Type> log_likelihood_vec;
+std::string input_type;
 bool simulate_flag;
 std::vector<std::string> key; 
 #ifdef TMB_MODEL
@@ -23,12 +23,12 @@ DataIndicator keep;
 
   /** @brief Constructor.
    */
-  NLLBase() : ModelObject<Type>() {
+  DensityComponentBase() : ModelObject<Type>() {
     // increment id of the singleton selectivity class
-    this->id = NLLBase::id_g++;
+    this->id = DensityComponentBase::id_g++;
   }
 
-  virtual ~NLLBase() {}
+  virtual ~DensityComponentBase() {}
 
   /**
    * @brief Calculates the NLL.
@@ -38,6 +38,6 @@ DataIndicator keep;
 
 // default id of the singleton selectivity class
 template <typename Type>
-uint32_t NLLBase<Type>::id_g = 0;
+uint32_t DensityComponentBase<Type>::id_g = 0;
 
 #endif

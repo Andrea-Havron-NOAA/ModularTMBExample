@@ -57,19 +57,19 @@ Pop <- new(Population)
 Pop$ages<-ages
 Pop$set_growth(vonB$get_id())
 
-DataNLL <- new(NormalNLL)
+DataLL <- new(NormalLPDF)
 
-DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
-DataNLL$log_sd <- new(VariableVector, 1)
-DataNLL$log_sd[1]$value <- 0
-DataNLL$nll_type = "data"
-DataNLL$estimate_log_sd <- TRUE
-DataNLL$set_nll_links("data", Pop$get_id(), Pop$get_module_name(), "length")
+DataLL$observed_value <- new(VariableVector, length.data, length(length.data))
+DataLL$log_sd <- new(VariableVector, 1)
+DataLL$log_sd[1]$value <- 0
+DataLL$input_type = "data"
+DataLL$estimate_log_sd <- TRUE
+DataLL$set_distribution_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 
-GrowthKPrior <- new(NormalNLL)
+GrowthKPrior <- new(NormalLPDF)
 GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)
-GrowthKPrior$nll_type = "prior"
-GrowthKPrior$set_nll_links( "prior", vonB$get_id(), vonB$get_module_name(), "logk")
+GrowthKPrior$input_type = "prior"
+GrowthKPrior$set_distribution_links( "prior", vonB$get_id(), vonB$get_module_name(), "logk")
 
 #prepare for interfacing with TMB
 CreateModel()
@@ -106,10 +106,10 @@ test_that("test single prior",{
 })
 
 #Check nll output
-DataNLL$finalize(opt$par)
+DataLL$finalize(opt$par)
 GrowthKPrior$finalize(opt$par)
-DataNLL$nll_vec
-GrowthKPrior$nll_vec
+DataLL$log_likelihood_vec
+GrowthKPrior$log_likelihood_vec
 
 test_that("test_tmbstan", {
   skip_on_ci("skip tmbstan")

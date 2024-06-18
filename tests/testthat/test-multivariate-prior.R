@@ -60,26 +60,26 @@ Pop$ages<-ages
 Pop$set_growth(vonB$get_id())
 
 #setup data log-likelihood for Length
-DataNLL <- new(NormalNLL)
+DataLL <- new(NormalLPDF)
 #input length.data
-DataNLL$observed_value <- new(VariableVector, length.data, length(length.data))
+DataLL$observed_value <- new(VariableVector, length.data, length(length.data))
 #initialize log_sd
-DataNLL$log_sd <- new(VariableVector, 1)
-DataNLL$log_sd[1]$value <- 0
-DataNLL$log_sd[1]$estimable <- TRUE
-DataNLL$nll_type <- "data"
+DataLL$log_sd <- new(VariableVector, 1)
+DataLL$log_sd[1]$value <- 0
+DataLL$log_sd[1]$estimable <- TRUE
+DataLL$input_type <- "data"
 #link data log-likelihood to length from Pop
-DataNLL$set_nll_links("data", Pop$get_id(), Pop$get_module_name(), "length")
+DataLL$set_distribution_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 
 #set up multivariate prior for l_inf and logk
-GrowthMVPrior <- new(MVNormNLL)
+GrowthMVPrior <- new(MVNormLPDF)
 GrowthMVPrior$expected_value <- new(VariableVector, mu, 1)
-GrowthMVPrior$nll_type <- "prior"
+GrowthMVPrior$input_type <- "prior"
 phi <- cov2cor(Sigma)[1,2]
 GrowthMVPrior$log_sd <- new(VariableVector, 0.5*log(diag(Sigma)), 2)
 GrowthMVPrior$logit_phi <- new(VariableVector, log((phi+1)/(1-phi)), 1)  
 #link prior log-likelihood to the l_inf and logk parameters from vonB
-GrowthMVPrior$set_nll_links( "prior", c(vonB$get_id(), vonB$get_id()),
+GrowthMVPrior$set_distribution_links( "prior", c(vonB$get_id(), vonB$get_id()),
      c(vonB$get_module_name(),vonB$get_module_name()), c("l_inf", "logk"))
 
 #prepare for interfacing with TMB
@@ -117,11 +117,11 @@ test_that("test multivariate prior", {
  # expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
-DataNLL$finalize(opt$par)
+DataLL$finalize(opt$par)
 GrowthMVPrior$finalize(opt$par)
-DataNLL$nll_vec
-GrowthMVPrior$nll_vec
-sum(DataNLL$nll_vec) + GrowthMVPrior$nll_vec
+DataLL$log_likelihood_vec
+GrowthMVPrior$log_likelihood_vec
+sum(DataLL$log_likelihood_vec) + GrowthMVPrior$log_likelihood_vec
 opt$objective
 #Fully Bayesian
 test_that("test_tmbstan", {

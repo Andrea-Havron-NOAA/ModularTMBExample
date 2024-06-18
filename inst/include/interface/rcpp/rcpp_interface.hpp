@@ -5,7 +5,7 @@
 
 #include "rcpp_objects/rcpp_growth.hpp"
 #include "rcpp_objects/rcpp_population.hpp"
-#include "rcpp_objects/rcpp_nll.hpp"
+#include "rcpp_objects/rcpp_distributions.hpp"
 #include "../../common/def.hpp"
 
 bool CreateModel(){
@@ -76,9 +76,9 @@ void clear() {
   GrowthInterfaceBase::id_g = 1;
   GrowthInterfaceBase::growth_objects.clear();
   
-  //rcpp_nll
-  NLLInterface::id_g = 1;
-  NLLInterface::nll_objects.clear();
+  //rcpp_distributions
+  DensityComponentsInterface::id_g = 1;
+  DensityComponentsInterface::density_components_objects.clear();
   
   //rcpp_population
   PopulationInterfaceBase::id_g = 1;
@@ -117,29 +117,29 @@ RCPP_MODULE(growth) {
     .method("get_id", &PopulationInterface::get_id)
     .method("set_growth", &PopulationInterface::SetGrowth)
     .method("get_module_name", &PopulationInterface::get_module_name);
-    Rcpp::class_<NormalNLLInterface>("NormalNLL")
+    Rcpp::class_<NormalLPDFInterface>("NormalLPDF")
     .constructor()
-    .method("finalize", &NormalNLLInterface::finalize)
-    .field("observed_value", &NormalNLLInterface::observed_value)
-    .field("expected_value", &NormalNLLInterface::expected_value)
-    .field("log_sd", &NormalNLLInterface::log_sd)
-    .field("nll_type", &NormalNLLInterface::nll_type)
-    .field("nll_vec", &NormalNLLInterface::nll_vec)
-    .field("simulate_flag", &NormalNLLInterface::simulate_flag)
-    .method("get_id", &NormalNLLInterface::get_id)
-    .method("set_nll_links", &NormalNLLInterface::SetNLLLinks);
-    Rcpp::class_<MVNormNLLInterface>("MVNormNLL")
+    .method("finalize", &NormalLPDFInterface::finalize)
+    .field("observed_value", &NormalLPDFInterface::observed_value)
+    .field("expected_value", &NormalLPDFInterface::expected_value)
+    .field("log_sd", &NormalLPDFInterface::log_sd)
+    .field("input_type", &NormalLPDFInterface::input_type)
+    .field("log_likelihood_vec", &NormalLPDFInterface::log_likelihood_vec)
+    .field("simulate_flag", &NormalLPDFInterface::simulate_flag)
+    .method("get_id", &NormalLPDFInterface::get_id)
+    .method("set_distribution_links", &NormalLPDFInterface::SetDistributionLinks);
+    Rcpp::class_<MVNormLPDFInterface>("MVNormLPDF")
     .constructor()
-    .method("finalize", &MVNormNLLInterface::finalize)
-    .field("observed_value", &MVNormNLLInterface::observed_value)
-    .field("expected_value", &MVNormNLLInterface::expected_value)
-    .field("log_sd", &MVNormNLLInterface::log_sd)
-    .field("logit_phi", &MVNormNLLInterface::logit_phi)
-    .field("nll_type", &MVNormNLLInterface::nll_type)
-    .field("nll_vec", &MVNormNLLInterface::nll_vec)
-    .field("simulate_flag", &MVNormNLLInterface::simulate_flag)
-    .method("get_id", &MVNormNLLInterface::get_id)
-    .method("set_nll_links", &MVNormNLLInterface::SetNLLLinks);
+    .method("finalize", &MVNormLPDFInterface::finalize)
+    .field("observed_value", &MVNormLPDFInterface::observed_value)
+    .field("expected_value", &MVNormLPDFInterface::expected_value)
+    .field("log_sd", &MVNormLPDFInterface::log_sd)
+    .field("logit_phi", &MVNormLPDFInterface::logit_phi)
+    .field("input_type", &MVNormLPDFInterface::input_type)
+    .field("log_likelihood_vec", &MVNormLPDFInterface::log_likelihood_vec)
+    .field("simulate_flag", &MVNormLPDFInterface::simulate_flag)
+    .method("get_id", &MVNormLPDFInterface::get_id)
+    .method("set_distribution_links", &MVNormLPDFInterface::SetDistributionLinks);
     Rcpp::class_<vonBertalanffyInterface>("vonBertalanffy")
     .constructor()
     .method("finalize", &vonBertalanffyInterface::finalize)

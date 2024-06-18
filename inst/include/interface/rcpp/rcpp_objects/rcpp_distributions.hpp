@@ -1,70 +1,70 @@
-#ifndef RCPP_NORMAL_NLL_HPP
-#define  RCPP_NORMAL_NLL_HPP
+#ifndef RCPP_DISTRIBUTIONS_HPP
+#define  RCPP_DISTRIBUTIONS_HPP
 
 
 #include "../../../common/model.hpp"
 #include "rcpp_interface_base.hpp"
-#include "../../../nll/normal_nll.hpp"
-#include "../../../nll/mvnorm_nll.hpp"
+#include "../../../distributions/normal_lpdf.hpp"
+#include "../../../distributions/mvnorm_lpdf.hpp"
 #include "../rcpp_interface.hpp"
 
 /****************************************************************
- * NLL Rcpp interface                                   *
+ * Density Components Rcpp interface                                   *
  ***************************************************************/
 /**
  * @brief Rcpp interface that serves as the parent class for
- * Rcpp nll interfaces. This type should be inherited and not
+ * Rcpp density components interfaces. This type should be inherited and not
  * called from R directly.
  *
  */
-class NLLInterface : public RcppInterfaceBase {
+class DensityComponentsInterface : public RcppInterfaceBase {
 public:
-  static uint32_t id_g; /**< static id of the NormalNLLInterface object */
-    uint32_t id;          /**< local id of the NormalNLLInterface object */
-    static std::map<uint32_t, NLLInterface*> nll_objects; /**<
- map relating the ID of the UnivariateNLLInterface to the objects
+  static uint32_t id_g; /**< static id of the NormalLPDFInterface object */
+    uint32_t id;          /**< local id of the NormalLPDFInterface object */
+    static std::map<uint32_t, DensityComponentsInterface*> density_components_objects; /**<
+ map relating the ID of the UnivariateDensityComponentsInterface to the objects
  objects */
   uint32_t module_id;
 
-NLLInterface() {
-  this->id = NLLInterface::id_g++;
-  NLLInterface::nll_objects[this->id] = this;
+DensityComponentsInterface() {
+  this->id = DensityComponentsInterface::id_g++;
+  DensityComponentsInterface::density_components_objects[this->id] = this;
   RcppInterfaceBase::interface_objects.push_back(this);
 }
 
-virtual ~NLLInterface() {}
+virtual ~DensityComponentsInterface() {}
 
 virtual uint32_t get_id() = 0;
 };
 
-uint32_t NLLInterface::id_g = 1;
-std::map<uint32_t, NLLInterface*> NLLInterface::nll_objects;
+uint32_t DensityComponentsInterface::id_g = 1;
+std::map<uint32_t, DensityComponentsInterface*> DensityComponentsInterface::density_components_objects;
 
 
-class NormalNLLInterface : public NLLInterface{
+class NormalLPDFInterface : public DensityComponentsInterface{
 
 public:
     VariableVector observed_value;
     VariableVector expected_value;
     VariableVector log_sd;
-    std::vector<double> nll_vec;
-    std::string nll_type;
+    std::vector<double> log_likelihood_vec;
+    std::string input_type;
     std::vector<std::string> key;
 
     bool simulate_flag = false;
     
-    NormalNLLInterface() : NLLInterface(){}
+    NormalLPDFInterface() : DensityComponentsInterface(){}
     
-    virtual ~NormalNLLInterface() {}
+    virtual ~NormalLPDFInterface() {}
     virtual uint32_t get_id() { return this->id; }
     
     virtual std::string get_module_name(){
-        return "NormalNLLInterface";
+        return "NormalLPDFInterface";
     }
     
-    void SetNLLLinks(std::string nll_type, Rcpp::IntegerVector module_id, 
+    void SetDistributionLinks(std::string input_type, Rcpp::IntegerVector module_id, 
         Rcpp::StringVector module_name, Rcpp::StringVector name){
-        this->nll_type = nll_type;
+        this->input_type = input_type;
 
         std::stringstream ss;
         this->key.resize(module_id.size());
@@ -79,18 +79,18 @@ public:
     bool prepare_local() {
     std::shared_ptr<Information<Type> > info =
         Information<Type>::getInstance();
-     std::shared_ptr<NormalNLL<Type> > normal =
-        std::make_shared<NormalNLL<Type> >();
+     std::shared_ptr<NormalLPDF<Type> > normal =
+        std::make_shared<NormalLPDF<Type> >();
 
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
-        normal->nll_type = this->nll_type;
+        normal->input_type = this->input_type;
         normal->id = this->id;
         normal->key.resize(this->key.size());
         for(int i=0; i<key.size(); i++){
             normal->key[i] = this-> key[i];
         }
         normal->simulate_flag = this->simulate_flag;
-        if(this->nll_type == "data"){
+        if(this->input_type == "data"){
             normal->osa_flag = true;
         } else {
             normal->osa_flag = false;
@@ -118,8 +118,8 @@ public:
             }
         }
         
-        model->nll_models[normal->id] = normal;
-        info->nll_models[normal->id] = normal;
+        model->density_components[normal->id] = normal;
+        info->density_components[normal->id] = normal;
         return true;
     }
 
@@ -147,8 +147,8 @@ public:
      
     void finalize(Rcpp::NumericVector v) {
         std::shared_ptr< Model<double> > model = Model<double>::getInstance();
-        std::shared_ptr<NLLBase<double> > nll_base = model->nll_models[this->id];
-        NormalNLL<double>* norm = (NormalNLL<double>*) nll_base.get();    
+        std::shared_ptr<DensityComponentBase<double> > density_components_base = model->density_components[this->id];
+        NormalLPDF<double>* norm = (NormalLPDF<double>*) density_components_base.get();    
 
         for (int i = 0; i < v.size(); i++) {
             (*model->parameters[i]) = v[i];
@@ -170,9 +170,9 @@ public:
             this->log_sd[i].value = norm->log_sd[i];
         }
         */
-        this->nll_vec.resize(norm->nll_vec.size());
-        for(int i=0; i<norm->nll_vec.size(); i++){
-            this->nll_vec[i] = norm->nll_vec[i];
+        this->log_likelihood_vec.resize(norm->log_likelihood_vec.size());
+        for(int i=0; i<norm->log_likelihood_vec.size(); i++){
+            this->log_likelihood_vec[i] = norm->log_likelihood_vec[i];
         }
 
 
@@ -181,31 +181,31 @@ public:
 };
 
 
-class MVNormNLLInterface : public NLLInterface{
+class MVNormLPDFInterface : public DensityComponentsInterface{
 
 public:
     VariableVector observed_value;
     VariableVector expected_value;
     VariableVector log_sd;
     VariableVector logit_phi;
-    std::vector<double> nll_vec;
-    std::string nll_type;
+    std::vector<double> log_likelihood_vec;
+    std::string input_type;
     std::vector<std::string> key;
 
     bool simulate_flag = false;
     
-    MVNormNLLInterface() : NLLInterface(){}
+    MVNormLPDFInterface() : DensityComponentsInterface(){}
     
-    virtual ~MVNormNLLInterface() {}
+    virtual ~MVNormLPDFInterface() {}
     virtual uint32_t get_id() { return this->id; }
     
     virtual std::string get_module_name(){
-        return "MVNormNLLInterface";
+        return "MVNormLPDFInterface";
     }
     
-    void SetNLLLinks(std::string nll_type, Rcpp::IntegerVector module_id, 
+    void SetDistributionLinks(std::string input_type, Rcpp::IntegerVector module_id, 
         Rcpp::StringVector module_name, Rcpp::StringVector name){
-        this->nll_type = nll_type;
+        this->input_type = input_type;
 
         std::stringstream ss;
         this->key.resize(module_id.size());
@@ -220,18 +220,18 @@ public:
     bool prepare_local() {
     std::shared_ptr<Information<Type> > info =
         Information<Type>::getInstance();
-     std::shared_ptr<MVNormNLL<Type> > mvnorm =
-        std::make_shared<MVNormNLL<Type> >();
+     std::shared_ptr<MVNormLPDF<Type> > mvnorm =
+        std::make_shared<MVNormLPDF<Type> >();
 
         std::shared_ptr<Model<Type> > model = Model<Type>::getInstance();
-        mvnorm->nll_type = this->nll_type;
+        mvnorm->input_type = this->input_type;
         mvnorm->id = this->id;
         mvnorm->key.resize(this->key.size());
         for(int i=0; i<key.size(); i++){
             mvnorm->key[i] = this-> key[i];
         }
         mvnorm->simulate_flag = this->simulate_flag;
-        if(this->nll_type == "data"){
+        if(this->input_type == "data"){
            mvnorm->osa_flag = true;
         } else {
             mvnorm->osa_flag = false;
@@ -270,8 +270,8 @@ public:
         }
     
         
-        model->nll_models[mvnorm->id] = mvnorm;
-        info->nll_models[mvnorm->id] = mvnorm;
+        model->density_components[mvnorm->id] = mvnorm;
+        info->density_components[mvnorm->id] = mvnorm;
         return true;
     }
 
@@ -298,8 +298,8 @@ public:
     void finalize(Rcpp::NumericVector v) {
         
         std::shared_ptr< Model<double> > model = Model<double>::getInstance();
-        std::shared_ptr<NLLBase<double> > nll_base = model->nll_models[this->id];
-        MVNormNLL<double>* mvnorm = (MVNormNLL<double>*) nll_base.get();  
+        std::shared_ptr<DensityComponentBase<double> > density_components_base = model->density_components[this->id];
+        MVNormLPDF<double>* mvnorm = (MVNormLPDF<double>*) density_components_base.get();  
 
         for (int i = 0; i < v.size(); i++) {
             (*model->parameters[i]) = v[i];
@@ -320,9 +320,9 @@ public:
             }
         }
         */
-        this->nll_vec.resize(mvnorm->nll_vec.size());
-        for(int i=0; i<mvnorm->nll_vec.size(); i++){
-            this->nll_vec[i] = mvnorm->nll_vec[i];
+        this->log_likelihood_vec.resize(mvnorm->log_likelihood_vec.size());
+        for(int i=0; i<mvnorm->log_likelihood_vec.size(); i++){
+            this->log_likelihood_vec[i] = mvnorm->log_likelihood_vec[i];
         }
 
     }

@@ -6,7 +6,7 @@
 #include "information.hpp"
 #include "../pop_dy/population.hpp"
 #include "../pop_dy/von_bertalanffy.hpp"
-#include "../nll/normal_nll.hpp"
+#include "../distributions/normal_lpdf.hpp"
 
 template<typename Type>
 class Model{
@@ -14,11 +14,11 @@ class Model{
 
     fims::Vector<Type> predicted;
 
-    std::map<uint32_t, std::shared_ptr<NLLBase<Type> > >
-      nll_models;
+    std::map<uint32_t, std::shared_ptr<DensityComponentBase<Type> > >
+      density_components;
     typedef typename std::map<
-      uint32_t, std::shared_ptr<NLLBase<Type> > >::iterator
-      nll_iterator;
+      uint32_t, std::shared_ptr<DensityComponentBase<Type> > >::iterator
+      density_components_iterator;
 
     std::map<uint32_t, std::shared_ptr<Population<Type> > >
       pop_models;
@@ -66,13 +66,13 @@ class Model{
     //maybe here, setup functions can take a simulate flag and simulation can be controlled from model
     //setup pointers for priors
     this->info->setup_priors();
-     for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
-      std::shared_ptr<NLLBase<Type> > n = (*it).second;
+     for(density_components_iterator it = this->density_components.begin(); it!= this->density_components.end(); ++it){
+      std::shared_ptr<DensityComponentBase<Type> > n = (*it).second;
       #ifdef TMB_MODEL
         n->of = this->of;
         n->keep = this->keep;
       #endif
-      if(n->nll_type == "prior"){
+      if(n->input_type == "prior"){
         jnll += n->evaluate();
       }
     }
@@ -81,13 +81,13 @@ class Model{
     //setup pointers for random effects
     //info->setup_random_effects();
     //evaluate nlls for priors and random effects
-     for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
-      std::shared_ptr<NLLBase<Type> > n = (*it).second;
+     for(density_components_iterator it = this->density_components.begin(); it!= this->density_components.end(); ++it){
+      std::shared_ptr<DensityComponentBase<Type> > n = (*it).second;
       #ifdef TMB_MODEL
         n->of = this->of;
         n->keep = this->keep;
       #endif
-      if(n->nll_type == "random_effects"){
+      if(n->input_type == "random_effects"){
         jnll += n->evaluate();
       }
     }
@@ -99,13 +99,13 @@ class Model{
       pop->evaluate(); 
     }
     this->info->setup_data();
-    for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
-      std::shared_ptr<NLLBase<Type> > n = (*it).second;
+    for(density_components_iterator it = this->density_components.begin(); it!= this->density_components.end(); ++it){
+      std::shared_ptr<DensityComponentBase<Type> > n = (*it).second;
       #ifdef TMB_MODEL
         n->of = this->of;
         n->keep = this->keep;
       #endif
-      if(n->nll_type == "data"){
+      if(n->input_type == "data"){
         jnll += n->evaluate();
       }
     }

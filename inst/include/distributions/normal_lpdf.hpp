@@ -1,7 +1,7 @@
-#ifndef Normal_NLL_HPP
-#define Normal_NLL_HPP
+#ifndef NORMAL_LPDF_HPP
+#define NORMAL_LPDF_HPP
 
-#include "nll_base.hpp"
+#include "density_components_base.hpp"
 #include "../common/fims_vector.hpp"
 #include "../common/def.hpp"
 
@@ -9,7 +9,7 @@
  * Normal Negative Log-Likelihood
  */
 template<typename Type>
-struct NormalNLL : public NLLBase<Type> {
+struct NormalLPDF : public DensityComponentBase<Type> {
     //need: dnorm(Type x, Type eta, Type sd)
     //      dnorm(fims::Vector<Type> x, Type eta, Type sd)
     //      dnorm(fims::Vector<Type> x, fims::Vector<Type> eta, Type sd)
@@ -22,11 +22,11 @@ struct NormalNLL : public NLLBase<Type> {
     //data_indicator<tmbutils::vector<Type> , Type> keep;
    
 
-    NormalNLL() : NLLBase<Type>() {
+    NormalLPDF() : DensityComponentBase<Type>() {
 
     }
 
-    virtual ~NormalNLL() {}
+    virtual ~NormalLPDF() {}
 
     virtual const Type evaluate(){
         this->mu.resize(this->observed_value.size());
@@ -44,11 +44,11 @@ struct NormalNLL : public NLLBase<Type> {
                 sd[i] = exp(log_sd[i]);
             }
         }
-        this->nll_vec.resize(this->observed_value.size());
+        this->log_likelihood_vec.resize(this->observed_value.size());
         for(int i=0; i<this->observed_value.size(); i++){
-           // this->nll_vec[i] = this->keep[i] * -dnorm(this->observed_value[i], mu[i], sd[i], true);
-            this->nll_vec[i] = -dnorm(this->observed_value[i], mu[i], sd[i], true);
-            nll += this->nll_vec[i];
+           // this->log_likelihood_vec[i] = this->keep[i] * -dnorm(this->observed_value[i], mu[i], sd[i], true);
+            this->log_likelihood_vec[i] = -dnorm(this->observed_value[i], mu[i], sd[i], true);
+            nll += this->log_likelihood_vec[i];
             #ifdef TMB_MODEL
             if(this->simulate_flag){
                 SIMULATE_F(this->of){
@@ -59,8 +59,8 @@ struct NormalNLL : public NLLBase<Type> {
           /* osa not working yet
             if(osa_flag){//data observation type implements osa residuals
                 //code for osa cdf method
-                this->nll_vec[i] = this->keep.cdf_lower[i] * -log( pnorm(this->observed_value[i], mu[i], sd[i]) );
-                this->nll_vec[i] = this->keep.cdf_upper[i] * -log( 1.0 - pnorm(this->observed_value[i], mu[i], sd[i]) );
+                this->log_likelihood_vec[i] = this->keep.cdf_lower[i] * -log( pnorm(this->observed_value[i], mu[i], sd[i]) );
+                this->log_likelihood_vec[i] = this->keep.cdf_upper[i] * -log( 1.0 - pnorm(this->observed_value[i], mu[i], sd[i]) );
             } */
             #endif
            

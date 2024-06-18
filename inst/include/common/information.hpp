@@ -6,8 +6,8 @@
 #include <vector>
 #include <unordered_map>
 
-#include "../nll/nll_base.hpp"
-#include "../nll/normal_nll.hpp"
+#include "../distributions/density_components_base.hpp"
+#include "../distributions/normal_lpdf.hpp"
 #include "../pop_dy/population.hpp"
 #include "../pop_dy/von_bertalanffy.hpp"
 
@@ -17,11 +17,11 @@ class Information {
     static std::shared_ptr<Information<Type> >
         information;          /**< singleton instance >*/
     std::vector<Type*> parameters;
-    std::map<uint32_t, std::shared_ptr<NLLBase<Type> > >
-        nll_models;
+    std::map<uint32_t, std::shared_ptr<DensityComponentBase<Type> > >
+        density_components;
     typedef typename std::map<
-        uint32_t, std::shared_ptr<NLLBase<Type> > >::iterator
-        nll_iterator;
+        uint32_t, std::shared_ptr<DensityComponentBase<Type> > >::iterator
+        density_components_iterator;
 
     std::map<uint32_t, std::shared_ptr<Population<Type> > >
         pop_models;
@@ -70,9 +70,9 @@ class Information {
     }
     
     void setup_priors(){
-      for(nll_iterator it = nll_models.begin(); it!= nll_models.end(); ++it){
-      std::shared_ptr<NLLBase<Type> > n = (*it).second;
-      if(n->nll_type == "prior"){
+      for(density_components_iterator it = density_components.begin(); it!= density_components.end(); ++it){
+      std::shared_ptr<DensityComponentBase<Type> > n = (*it).second;
+      if(n->input_type == "prior"){
         variable_map_iterator vmit;
         vmit = this->variable_map.find(n->key[0]); 
         n->observed_value = *(*vmit).second;
@@ -85,9 +85,9 @@ class Information {
     }
     }
     void setup_data(){
-      for(nll_iterator it = this->nll_models.begin(); it!= this->nll_models.end(); ++it){
-      std::shared_ptr<NLLBase<Type> > n = (*it).second;
-      if(n->nll_type == "data"){
+      for(density_components_iterator it = this->density_components.begin(); it!= this->density_components.end(); ++it){
+      std::shared_ptr<DensityComponentBase<Type> > n = (*it).second;
+      if(n->input_type == "data"){
         variable_map_iterator vmit;
         vmit = this->variable_map.find(n->key[0]); 
         n->expected_value = *(*vmit).second;
