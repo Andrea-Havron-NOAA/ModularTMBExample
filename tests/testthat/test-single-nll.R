@@ -2,10 +2,10 @@
 # with Rcpp and TMB
 
 #simulate data
-l_inf<- 5
+l_inf<- 3
 a_min<- 0.1
-k<- .5
-ages<-c(a_min, 1,2,3,4,5,6,7,8)
+k<- .2
+ages<-c(a_min, 1,2,3,4,5,6,7,8,9,10,11,12)
 #data<-c(replicate(length(ages), 0.0), 0.0)
 Length<-replicate(length(ages), 0.0)
 
@@ -44,7 +44,7 @@ DataLL <- new(NormalLPDF)
 DataLL$observed_value <- new(VariableVector, length.data, length(length.data))
 
 DataLL$log_sd <- new(VariableVector, 1)
-DataLL$log_sd[1]$value <- 0
+DataLL$log_sd[1]$value <- -1
 DataLL$log_sd[1]$estimable <- TRUE
 DataLL$input_type <- "data"
 DataLL$simulate_flag <- TRUE 
