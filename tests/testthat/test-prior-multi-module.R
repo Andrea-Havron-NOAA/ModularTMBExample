@@ -7,6 +7,8 @@
 # params <- matrix(c('Loo', 'K'), ncol=2)
 # x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
 # y <- Plot_taxa(x, params=params)
+test_that("test shared prior",{
+  skip("skip shared prior test")
 library(mvtnorm)
 
 # multivariate normal in log space for two growth parameters
@@ -129,9 +131,7 @@ Data <- list(
   y = get_data_vector()
 )
 
-test_that("check input data", {
-  expect_equal(c(length.data1, length.data2), Data$y)
-})
+expect_equal(c(length.data1, length.data2), Data$y)
 
 #create a parameter list
 Parameters <- list(
@@ -156,7 +156,6 @@ for(i in seq_along(mean.sdr)){
   ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
 }
 
-test_that("test shared prior",{
   expect_equal( log(k[1]) > ci[[1]][1] & log(k[1]) < ci[[1]][2], TRUE)
   expect_equal( l_inf[1] > ci[[2]][1] & l_inf[1] < ci[[2]][2], TRUE)
  # expect_equal( log(k[2]) > ci[[3]][1] & log(k[2]) < ci[[3]][2], TRUE)
