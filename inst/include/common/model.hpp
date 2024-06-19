@@ -73,7 +73,7 @@ class Model{
         n->keep = this->keep;
       #endif
       if(n->input_type == "prior"){
-        jnll += n->evaluate();
+        jnll -= n->evaluate();
       }
     }
 
@@ -88,11 +88,10 @@ class Model{
         n->keep = this->keep;
       #endif
       if(n->input_type == "random_effects"){
-        jnll += n->evaluate();
+        jnll -= n->evaluate();
       }
     }
     */
-    Rcout << "pop_models size is: " << pop_models.size() << std::endl;
     for (pop_iterator it = this->pop_models.begin();
          it != this->pop_models.end(); ++it) {
       std::shared_ptr<Population<Type> > pop = (*it).second;
@@ -106,7 +105,7 @@ class Model{
         n->keep = this->keep;
       #endif
       if(n->input_type == "data"){
-        jnll += n->evaluate();
+        jnll -= n->evaluate();
       }
     }
     return jnll;

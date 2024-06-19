@@ -18,7 +18,7 @@ struct NormalLPDF : public DensityComponentBase<Type> {
     fims::Vector<Type> mu;
     fims::Vector<Type> sd;
     bool osa_flag;
-    Type nll = 0.0;
+    Type log_likelihood = 0.0;
     //data_indicator<tmbutils::vector<Type> , Type> keep;
    
 
@@ -46,9 +46,9 @@ struct NormalLPDF : public DensityComponentBase<Type> {
         }
         this->log_likelihood_vec.resize(this->observed_value.size());
         for(int i=0; i<this->observed_value.size(); i++){
-           // this->log_likelihood_vec[i] = this->keep[i] * -dnorm(this->observed_value[i], mu[i], sd[i], true);
-            this->log_likelihood_vec[i] = -dnorm(this->observed_value[i], mu[i], sd[i], true);
-            nll += this->log_likelihood_vec[i];
+           // this->log_likelihood_vec[i] = this->keep[i] * dnorm(this->observed_value[i], mu[i], sd[i], true);
+            this->log_likelihood_vec[i] = dnorm(this->observed_value[i], mu[i], sd[i], true);
+            log_likelihood += this->log_likelihood_vec[i];
             #ifdef TMB_MODEL
             if(this->simulate_flag){
                 SIMULATE_F(this->of){
@@ -70,7 +70,7 @@ struct NormalLPDF : public DensityComponentBase<Type> {
             vector<Type> normal_observed_value = this->observed_value;
             REPORT_F(normal_observed_value, this->of);
         #endif
-        return(nll);
+        return(log_likelihood);
     }
 
 };

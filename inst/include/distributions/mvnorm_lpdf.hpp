@@ -14,7 +14,7 @@ struct MVNormLPDF : public DensityComponentBase<Type> {
     fims::Vector<Type> logit_phi;
     bool osa_flag;
     
-    Type nll;
+    Type log_likelihood;
     //data_indicator<tmbutils::vector<Type> , Type> keep;
 
     MVNormLPDF() : DensityComponentBase<Type>() {
@@ -25,9 +25,6 @@ struct MVNormLPDF : public DensityComponentBase<Type> {
 
     virtual const Type evaluate(){
         const int n = this->log_sd.size();
-        Rcout << "log_sd[0] is: " << log_sd[0] << std::endl;
-        Rcout << "log_sd[1] is: " << log_sd[1] << std::endl;
-        Rcout << "logit_phi is: " << logit_phi[0] << std::endl;
         matrix<Type> Sigma(n,n);
         int phi_idx = 0;
         fims::Vector<Type> phi;
@@ -36,25 +33,22 @@ struct MVNormLPDF : public DensityComponentBase<Type> {
             Sigma(i,i) = exp(this->log_sd[i]) * exp(this->log_sd[i]);
             for(int j=0; j<i; j++){
                 phi[phi_idx] = 1 / (1 + exp(- this->logit_phi[phi_idx] ))* 2 - 1;
-                Rcout << "phi is: " << phi[phi_idx] << std::endl;
                 Sigma(i,j) = phi[phi_idx] * exp(this->log_sd[i]) * exp(this->log_sd[j]);
                 Sigma(j,i) = Sigma(i,j);
                 phi_idx += 1;
             }
         }
-        Rcout << "Sigma[0,0] is: " << Sigma(0,0) << std::endl;
-        Rcout << "Sigma[0,1] is: " << Sigma(0,1) << std::endl;
         fims::Vector<Type> resid;
         resid.resize(this->observed_value.size());
         this->log_likelihood_vec.resize(1);
         for(int i=0; i<this->observed_value.size(); i++){
             resid[i] = this->observed_value[i] - this->expected_value[i];
         } 
-        nll += density::MVNORM(Sigma)(resid);
-        this->log_likelihood_vec[0] = nll;
+        log_likelihood -= density::MVNORM(Sigma)(resid); //MVNORN returns neg-log-likelihood
+        this->log_likelihood_vec[0] = log_likelihood;
         
 
-        return(nll);
+        return(log_likelihood);
     }
 
 };
