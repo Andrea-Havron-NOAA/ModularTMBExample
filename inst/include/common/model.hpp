@@ -27,7 +27,8 @@ class Model{
       pop_iterator;
       
 
-    std::vector<Type*> parameters;
+    std::vector<Type*> parameters;    
+    std::vector<Type*> data;
     std::vector<std::string> pnames;
     static std::shared_ptr<Model<Type> > model;
     std::shared_ptr<Information<Type> > info;

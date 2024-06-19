@@ -56,8 +56,10 @@ DataLL$set_distribution_links("data", Pop$get_id(), Pop$get_module_name(), "leng
 CreateModel()
 
 
-#create an empty data list (data set above)
-Data <- list()
+#create a data list (data set above)
+Data <- list(
+  y = get_data_vector()
+)
 
 #create a parameter list
 Parameters <- list(

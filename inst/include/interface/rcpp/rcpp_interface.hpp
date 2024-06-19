@@ -40,6 +40,21 @@ Rcpp::NumericVector get_parameter_vector() {
 }
 
 /**
+ * Returns the input data vector for the model
+ */
+Rcpp::NumericVector get_data_vector() {
+    Rcpp::NumericVector d;
+    std::shared_ptr<Model<double> > model = Model<double>::getInstance();
+
+
+    for (int i = 0; i < model->data.size(); i++) {
+        d.push_back(*model->data[i]);
+    }
+
+    return d;
+}
+
+/**
  * Returns the initial values for the parameter set
  */
 Rcpp::StringVector get_parameter_names_vector() {
@@ -151,6 +166,7 @@ RCPP_MODULE(growth) {
     .method("get_id", &vonBertalanffyInterface::get_id)
     .method("get_module_name", &vonBertalanffyInterface::get_module_name);
   //  .method("show", &vonBertalanffyInterface::show);
+    Rcpp::function("get_data_vector", get_data_vector);
     Rcpp::function("get_parameter_vector", get_parameter_vector);
     Rcpp::function("get_parameter_names_vector", get_parameter_names_vector);
     Rcpp::function("clear", clear);

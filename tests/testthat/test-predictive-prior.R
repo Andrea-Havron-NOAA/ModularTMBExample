@@ -66,8 +66,10 @@ GrowthKPrior$set_distribution_links( "prior", vonB$get_id(), vonB$get_module_nam
 CreateModel()
 
 
-#create an empty data list (data set above)
-Data <- list()
+#create a data list (data set above)
+Data <- list(
+  y = get_data_vector()
+)
 
 #create a parameter list
 Parameters <- list(

@@ -98,8 +98,8 @@ public:
         normal->observed_value.resize(this->observed_value.size());
         for(size_t i=0; i<this->observed_value.size(); i++){
             normal->observed_value[i] = this->observed_value[i].value;
-            if(this->observed_value[i].estimable){
-                model->parameters.push_back(&(normal)->observed_value[i]);
+            if(this->input_type == "data"){
+                model->data.push_back(&(normal)->observed_value[i]);
             }
         }
         normal->expected_value.resize(this->expected_value.size());
