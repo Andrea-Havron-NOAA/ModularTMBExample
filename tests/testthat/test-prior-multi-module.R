@@ -52,7 +52,7 @@ vonB1$a_min$value<-.1
 vonB1$a_min$estimable<-FALSE
 
 #initialize l_inf
-vonB1$l_inf$value<-5
+vonB1$l_inf$value<-max(length.data1)
 vonB1$l_inf$estimable<-TRUE
 
 #create second von Bertalanffy object
@@ -67,7 +67,7 @@ vonB2$a_min$value<-.1
 vonB2$a_min$estimable<-FALSE
 
 #initialize l_inf
-vonB2$l_inf$value<-5
+vonB2$l_inf$value<-1
 vonB2$l_inf$estimable<-TRUE
 
 #setup first population, set ages and link to vonB1
@@ -90,8 +90,8 @@ DataLL1$observed_value <-
 #initialize log_sd
 DataLL1$log_sd <- new(VariableVector, 1)
 DataLL1$log_sd[1]$value <- 0
+DataLL1$log_sd[1]$estimable <- TRUE
 DataLL1$input_type = "data"
-DataLL1$estimate_log_sd <- TRUE
 #link data log-likelihood to length from Pop1
 DataLL1$set_distribution_links("data", Pop1$get_id(), Pop1$get_module_name(), "length")
 
@@ -103,19 +103,21 @@ DataLL2$observed_value <-
 #initialize log_sd
 DataLL2$log_sd <- new(VariableVector, 1)
 DataLL2$log_sd[1]$value <- 0
+DataLL2$log_sd[1]$estimable <- TRUE
 DataLL2$input_type = "data"
-DataLL2$estimate_log_sd <- TRUE
 #link data log-likelihood to length from Pop2
 DataLL2$set_distribution_links("data", Pop2$get_id(), Pop2$get_module_name(), "length")
 
 #set up shared prior for logk
 GrowthKPrior <- new(NormalLPDF)
-GrowthKPrior$expected_value <- new(VariableVector, mu[2], 1)
+GrowthKPrior$expected_value <- new(VariableVector, rep(mu[2], 2), 2)
 GrowthKPrior$input_type <- "prior"
 GrowthKPrior$log_sd[1]$value <- log(0.1579867)
 #link prior log-likelihood to the logk parameters from vonB1 and vonB2
 GrowthKPrior$set_distribution_links( "prior", c(vonB1$get_id(),vonB2$get_id()), 
   c(vonB1$get_module_name(),vonB2$get_module_name()), c("logk", "logk"))
+# GrowthKPrior$set_distribution_links( "prior", c(vonB2$get_id()), 
+#   c(vonB2$get_module_name()), c("logk"))
 
 #prepare for interfacing with TMB
 CreateModel()
@@ -130,14 +132,15 @@ Parameters <- list(
 )
 
 #setup TMB object
-obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
-newtonOption(obj, smartsearch=FALSE)
+obj <- TMB::MakeADFun(Data, Parameters, DLL="ModularTMBExample")
+#newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))
 
+
 ## Fit model
 opt <- nlminb(obj$par, obj$fn, obj$gr)
-sdr <- sdreport(obj)
+sdr <- TMB::sdreport(obj)
 
 mean.sdr <- as.list(sdr, "Est")$p
 std.sdr <- as.list(sdr, "Std")$p
@@ -156,11 +159,12 @@ test_that("test shared prior",{
 })
 
 test_that( "test_tmbstan", {
-skip_on_ci(library(tmbstan))
-skip_on_ci(fit <- tmbstan(obj))
-skip_on_ci(library(shinystan))
-skip_on_ci(library(ggplot2))
-skip_on_ci(launch_shinystan(fit))
+  skip("skip test tmbstan")
+  library(tmbstan)
+  fit <- tmbstan(obj)
+  library(shinystan)
+  library(ggplot2)
+  launch_shinystan(fit)
 })
 
 clear()

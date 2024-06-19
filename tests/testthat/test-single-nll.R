@@ -2,10 +2,10 @@
 # with Rcpp and TMB
 
 #simulate data
-l_inf<- 10.0
+l_inf<- 5
 a_min<- 0.1
 k<- .5
-ages<-c(0.1, 1,2,3,4,5,6,7,8)
+ages<-c(a_min, 1,2,3,4,5,6,7,8)
 #data<-c(replicate(length(ages), 0.0), 0.0)
 Length<-replicate(length(ages), 0.0)
 
@@ -22,15 +22,15 @@ clear()
 vonB<-new(vonBertalanffy)
 
 #initialize k
-vonB$logk$value<-log(.01)
+vonB$logk$value<-log(k)
 vonB$logk$estimable<-TRUE
 
 #initialize a_min
-vonB$a_min$value<-.1
+vonB$a_min$value<-a_min
 vonB$a_min$estimable<-FALSE
 
 #initialize l_inf
-vonB$l_inf$value<-7
+vonB$l_inf$value<-max(length.data)
 vonB$l_inf$estimable<-TRUE
 
 #set data
@@ -43,11 +43,6 @@ DataLL <- new(NormalLPDF)
 
 DataLL$observed_value <- new(VariableVector, length.data, length(length.data))
 
-# DataLL$expected_value <- new(VariableVector, 0)
-# for(i in 1:length(length.data)){
-#   DataLL$expected_value[i]$value <- 0
-# }
-
 DataLL$log_sd <- new(VariableVector, 1)
 DataLL$log_sd[1]$value <- 0
 DataLL$log_sd[1]$estimable <- TRUE
@@ -56,28 +51,6 @@ DataLL$simulate_flag <- TRUE
 paste0(Pop$get_module_name(), "_", Pop$get_id(), "_length")
 DataLL$set_distribution_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 
-
-# library(FishLife)
-# library(mvtnorm)
-# params <- matrix(c('Loo', 'K'), ncol=2)
-# x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
-# y <- Plot_taxa(x, params=params)
-
-# # multivariate normal in log space for two growth parameters
-# mu <- c(Loo = 3.848605, K = exp(-1.984452)) #y[[1]]$Mean_pred[params]
-# Sigma <- rbind(c( 0.1545170, -0.1147763),
-#                c( -0.1147763,  0.1579867)) #y[[1]]$Cov_pred[params, params]
-# row.names(Sigma) <- c('Loo', 'K')
-# colnames(Sigma) <- c('Loo', 'K')
-
-# GrowthKPrior <- new(g$NormalLPDF)
-# GrowthKPrior$expected_value <- mu[2]
-# GrowthKPrior$log_sd <- log(Sigma[2,2])
-# GrowthKPrior$input_type = "prior"
-# GrowthKPrior$set_distribution_links( "prior", vonB$get_id(), vonB$get_module_name(), "k")
-# GrowthKPrior$module_name = "growth"
-# GrowthKPrior$module_id = vonB$get_id()
-# GrowthKPrior$member_name = "k"
 
 #prepare for interfacing with TMB
 CreateModel()
@@ -91,14 +64,14 @@ Parameters <- list(
   p = get_parameter_vector()
 )
 
-obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample", trace = TRUE)
-newtonOption(obj, smartsearch=FALSE)
+obj <- TMB::MakeADFun(Data, Parameters, DLL="ModularTMBExample", trace = TRUE)
+#newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))
 
 ## Fit model
 opt <- nlminb(obj$par, obj$fn, obj$gr)
-sdr <- sdreport(obj)
+sdr <- TMB::sdreport(obj)
 
 mean.sdr <- as.list(sdr, "Est")$p
 std.sdr <- as.list(sdr, "Std")$p

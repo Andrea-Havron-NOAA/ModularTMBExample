@@ -165,7 +165,6 @@ public:
             this->expected_value[i].value = norm->expected_value[i];
         }
         this->log_sd.resize(norm->log_sd.size());
-        Rcout << "log sd size after is: " << this->log_sd.size() << std::endl;
         for(int i=0; i<norm->log_sd.size(); i++){
             this->log_sd[i].value = norm->log_sd[i];
         }

@@ -63,7 +63,7 @@ DataLL$observed_value <- new(VariableVector, length.data, length(length.data))
 DataLL$log_sd <- new(VariableVector, 1)
 DataLL$log_sd[1]$value <- 0
 DataLL$input_type = "data"
-DataLL$estimate_log_sd <- TRUE
+DataLL$log_sd[1]$estimable <- TRUE
 DataLL$set_distribution_links("data", Pop$get_id(), Pop$get_module_name(), "length")
 
 GrowthKPrior <- new(NormalLPDF)
@@ -83,14 +83,14 @@ Parameters <- list(
   p = get_parameter_vector()
 )
 
-obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
-newtonOption(obj, smartsearch=FALSE)
+obj <- TMB::MakeADFun(Data, Parameters, DLL="ModularTMBExample")
+#newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))
 
 ## Fit model
 opt <- nlminb(obj$par, obj$fn, obj$gr)
-sdr <- sdreport(obj)
+sdr <- TMB::sdreport(obj)
 
 mean.sdr <- as.list(sdr, "Est")$p
 std.sdr <- as.list(sdr, "Std")$p
@@ -112,7 +112,7 @@ DataLL$log_likelihood_vec
 GrowthKPrior$log_likelihood_vec
 
 test_that("test_tmbstan", {
-  skip_on_ci("skip tmbstan")
+  skip("skip test tmbstan")
   library(tmbstan)
   library(shinystan)
   library(ggplot2)

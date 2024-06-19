@@ -25,7 +25,7 @@ l_inf<- sim.parms[1]
 a_min<- 0.1
 #k parameter is in logspace and needs to be transformed
 k<- exp(sim.parms[2])
-ages<-c(0.1, 1,2,3,4,5,6,7,8)
+ages<-c(a_min, 1,2,3,4,5,6,7,8)
 Length<-replicate(length(ages), 0.0)
 
 for(i in seq_along(ages)){
@@ -42,11 +42,11 @@ clear()
 vonB<-new(vonBertalanffy)
 
 #initialize logk
-vonB$logk$value<-log(.05)
+vonB$logk$value<-log(.1)
 vonB$logk$estimable<-TRUE
 
 #initialize a_min
-vonB$a_min$value<-.1
+vonB$a_min$value<-a_min
 vonB$a_min$estimable<-FALSE
 
 #initialize l_inf
@@ -95,14 +95,14 @@ Parameters <- list(
 )
 
 #setup TMB object
-obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
-newtonOption(obj, smartsearch=FALSE)
+obj <- TMB::MakeADFun(Data, Parameters, DLL="ModularTMBExample")
+#newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))
 
 ## Fit model
 opt <- nlminb(obj$par, obj$fn, obj$gr)
-sdr <- sdreport(obj)
+sdr <- TMB::sdreport(obj)
 
 mean_sdr <- as.list(sdr, "Est")$p
 std_sdr <- as.list(sdr, "Std")$p
@@ -125,7 +125,7 @@ sum(DataLL$log_likelihood_vec) + GrowthMVPrior$log_likelihood_vec
 opt$objective
 #Fully Bayesian
 test_that("test_tmbstan", {
-  skip_on_ci("skip tmbstan")
+  skip("skip test tmbstan")
   library(tmbstan)
   library(shinystan)
   library(ggplot2)

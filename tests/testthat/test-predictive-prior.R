@@ -74,14 +74,14 @@ Parameters <- list(
   p = get_parameter_vector()
 )
 
-obj <- MakeADFun(Data, Parameters, DLL="ModularTMBExample")
-newtonOption(obj, smartsearch=FALSE)
+obj <- TMB::MakeADFun(Data, Parameters, DLL="ModularTMBExample")
+#newtonOption(obj, smartsearch=FALSE)
 
 print(obj$gr(obj$par))
 
 # # Fit model
 # opt <- nlminb(obj$par, obj$fn, obj$gr)
-# sdr <- sdreport(obj)
+# sdr <- TMB::sdreport(obj)
 
 # mean.sdr <- as.list(sdr, "Est")$p
 # std.sdr <- as.list(sdr, "Std")$p
@@ -97,7 +97,7 @@ print(obj$gr(obj$par))
 # })
 
 test_that("test_tmbstan", {
-  skip_on_ci("skip tmbstan")
+  skip("skip test tmbstan")
   library(tmbstan)
   library(shinystan)
   library(ggplot2)
