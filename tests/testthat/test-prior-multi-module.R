@@ -111,6 +111,7 @@ DataLL2$set_distribution_links("data", Pop2$get_id(), Pop2$get_module_name(), "l
 #set up shared prior for logk
 GrowthKPrior <- new(NormalLPDF)
 GrowthKPrior$expected_value <- new(VariableVector, rep(mu[2], 2), 2)
+# GrowthKPrior$expected_value <- new(VariableVector, rep(mu[2], 1), 1)
 GrowthKPrior$input_type <- "prior"
 GrowthKPrior$log_sd[1]$value <- log(0.1579867)
 #link prior log-likelihood to the logk parameters from vonB1 and vonB2
@@ -127,6 +128,10 @@ CreateModel()
 Data <- list(
   y = get_data_vector()
 )
+
+test_that("check input data", {
+  expect_equal(c(length.data1, length.data2), Data$y)
+})
 
 #create a parameter list
 Parameters <- list(
