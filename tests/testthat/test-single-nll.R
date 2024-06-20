@@ -88,13 +88,35 @@ test_that("test single nll",{
   expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
 })
 
+#Test osa
+osa.fg <- TMB::oneStepPredict(obj, observation.name = "y", method = "fullGaussian")
+osa.cdf <- TMB::oneStepPredict(obj, observation.name = "y", 
+                               data.term.indicator = "keep", method = "cdf")
+exp.value <-  (opt$par[2] * (1.0 - exp(-exp(opt$par[1]) * (ages - a_min))))
+pear.resid <- (length.data-exp.value)/ exp(opt$par[3])
+
+test_that("test osa", {
+  expect_equal(pear.resid, osa.fg$residual)
+  # cdf not working
+  # expect_equal(pear.resid, osa.cdf$residual)
+})
+
+#test simulation
+set.seed(11)
+r.sim <- rnorm(length(exp.value), exp.value, exp(opt$par[3]))
+set.seed(11)
+tmb.sim <- obj$simulate()$normal_observed_value
+test_that("test simulation", {
+  expect_equal(r.sim, tmb.sim, tolerance = 1e-4)})
+
+
 #access output from Rcpp object
 vonB$finalize(opt$par)
 DataLL$finalize(opt$par)
 #print optimzed values from RCPP
 test_that("test rcpp output", {
   expect_equal(unname(opt$par[1]), vonB$logk$value)
-  expect_equal(unname(opt$par[2]), vonB$l_inf$value)
+  expect_equal(unname(opt$par[2]), vonB$l_inf$value) 
 })
 
 # currently fails due to bug in finalize functions
