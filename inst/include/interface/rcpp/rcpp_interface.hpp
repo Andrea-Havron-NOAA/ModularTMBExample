@@ -78,6 +78,7 @@ void clear_internal() {
   std::shared_ptr<Model<Type> > model = 
     Model<Type>::getInstance();
   model->parameters.clear();
+  model->data.clear();
 }
 
 /**
