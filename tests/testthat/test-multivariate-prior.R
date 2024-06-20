@@ -1,7 +1,7 @@
-# A simple example showing how to use portable models
-# with Rcpp and TMB
+test_that("test multivariate prior", {
 
-
+message("start multivariate prior test")
+  
 # #Get parameters from FishLife
 # #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
 # library(FishLife)
@@ -84,7 +84,7 @@ GrowthMVPrior$set_distribution_links( "prior", c(vonB$get_id(), vonB$get_id()),
 
 #prepare for interfacing with TMB
 CreateModel()
-
+message("CreateModel works in multivariate prior test")
 
 #create a data list (data set above)
 Data <- list(
@@ -99,6 +99,7 @@ Parameters <- list(
 #setup TMB object
 obj <- TMB::MakeADFun(Data, Parameters, DLL="ModularTMBExample")
 #newtonOption(obj, smartsearch=FALSE)
+message("TMB::MakeADFun works in multivariate prior test")
 
 print(obj$gr(obj$par))
 
@@ -113,11 +114,13 @@ for(i in seq_along(mean_sdr)){
   ci[[i]] <- mean_sdr[i] + c(-1, 1) * qnorm(.975) * std_sdr[i]
 }
 
-test_that("test multivariate prior", {
  # expect_equal( log(k) > ci[[1]][1] & log(k) < ci[[1]][2], TRUE)
   expect_equal( l_inf > ci[[2]][1] & l_inf < ci[[2]][2], TRUE)
  # expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
+  
 })
+message("multivariate prior test complete")
+
 
 DataLL$finalize(opt$par)
 GrowthMVPrior$finalize(opt$par)

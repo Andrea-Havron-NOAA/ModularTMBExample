@@ -1,14 +1,14 @@
-# A simple example showing how to use portable models
-# with Rcpp and TMB
+test_that("test multi-module prior",{
 
+#skip("skip multi-module prior test")
+  
+message("begin multi-module prior test")
 # #Get parameters from FishLife
 # #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
 # library(FishLife)
 # params <- matrix(c('Loo', 'K'), ncol=2)
 # x <- Search_species(Genus="Hippoglossoides")$match_taxonomy
 # y <- Plot_taxa(x, params=params)
-test_that("test shared prior",{
-  skip("skip shared prior test")
 library(mvtnorm)
 
 # multivariate normal in log space for two growth parameters
@@ -125,6 +125,7 @@ GrowthKPrior$set_distribution_links( "prior", c(vonB1$get_id(),vonB2$get_id()),
 #prepare for interfacing with TMB
 CreateModel()
 
+message("CreateModel works in multi-module prior test")
 
 #create a data list (data set above)
 Data <- list(
@@ -142,6 +143,9 @@ Parameters <- list(
 obj <- TMB::MakeADFun(Data, Parameters, DLL="ModularTMBExample")
 #newtonOption(obj, smartsearch=FALSE)
 
+message("TMB::MakeADFun works in multi-module prior test")
+
+
 print(obj$gr(obj$par))
 
 
@@ -156,13 +160,17 @@ for(i in seq_along(mean.sdr)){
   ci[[i]] <- mean.sdr[i] + c(-1,1)*qnorm(.975)*std.sdr[i]
 }
 
-  expect_equal( log(k[1]) > ci[[1]][1] & log(k[1]) < ci[[1]][2], TRUE)
-  expect_equal( l_inf[1] > ci[[2]][1] & l_inf[1] < ci[[2]][2], TRUE)
- # expect_equal( log(k[2]) > ci[[3]][1] & log(k[2]) < ci[[3]][2], TRUE)
-  expect_equal( l_inf[2] > ci[[4]][1] & l_inf[2] < ci[[4]][2], TRUE)
-  expect_equal( log(.1) > ci[[5]][1] & log(.1) < ci[[5]][2], TRUE)
-  expect_equal( log(.1) > ci[[6]][1] & log(.1) < ci[[6]][2], TRUE)
+
+expect_equal( log(k[1]) > ci[[1]][1] & log(k[1]) < ci[[1]][2], TRUE)
+expect_equal( l_inf[1] > ci[[2]][1] & l_inf[1] < ci[[2]][2], TRUE)
+# expect_equal( log(k[2]) > ci[[3]][1] & log(k[2]) < ci[[3]][2], TRUE)
+expect_equal( l_inf[2] > ci[[4]][1] & l_inf[2] < ci[[4]][2], TRUE)
+expect_equal( log(.1) > ci[[5]][1] & log(.1) < ci[[5]][2], TRUE)
+expect_equal( log(.1) > ci[[6]][1] & log(.1) < ci[[6]][2], TRUE)
+
 })
+
+message("multi-module prior test complete")
 
 test_that( "test_tmbstan", {
   skip("skip test tmbstan")
