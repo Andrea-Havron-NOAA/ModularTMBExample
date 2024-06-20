@@ -65,7 +65,7 @@ DataLL <- new(NormalLPDF)
 DataLL$observed_value <- new(VariableVector, length.data, length(length.data))
 #initialize log_sd
 DataLL$log_sd <- new(VariableVector, 1)
-DataLL$log_sd[1]$value <- 0
+DataLL$log_sd[1]$value <- -1
 DataLL$log_sd[1]$estimable <- TRUE
 DataLL$input_type <- "data"
 #link data log-likelihood to length from Pop
