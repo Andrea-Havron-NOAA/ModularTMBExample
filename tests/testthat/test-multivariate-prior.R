@@ -122,12 +122,12 @@ for(i in seq_along(mean_sdr)){
 message("multivariate prior test complete")
 
 
-DataLL$finalize(opt$par)
-GrowthMVPrior$finalize(opt$par)
-DataLL$log_likelihood_vec
-GrowthMVPrior$log_likelihood_vec
-sum(DataLL$log_likelihood_vec) + GrowthMVPrior$log_likelihood_vec
-opt$objective
+# DataLL$finalize(opt$par)
+# GrowthMVPrior$finalize(opt$par)
+# DataLL$log_likelihood_vec
+# GrowthMVPrior$log_likelihood_vec
+# sum(DataLL$log_likelihood_vec) + GrowthMVPrior$log_likelihood_vec
+# opt$objective
 #Fully Bayesian
 test_that("test_tmbstan", {
   skip("skip test tmbstan")
