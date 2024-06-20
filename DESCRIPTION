@@ -19,3 +19,4 @@ LinkingTo:
 Suggests:
     testthat,
     mvtnorm
+RoxygenNote: 7.2.3
