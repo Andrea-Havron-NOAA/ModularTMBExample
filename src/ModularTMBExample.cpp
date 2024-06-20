@@ -31,7 +31,7 @@ Type objective_function<Type>::operator()(){
    std::shared_ptr< Model<Type> > model =
     Model<Type>::getInstance();
     DATA_VECTOR(y);
-   // DATA_VECTOR_INDICATOR(keep,y);
+    DATA_VECTOR_INDICATOR(keep,y);
     //get the parameter values
     PARAMETER_VECTOR(p)
 
@@ -46,9 +46,8 @@ Type objective_function<Type>::operator()(){
     }
 
     model -> of = this;
-    //model -> keep = keep;
+    model -> keep = keep;
 
-    REPORT(y);
     
     //evaluate the model objective function value
     return model->evaluate();

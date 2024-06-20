@@ -45,9 +45,10 @@ struct NormalLPDF : public DensityComponentBase<Type> {
             }
         }
         this->log_likelihood_vec.resize(this->observed_value.size());
+        Type cdf;
         for(int i=0; i<this->observed_value.size(); i++){
-           // this->log_likelihood_vec[i] = this->keep[i] * dnorm(this->observed_value[i], mu[i], sd[i], true);
-            this->log_likelihood_vec[i] = dnorm(this->observed_value[i], mu[i], sd[i], true);
+            this->log_likelihood_vec[i] = this->keep[i] * dnorm(this->observed_value[i], mu[i], sd[i], true);
+            //this->log_likelihood_vec[i] = dnorm(this->observed_value[i], mu[i], sd[i], true);
             log_likelihood += this->log_likelihood_vec[i];
             #ifdef TMB_MODEL
             if(this->simulate_flag){
@@ -56,12 +57,13 @@ struct NormalLPDF : public DensityComponentBase<Type> {
                 }
                 
             }
-          /* osa not working yet
+            
             if(osa_flag){//data observation type implements osa residuals
                 //code for osa cdf method
-                this->log_likelihood_vec[i] = this->keep.cdf_lower[i] * -log( pnorm(this->observed_value[i], mu[i], sd[i]) );
-                this->log_likelihood_vec[i] = this->keep.cdf_upper[i] * -log( 1.0 - pnorm(this->observed_value[i], mu[i], sd[i]) );
-            } */
+                cdf = pnorm(this->observed_value[i], mu[i], sd[i]);
+                this->log_likelihood_vec[i] = this->keep.cdf_lower[i] * log( squeeze(cdf) );
+                this->log_likelihood_vec[i] = this->keep.cdf_upper[i] * log( 1.0 - squeeze(cdf) );
+            }
             #endif
            
             

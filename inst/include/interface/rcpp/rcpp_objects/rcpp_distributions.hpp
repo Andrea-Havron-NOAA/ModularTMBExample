@@ -52,6 +52,7 @@ public:
     std::vector<std::string> key;
 
     bool simulate_flag = false;
+    bool osa_flag;
     
     NormalLPDFInterface() : DensityComponentsInterface(){}
     
