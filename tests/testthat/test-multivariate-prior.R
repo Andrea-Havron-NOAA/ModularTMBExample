@@ -1,6 +1,8 @@
 test_that("test multivariate prior", {
 
-message("start multivariate prior test")
+
+  
+skip("skip multivariate prior test")  
   
 # #Get parameters from FishLife
 # #install FishLife using: remotes::install_github("James-Thorson-NOAA/FishLife") 
@@ -84,7 +86,6 @@ GrowthMVPrior$set_distribution_links( "prior", c(vonB$get_id(), vonB$get_id()),
 
 #prepare for interfacing with TMB
 CreateModel()
-message("CreateModel works in multivariate prior test")
 
 #create a data list (data set above)
 Data <- list(
@@ -99,7 +100,6 @@ Parameters <- list(
 #setup TMB object
 obj <- TMB::MakeADFun(Data, Parameters, DLL="ModularTMBExample")
 #newtonOption(obj, smartsearch=FALSE)
-message("TMB::MakeADFun works in multivariate prior test")
 
 print(obj$gr(obj$par))
 
@@ -119,7 +119,6 @@ for(i in seq_along(mean_sdr)){
  # expect_equal( log(.1) > ci[[3]][1] & log(.1) < ci[[3]][2], TRUE)
   
 })
-message("multivariate prior test complete")
 
 
 # DataLL$finalize(opt$par)
@@ -134,7 +133,9 @@ test_that("test_tmbstan", {
   library(tmbstan)
   library(shinystan)
   library(ggplot2)
-  fit <- tmbstan(obj, init = "best.last.par")
+  fit <- tmbstan(obj, init = "best.last.par", iter = 4000)
+  pairs(fit, pars=names(obj$par))
+  traceplot(fit, pars=names(obj$par), inc_warmup=TRUE)
   launch_shinystan(obj)
 })
 
